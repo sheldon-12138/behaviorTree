@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>行为树</title>
+    <script src="./static/vue.js"></script>
+    <!-- 引入样式 -->
+    <link rel="shortcut icon" href="./assets/groot2.ico" type="image/x-icon">
+    <link rel="stylesheet" href="./static/element-ui/element-ui.css">
+    <!-- 引入组件库 -->
+    <script src="./static/element-ui/element-ui.js"></script>
+    <script src="./static/jquery.min.js"></script>
+    <script src="./static/echart.js"></script>
+
+    <script src="http://www.itxst.com/package/sortable/Sortable.min.js"></script>
+    <script src="http://www.itxst.com/package/vuedraggable/vuedraggable.umd.min.js"></script>
+    <style>
+        @import "./css/index.css";
+        @import "./css/components/header/header.css";
+        @import "./css/components/main/main.css";
+        @import "./css/components/main/list.css";
+        @import "./css/components/main/tree.css";
+        @import "./css/components/main/attributeFence.css";
+        @import "./css/components/main/attributePop.css";
+        @import "./css/components/main/criterionPop.css";
+        @import "./css/components/main/bottomMsg.css";
+
+        @import "./css/components/main/chart.css";
+        @import "./css/components/main/treeTable.css";
+        @import "./css/components/main/timeline.css";
+        @import "./css/components/main/hiddenPopover.css";
+        @import "./css/components/main/renderMode.css";
+        @import "./css/components/main/hsBtn.css";
+        @import "./css/components/main/hierarchyBar.css";
+        @import "./css/dom.css";
+        @import "./css/components/bottom/bottom.css";
+        @import "./css/redFlash.css";
+    </style>
+</head>
+
+<body>
+    <div class="index">
+        <div class="header" id="header"></div>
+        <!-- height: 894px; -->
+        <div style="height: calc(100vh - 70px);overflow: auto;">
+            <!-- width: calc(100vw); -->
+            <div class="main" id="main"></div>
+        </div>
+        <!-- <div class="bottom" id="bottom"></div> -->
+        <div class="hide-field hide" id="hide-field"></div>
+    </div>
+
+</body>
+
+</html>
+
+<script type="module" src="./app.js"></script>

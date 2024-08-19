@@ -1,0 +1,42 @@
+{
+  "name": "ftree",
+  "version": "1.0.0",
+  "description": "* assets:放置项目所需图片\r * css:放置项目所需css(css采用less编写，通过webstrom自动编译成css)\r * js:\r     * controller:业务逻辑代码\r     * dao:数据访问层\r     * ext:扩展第三方工具\r     * load:模块加载层\r     * viewModel:视图操作层\r     * structure:数据结构\r     * utils:工具库\r * view:视图模板(包含Vue实例)\r     * index.html主页面\r     * app.js入口文件",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "child_process": "^1.0.2",
+    "css-loader": "^6.0.0",
+    "express-ws": "^5.0.2",
+    "style-loader": "^3.1.0",
+    "webpack": "^5.44.0",
+    "webpack-cli": "^4.7.2"
+  },
+  "dependencies": {
+    "@babel/core": "^7.23.6",
+    "@babel/preset-env": "^7.23.6",
+    "body-parser": "^1.19.0",
+    "connect-multiparty": "^2.2.0",
+    "cookie-parser": "^1.4.5",
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
+    "log4js": "^6.3.0",
+    "multiparty": "^4.2.2",
+    "nodejs-websocket": "^1.7.2",
+    "number-precision": "^1.5.0",
+    "querystring": "^0.2.0",
+    "vuedraggable": "^2.24.3",
+    "ws": "^7.5.9",
+    "xml2js": "^0.6.2",
+    "xmlbuilder2": "^3.1.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitee.com/yangzixiongh/ftree.git"
+  }
+}

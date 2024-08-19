@@ -1,0 +1,74 @@
+<!--<div class="my_timeline" :style="{width:timelineWidth + 'px'}" ref="mytimeline">-->
+<!--    <div class="my_timeline_item"-->
+<!--        v-for="(item,index) in resultList" :key="index"-->
+<!--        :style="{'width':itemWidth ,'margin-left': index == 0 ?itemWidth:'0'}">-->
+<!--        &lt;!&ndash;圈圈节点&ndash;&gt;-->
+<!--        <el-tooltip effect="dark" :content="item.time.toString()" placement="bottom">-->
+<!--            <div class="my_timeline_node" @click="changeActive(item.time,item.do)" :class="{active: item.time == timeIndex}"></div>-->
+<!--        </el-tooltip>-->
+<!--        &lt;!&ndash;线&ndash;&gt;-->
+<!--        <div class="my_timeline_item_line" v-show="index < resultList.length - 1"></div>-->
+<!--        &lt;!&ndash;标注&ndash;&gt;-->
+<!--        <div class="my_timeline_item_content">-->
+<!--            {{item.time}}-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+<!--<div class="my_timeline" :style="{width:timelineWidth + 'px'}" ref="mytimeline">-->
+<!--    <div class="my_timeline_item"-->
+<!--         v-for="(item,name) in timeData" :key="index"-->
+<!--         :style="{'width':itemWidth}">-->
+<!--        {{ name + 's' }}-->
+
+<!--    </div>-->
+<!--</div>-->
+<!--<div class="timeline-content" :style="{width:timelineWidth + 'px'}">-->
+<div class="timeline-content" :style="{width:item_width * intervalTotal + 'px'}">
+    <div class="timeline-content-item" v-for="(item,name) in timeData" :style="{'width':itemWidth}">
+        <svg width="150" height="60" version="1.1"
+             xmlns="http://www.w3.org/2000/svg"
+             xmlns:xlink="http://www.w3.org/1999/xlink"
+             xmlns:ev="http://www.w3.org/2001/xml-events">
+            <line x1="15" y1="60" x2="15" y2="57"
+                  style="stroke:#999999;stroke-width:1"/>
+            <line x1="30" y1="60" x2="30" y2="57"
+                  style="stroke:#999999;stroke-width:1"/>
+            <line x1="45" y1="60" x2="45" y2="57"
+                  style="stroke:#999999;stroke-width:1"/>
+            <line x1="60" y1="60" x2="60" y2="57"
+                  style="stroke:#999999;stroke-width:1"/>
+            <line x1="75" y1="60" x2="75" y2="54"
+                  style="stroke:#999999;stroke-width:1"/>
+            <line x1="90" y1="60" x2="90" y2="57"
+                  style="stroke:#999999;stroke-width:1"/>
+            <line x1="105" y1="60" x2="105" y2="57"
+                  style="stroke:#999999;stroke-width:1"/>
+            <line x1="120" y1="60" x2="120" y2="57"
+                  style="stroke:#999999;stroke-width:1"/>
+            <line x1="135" y1="60" x2="135" y2="57"
+                  style="stroke:#999999;stroke-width:1"/>
+            <line x1="150" y1="60" x2="150" y2="54"
+                  style="stroke:#999999;stroke-width:1"/>
+            <text x="75" y="48" font-size="8" fill="#999999" text-anchor="middle">{{ parseInt(name) + 5 }}</text>
+            <text x="150" y="48" font-size="8" fill="#999999" text-anchor="middle">{{ parseInt(name) + 10 }}</text>
+        </svg>
+        <template v-for="model in item">
+            <div class="timeline-content-item-model"
+                 v-if="model.finish"
+                 :id="model.timeStamp"
+                 :style="{'left':model.position}" :class="{'timeline-content-item-model-active':model.timeStamp == failureComputedData.timeStamp}">
+                <el-tooltip effect="dark" :content="model.times.toString()" placement="top">
+                    <img class="boom-img" src="assets/main/boom.png" @click="changeActive(model.timeStamp,model.do)">
+                </el-tooltip>
+            </div>
+            <div class="timeline-content-item-model"
+                 v-else
+                 :id="model.timeStamp"
+                 :style="{'left':model.position}">
+                <el-tooltip effect="dark" content="计算中" placement="top">
+                    <img class="compute-img" src="assets/main/compute.png">
+                </el-tooltip>
+            </div>
+        </template>
+    </div>
+</div>

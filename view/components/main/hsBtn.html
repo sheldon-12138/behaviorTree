@@ -1,0 +1,4 @@
+<div class="hsBtn-item" v-for="(item,index) in hsStandard.standardList" @click="hsChange(item.id)"
+     :class="{'hsBtn-item-active':hsStandard.currentIndex === item.id}">
+    {{ index + 1 }}
+</div>

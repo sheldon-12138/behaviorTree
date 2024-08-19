@@ -1,0 +1,124 @@
+<div class="dragPop" :style="{top: top + 'px', left: left + 'px' }">
+    <!-- ,width:width+'px',height:height+'px' -->
+    <header @mousedown="startDrag" @mouseup="stopDrag">
+        <img src="../../../assets/groot2.png">
+        {{headTextArr[statusData.attrID-1]}}
+        <button @click="handleClose">
+            <i class="el-icon-close"></i>
+        </button>
+    </header>
+    <div class="content">
+        <!-- 节点信息框 -->
+        <template v-if="statusData.attrID == '1'">
+            <div class="item">
+                <div class="label">NodeType:</div>
+                {{entityInfo.modelType}}
+            </div>
+            <div class="item">
+                <div class="label">Model Name:</div>
+                {{entityInfo.name}}
+            </div>
+            <div class="item">
+                <div class="label" style="line-height: 24px;">Instance name:</div>
+                <input type="text" v-model="entityInfo.aliasName">
+            </div>
+            <div style="display: flex;">
+                <div v-for="(item,index) in tabsArr" :key="index" :class="`tab ${avtiveTab==index?'activeTab':''}`"
+                    @click="avtiveTab=index">
+                    {{item}}
+                </div>
+            </div>
+            <div class="tabPane">
+                <!-- preConditions -->
+                <template v-if="avtiveTab==0">
+                    <div v-for="item in preTextArr" :key="item" class="ifLine">
+                        <div style="width: 95px;">{{item}}</div>
+                        <textarea class="ifTextarea" v-model="entityInfo[item]"></textarea>
+                    </div>
+                </template>
+                <!-- postConditions -->
+                <template v-else-if="avtiveTab==1">
+                    <div v-for="item in postTextArr" :key="item" class="ifLine">
+                        <div style="width: 95px;">{{item}}</div>
+                        <textarea class="ifTextarea" v-model="entityInfo[item]"></textarea>
+                    </div>
+                </template>
+                <!-- descriptions -->
+                <template v-else-if="avtiveTab==2">
+                    Add a Description/Comments to this node:
+                    <textarea class="description" v-model="entityInfo._description"></textarea>
+                </template>
+            </div>
+        </template>
+        <!-- 增加/修改 节点模型框 -->
+        <template v-else-if="statusData.attrID == '2'||statusData.attrID == '3'||statusData.attrID == '4'">
+            <div class="msgLine">Type:
+                <select :disabled="statusData.attrID == '4'" v-model="newModel.typeIndex">
+                    <option v-for="(item,index) in typeList" :key="item" :value="index">{{item}}</option>
+                </select>
+                <input :disabled="statusData.attrID == '4'" @input="modelNameChange" type="text" v-model="newModel.name"
+                    placeholder="Name">
+            </div>
+            <div v-if="statusData.attrID != '4'" class="iconLine">
+                <div style="margin-left: 4px;font-size: 20px;">
+                    <i class="el-icon-plus" @click="addPort" style="margin-right: 6px;"></i>
+                    <i class="el-icon-delete"></i>
+                </div>
+                <span style="color: red;">{{tipText}}</span>
+            </div>
+            <div :style="`border: 1px solid #666;margin:${statusData.attrID=='4'?'15px':'5px'} 0px 32px;`">
+                <table class="table">
+                    <tr class="thead">
+                        <th>Port Name</th>
+                        <th>Direction</th>
+                        <th>Default Value</th>
+                        <th>Description</th>
+                    </tr>
+                </table>
+                <div class="table-container">
+                    <table class="table">
+                        <tr v-for="item in tableData" :key="item.portName">
+                            <td><input :disabled="statusData.attrID == '4'" type="text" v-model="item.portName"></td>
+                            <td>
+                                <select :disabled="statusData.attrID == '4'" v-model=" item.direction">
+                                    <option value="input_port">Input</option>
+                                    <option value="output_port">Output</option>
+                                    <option value="inout_port">In/Out</option>
+                                </select>
+                            </td>
+                            <td><input :disabled="statusData.attrID == '4'" type="text" v-model="item.defaultValue">
+                            </td>
+                            <td><input :disabled="statusData.attrID == '4'" type="text" v-model="item.description"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <!-- <el-table :data="tableData" border style="width: 100%" height="200">
+                <el-table-column prop="date" label="Port Name" width="180">
+                </el-table-column>
+                <el-table-column prop="name" label="Direction" width="180">
+                </el-table-column>
+                <el-table-column prop="address" label="Default Value">
+                </el-table-column>
+                <el-table-column prop="province" label="Description">
+                </el-table-column>
+            </el-table> -->
+            <!-- <div style="width: 615px; height: 230px;"></div> -->
+        </template>
+        <!-- 保存框 -->
+        <template v-else-if="statusData.attrID == '3'">
+            <div style="width: 300px;">保存</div>
+        </template>
+        <template v-else-if="statusData.attrID == '4'">
+            <div style="width: 300px;">保存项目</div>
+        </template>
+    </div>
+
+    <footer>
+        <button :disabled="!isOk" class="btn" @click="handleSave(statusData.attrID)"
+            :style="`background-color: ${isOk?'#bceae1':'#fff'};`">OK</button>
+        <button class="btn" @click="handleCancel">Cancel</button>
+    </footer>
+    <!-- <div class="leftBox" @mousedown="startDragW($event,'left')"></div>
+    <div class="rightBox" @mousedown="startDragW($event,'right')"></div> -->
+</div>

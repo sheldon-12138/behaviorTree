@@ -1,0 +1,10 @@
+<!--<div @click="kk">折叠</div>-->
+<!--<div @click="kkl">展开</div>-->
+
+<div class="hierarchyBarItem"
+     v-for="(item, i) in bottomAmount.amountLayerNum"
+     @click="foldEntity(item)"
+     :title="item.data.length"
+     :style="{background:(item.fold?'#b7b7b7':'#919191')}">
+    {{i+1}}
+</div>

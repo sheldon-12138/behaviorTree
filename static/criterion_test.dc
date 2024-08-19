@@ -1,0 +1,58 @@
+*DAMAGE_CRITERIA
+1,Runway,DC_load_PI_curve,CURVE,1
+0>1:
+10000.0, 8000.0
+2000.0, 200000.0
+*DAMAGE_CRITERIA
+2,Terminal,DC_load_PI_curve,CURVE,1
+0>1:
+6000.0, 6000.0
+2000.0, 8000.0
+*DAMAGE_CRITERIA
+3,Control_Tower,DC_load_PI_curve,CURVE,1
+0>1:
+4000.0, 4000.0
+2000.0, 6000.0
+*DAMAGE_CRITERIA
+4,Hangar,DC_load_PI_curve,CURVE,1
+0>1:
+3000.0, 3000.0
+2000.0, 4000.0
+*DAMAGE_CRITERIA
+5,Warehouse,DC_load_PI_curve,CURVE,1
+0>1:
+2000.0, 2000.0
+1500.0, 2500.0
+*DAMAGE_CRITERIA
+6,Aircraft,DC_load_PI_curve,CURVE,1
+0>1:
+1800.0, 1800.0
+1500.0, 2000.0
+*DAMAGE_CRITERIA
+7,Helicopter,DC_load_PI_curve,CURVE,1
+0>1:
+1500.0, 1500.0
+1200.0, 1800.0
+*DAMAGE_CRITERIA
+8,Helicopter,DC_load_Fragment_Number_Kinetic_Energy,POINT,1
+0>1:100000.0
+*DAMAGE_CRITERIA
+9,Aircraft,DC_load_Fragment_Number_Kinetic_Energy,POINT,1
+0>1:600000.0
+*DAMAGE_CRITERIA
+10,Warehouse,DC_load_Fragment_Number_Kinetic_Energy,POINT,1
+0>1:150000.0
+*DAMAGE_CRITERIA
+11,Hangar,DC_load_Fragment_Number_Kinetic_Energy,POINT,1
+0>1:1000000.0
+*DAMAGE_CRITERIA
+12,Control_Tower,DC_load_Fragment_Number_Kinetic_Energy,POINT,1
+0>1:1200000.0
+*DAMAGE_CRITERIA
+13,Terminal,DC_load_Fragment_Number_Kinetic_Energy,POINT,1
+0>1:8000000.0
+*DAMAGE_CRITERIA
+14,Runway,DC_load_Fragment_Number_Kinetic_Energy,POINT,1
+0>1:5000000.0
+*DAMAGE_CRITERIA
+

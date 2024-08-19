@@ -1,0 +1,68 @@
+<!--<div class="header-renderMode" :class="{'header-renderMode-shrink':!openID}">-->
+<!--    <template v-if="openID&&openID2">-->
+<!--        <div style="margin-bottom: 10px">-->
+<!--            <el-row>-->
+<!--                <el-col :span="18">渲染计算结果</el-col>-->
+<!--                <el-col :span="6">-->
+<!--                    <el-switch v-model="failureComputedData.computedRenderID" @change="changeComputedRenderID"></el-switch>-->
+<!--                </el-col>-->
+<!--            </el-row>-->
+<!--        </div>-->
+<!--        <el-checkbox-group :disabled="!failureComputedData.computedRenderID" v-model="failureComputedData.computedRenderList" @change="screenRenderChange">-->
+<!--            <el-checkbox label="notFlash">未达级</el-checkbox>-->
+<!--            <el-checkbox label="yellowFlash">轻度毁伤</el-checkbox>-->
+<!--            <el-checkbox label="orangeFlash">中度毁伤</el-checkbox>-->
+<!--            <el-checkbox label="redFlash">重度毁伤</el-checkbox>-->
+<!--            <el-checkbox label="greyFlash">损坏</el-checkbox>-->
+<!--        </el-checkbox-group>-->
+<!--        <div class="header-renderMode-shrink_btn" @click="openID=false;openID2=false">收缩</div>-->
+<!--    </template>-->
+<!--    <template v-else>-->
+<!--        <el-tooltip class="item" effect="dark" content="渲染模式" placement="bottom">-->
+<!--            <img src="./assets/main/render.png" @click="open">-->
+<!--        </el-tooltip>-->
+<!--    </template>-->
+
+<!--</div>-->
+<!--<el-popover-->
+<!--    placement="left"-->
+<!--    width="180"-->
+<!--    trigger="hover">-->
+<!--    <div class="header-renderMode">-->
+<!--        <div style="margin-bottom: 10px">-->
+<!--            <el-row>-->
+<!--                <el-col :span="18">渲染计算结果</el-col>-->
+<!--                <el-col :span="6">-->
+<!--                    <el-switch v-model="failureComputedData.computedRenderID" @change="changeComputedRenderID"></el-switch>-->
+<!--                </el-col>-->
+<!--            </el-row>-->
+<!--        </div>-->
+<!--        <el-checkbox-group :disabled="!failureComputedData.computedRenderID" v-model="failureComputedData.computedRenderList" @change="screenRenderChange">-->
+<!--            <el-checkbox label="notWave">未达级</el-checkbox>-->
+<!--            <el-checkbox label="yellowWave">轻度</el-checkbox>-->
+<!--            <el-checkbox label="orangeWave">中度</el-checkbox>-->
+<!--            <el-checkbox label="redWave">重度</el-checkbox>-->
+<!--            <el-checkbox label="crimsonWave">损毁</el-checkbox>-->
+<!--        </el-checkbox-group>-->
+<!--    </div>-->
+<!--&lt;!&ndash;    <img class="header-renderMode-shrink_img" src="./assets/main/render.png" @click="open" slot="reference">&ndash;&gt;-->
+<!--    -->
+<!--</el-popover>-->
+<!--sss-->
+<div class="header-renderMode" style="top:70px" v-if="statusData.modeID==1">
+    <div class="header-renderMode-row"
+          @click="screenRenderChange('notWave')"
+         :class="{'header-renderMode-row-title-active':failureComputedData.computedRenderList.indexOf('notWave')!=-1}">未达级</div>
+    <div class="header-renderMode-row"
+          @click="screenRenderChange('yellowWave')"
+         :class="{'header-renderMode-row-title-active':failureComputedData.computedRenderList.indexOf('yellowWave')!=-1}">轻度</div>
+    <div class="header-renderMode-row"
+          @click="screenRenderChange('orangeWave')"
+         :class="{'header-renderMode-row-title-active':failureComputedData.computedRenderList.indexOf('orangeWave')!=-1}">中度</div>
+    <div class="header-renderMode-row"
+          @click="screenRenderChange('redWave')"
+         :class="{'header-renderMode-row-title-active':failureComputedData.computedRenderList.indexOf('redWave')!=-1}">重度</div>
+    <div class="header-renderMode-row"
+          @click="screenRenderChange('crimsonWave')"
+         :class="{'header-renderMode-row-title-active':failureComputedData.computedRenderList.indexOf('crimsonWave')!=-1}">损毁</div>
+</div>

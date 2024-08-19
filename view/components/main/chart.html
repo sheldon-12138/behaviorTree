@@ -1,0 +1,173 @@
+<el-drawer
+    :title="chartData.DC_type + ' - '+ chartData.DC_goods_type"
+    :visible.sync="chartData.drawerID"
+    :wrapper-closable="true"
+    direction="rtl"
+    @close="closeDrawer"
+    :modal="false"
+    :size="450">
+    <div id="chartContent" v-if="chartShow" style="width: 450px;height: 350px;"></div>
+    <el-collapse v-model="activeTitle">
+        <el-collapse-item title="坐标轴基本信息" name="0">
+            <el-row>
+                <el-col  :span="6" :offset="2">
+                    <div class="chart-p">描述方式</div>
+                </el-col>
+                <el-col :span="15">
+                    <el-select v-if="DCDTypeList.length>1" v-model="DCDType"
+                               @change="changeDCDType" placeholder="请选择">
+                        <el-option
+                            v-for="item in DCDTypeList"
+                            :key="'XAxisType' + item.value"
+                            :label="item.label"
+                            :value="item.value">
+                        </el-option>
+                    </el-select>
+                    <div v-else class="chart-p">
+                        {{ DCDTypeName }}
+                    </div>
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col  :span="6" :offset="2">
+                    <div class="chart-p">x轴类型</div>
+                </el-col>
+                <el-col :span="15">
+                    <el-select v-model="XAxisType" placeholder="请选择">
+                        <el-option
+                            v-for="item in axisTypeList"
+                            :key="'XAxisType' + item.value"
+                            :label="item.label"
+                            :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col  :span="6" :offset="2">
+                    <div class="chart-p">y轴类型</div>
+                </el-col>
+                <el-col :span="15">
+                    <el-select v-model="YAxisType" placeholder="请选择">
+                        <el-option
+                            v-for="item in axisTypeList"
+                            :key="'YAxisType' + item.value"
+                            :label="item.label"
+                            :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-col>
+            </el-row>
+        </el-collapse-item>
+        <el-collapse-item v-for="(item,index) in chartOption.series" :title="'等级' + index + '-线条样式'" :name="'等级' + index">
+            <el-row>
+                <el-col :span="6" :offset="2">
+                    <div class="chart-p">线条颜色</div>
+                </el-col>
+                <el-col :span="10">
+                    <el-color-picker
+                        v-model="item.itemStyle.color"
+                        @change="setChart()"
+                        show-alpha
+                        size="mini"
+                        :predefine="predefineColors">
+                    </el-color-picker>
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col  :span="6" :offset="2">
+                    <div class="chart-p">条线粗细</div>
+                </el-col>
+                <el-col :span="10">
+                    <div style="width: 166px">
+                        <el-slider
+                            v-model="item.lineStyle.width"
+                            @change="setChart('lineSize',index)"
+                            :min="1"
+                            :max="6"
+                            :step="1">
+                        </el-slider>
+                    </div>
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col  :span="6" :offset="2">
+                    <div class="chart-p">节点形状</div>
+                </el-col>
+                <el-col :span="10">
+                    <el-select v-model="item.symbol" placeholder="请选择" @change="setChart">
+                        <el-option
+                            v-for="shapeItem in shapeOption"
+                            :key="shapeItem"
+                            :label="shapeItem"
+                            :value="shapeItem">
+                        </el-option>
+                    </el-select>
+                </el-col>
+            </el-row>
+        </el-collapse-item>
+        <!--        <el-collapse-item title="效率 Efficiency" name="3">-->
+        <!--        </el-collapse-item>-->
+        <!--        <el-collapse-item title="可控 Controllability" name="4">-->
+        <!--        </el-collapse-item>-->
+        <!-- 杨子雄新增将数据放到最下方-->
+        <el-collapse-item title="数据" name="chart_data">
+            <div class="chart-table" v-if="chartEditID">
+                <div class="chart-table-col" v-for="(item,i) in tableDataEdit"
+                     :style="{'width': 100.0/Object.keys(tableDataEdit).length + '%'}">
+                    <div class="chart-table-row">
+                        <div class="chart-table-row-td">{{ '等级' + i }}</div>
+                    </div>
+                    <div class="chart-table-row">
+                        <div class="chart-table-row-td" :style="{'width': '50%'}">P</div>
+                        <div class="chart-table-row-td" :style="{'width': '50%'}">I</div>
+                    </div>
+                    <div class="chart-table-row"  v-for='(value,index) in item'>
+                        <div class="chart-table-row-td" :style="{'width': '50%'}">
+                            <el-input v-model="value[0]" type="number" placeholder="请输入内容"></el-input>
+                            <!--                        <div v-else>{{ value[0] }}</div>-->
+                        </div>
+                        <div class="chart-table-row-td" :style="{'width': '50%'}">
+                            <el-input v-model="value[1]" type="number" placeholder="请输入内容"></el-input>
+                            <!--                        <div v-else>{{ value[1] }}</div>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="chart-table" v-else>
+                <div class="chart-table-col" v-for="(item,i) in tableData"
+                     :style="{'width': 100.0/Object.keys(tableData).length + '%'}">
+                    <div class="chart-table-row">
+                        <div class="chart-table-row-td">{{ '等级' + i }}</div>
+                    </div>
+                    <div class="chart-table-row">
+                        <div class="chart-table-row-td" :style="{'width': '50%'}">P</div>
+                        <div class="chart-table-row-td" :style="{'width': '50%'}">I</div>
+                    </div>
+                    <div class="chart-table-row"  v-for='(value,index) in item'>
+                        <div class="chart-table-row-td" :style="{'width': '50%'}">
+                            <!--                        <el-input v-if="chartEditID" v-model="value[0]" type="number" placeholder="请输入内容"></el-input>-->
+                            <div>{{ value[0] }}</div>
+                        </div>
+                        <div class="chart-table-row-td" :style="{'width': '50%'}">
+                            <!--                        <el-input v-if="chartEditID" v-model="value[1]" type="number" placeholder="请输入内容"></el-input>-->
+                            <div>{{ value[1] }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div v-if="chartEditID" style="text-align: center;margin-bottom: 20px">
+                <el-button size="mini"  @click="chartEditID=false">取消</el-button>
+                <el-button  type="primary" size="mini" @click="saveEdit()">保存</el-button>
+            </div>
+            <div v-else style="text-align: center;margin-bottom: 20px">
+                <el-button type="warning" size="mini" @click="openEdit()">编辑</el-button>
+            </div>
+        </el-collapse-item>
+    </el-collapse>
+</el-drawer>
+<!--<el-dialog title="数据还未保存，是否取消"-->
+<!--           :visible.sync="fileOpenDialogVisible"-->
+<!--           width="600px">-->
+
+<!--</el-dialog>-->

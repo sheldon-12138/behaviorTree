@@ -1,0 +1,65 @@
+<!--<el-popover-->
+<!--    ref="hidden_popover_data"-->
+<!--    placement="top"-->
+<!--    width="hiddenPopoverData.width"-->
+<!--    trigger="manual"-->
+<!--    v-model="hiddenPopoverData.show">-->
+<!--    <p style="text-align: center">{{ contentName }}</p>-->
+<!--</el-popover>-->
+<div class="hiddenPopover-content">
+    <div v-if="hiddenPopoverData.show">
+        <!-- <el-row>
+            <el-col :span="5">
+                <div class="hiddenPopover-title">名称：</div>
+            </el-col>
+            <el-col :span="18">
+                <div class="hiddenPopover-p">{{ contentName }}</div>
+            </el-col>
+        </el-row> -->
+        <el-row v-if="hiddenPopoverData.data.level" >
+            <!-- <el-col :span="5">
+                <div class="hiddenPopover-title">概率：</div>
+            </el-col> -->
+            <el-col :span="24">
+                <div class="hiddenPopover-prop">
+                    <template v-if="hiddenPopoverData.data.level==1">
+                        <el-input style="width: 49%" class="input-green" type="number" :disabled="isCompute"
+                                  v-model="hiddenPopoverData.data.probability[0]"></el-input>
+                        <el-input style="width: 49%" class="input-grey" type="number"  :disabled="isCompute"
+                                  v-model="hiddenPopoverData.data.probability[1]"></el-input>
+                    </template>
+                    <template v-else-if="hiddenPopoverData.data.level==2">
+                        <el-input style="width: 32%" type="number" class="input-green" :disabled="isCompute"
+                                  v-model="hiddenPopoverData.data.probability[0]"></el-input>
+                        <el-input style="width: 32%" type="number" class="input-orange" :disabled="isCompute"
+                                  v-model="hiddenPopoverData.data.probability[1]"></el-input>
+                        <el-input style="width: 32%" type="number" class="input-grey" :disabled="isCompute"
+                                  v-model="hiddenPopoverData.data.probability[2]"></el-input>
+                    </template>
+                    <template v-else-if="hiddenPopoverData.data.level==3">
+                        <el-input style="width: 23.5%" type="number" class="input-green" :disabled="isCompute"
+                                  v-model="hiddenPopoverData.data.probability[0]"></el-input>
+                        <el-input style="width: 23.5%" type="number" class="input-yellow" :disabled="isCompute"
+                                  v-model="hiddenPopoverData.data.probability[1]"></el-input>
+                        <el-input style="width: 23.5%" type="number" class="input-orange" :disabled="isCompute"
+                                  v-model="hiddenPopoverData.data.probability[2]"></el-input>
+                        <el-input style="width: 23.5%" type="number" class="input-grey" :disabled="isCompute"
+                                  v-model="hiddenPopoverData.data.probability[3]"></el-input>
+                    </template>
+                    <template v-else-if="hiddenPopoverData.data.level==4">
+                        <el-input style="width: 18.4%" type="number" class="input-green" :disabled="isCompute"
+                                  v-model="hiddenPopoverData.data.probability[0]"></el-input>
+                        <el-input style="width: 18.4%" type="number" class="input-yellow" :disabled="isCompute"
+                                  v-model="hiddenPopoverData.data.probability[1]"></el-input>
+                        <el-input style="width: 18.4%" type="number" class="input-orange" :disabled="isCompute"
+                                  v-model="hiddenPopoverData.data.probability[2]"></el-input>
+                        <el-input style="width: 18.4%" type="number" class="input-red" :disabled="isCompute"
+                                  v-model="hiddenPopoverData.data.probability[3]"></el-input>
+                        <el-input style="width: 18.4%" type="number" class="input-grey" :disabled="isCompute"
+                                  v-model="hiddenPopoverData.data.probability[4]"></el-input>
+                    </template>
+                </div>
+            </el-col>
+        </el-row>
+    </div>
+</div>

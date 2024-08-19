@@ -1,0 +1,36 @@
+<div class="content-el_tree" id="content-el_tree">
+    <div class="pane topPane" ref="topPane">
+        <div class="treeHeader">
+            <span>项目</span>
+            <div>
+                <i @click="triggerFileInput" class="el-icon-document" style="margin-right: 5px;"></i>
+                <i @click="triggerFolderInput" class="el-icon-folder-opened" style="margin-right: 5px;"></i>
+                <input type="file" ref="fileInput" style="display: none;" @change="handleFileChange" accept=".xml">
+                <input type="file" ref="folderInput" style="display: none;" @change="handleFileChange" webkitdirectory>
+              
+                <i class="el-icon-folder-checked" @click="saveProject" style="margin-right: 5px;"></i>
+                <i class="el-icon-upload2" @click="saveProject1" style="margin-right: 5px;"></i>
+                <i class="el-icon-delete"></i>
+            </div>
+        </div>
+        <el-tree :data="project" :props="defaultProps" default-expand-all> </el-tree>
+    </div>
+    <div class="divider" @mousedown="startDrag"></div>
+    <div class="pane bottomPane" ref="bottomPane">
+        <div class="treeHeader">
+            <span>模型</span>
+            <div>
+                <i @click="addNode" class="el-icon-plus" style="margin-right: 5px;"></i>
+                <i @click="importNode" class="el-icon-download"></i>
+            </div>
+        </div>
+        <!-- draggable :allow-drop="allowDrop" @node-drag-start="handleDragStart" -->
+        <el-tree id="modelTree" :data="model" default-expand-all>
+            <template #default="{ node, data }">
+                <span :data-type="node.parent.data.type" :data-isLeaf="node.isLeaf"
+                    :style="{ color: data.isUser ? '#0000ff' : 'inherit' }">{{ data.ID
+                    }}</span>
+            </template>
+        </el-tree>
+    </div>
+</div>

@@ -1,0 +1,480 @@
+<!-- 保存文件 -->
+<el-dialog title="保存文件" :visible.sync="fileSaveDialogVisible" width="800px">
+    <el-form v-if="fileSaveDialogVisible" ref="saveForm" :rules="saveFormRules" :model="info" label-width="80px">
+        <el-form-item label="树名称" prop="name">
+            <el-input v-model="info.name"></el-input>
+        </el-form-item>
+    </el-form>
+    <div style="text-align: center">
+        <el-button @click="fileSaveDialogVisible=false">取消</el-button>
+        <el-button type="primary" @click="fileSave('save')">确定</el-button>
+    </div>
+</el-dialog>
+<!-- 打开文件 -->
+<el-dialog class="editDialog" title="打开文件" :visible.sync="fileOpenDialogVisible" width="600px">
+    <el-row style="background-color: #fff;">
+        <el-col :span="10" style="padding: 5px 15px;">
+            <!-- :show-header="false"  -->
+            <el-table :data="projectList" style="width: 100%" height="300" highlight-current-row
+                @current-change="setCurrentProject">
+                <!-- @cell-mouse-enter="hoverFile" @cell-mouse-leave="leaveFile" -->
+                <!-- <el-table-column prop="name" label="项目名称"> -->
+                <el-table-column prop="name" label="">
+                    <template slot-scope="scope">
+                        <i class="el-icon-folder"></i>
+                        <span style="margin-left: 10px">{{ scope.row.name }}</span>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </el-col>
+        <el-col :span="14" v-if="filInfoShow==1">
+            <el-row>
+                <el-col :span="6" :offset="2">
+                    <div class="openFile-title">创建时间：</div>
+                </el-col>
+                <el-col :span="16">
+                    <div class="openFile-title">
+                        {{ fileInfoPreview.createTime }}
+                    </div>
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col :span="6" :offset="2">
+                    <!-- <div class="openFile-title">最后修改时间：</div> -->
+                    <div class="openFile-title">修改时间：</div>
+                </el-col>
+                <el-col :span="16">
+                    <div class="openFile-title">
+                        {{ fileInfoPreview.updateTime }}
+                    </div>
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col :span="6" :offset="2">
+                    <div class="openFile-title">创建人员：</div>
+                    <!--  <div class="openFile-title">创建人：</div> -->
+                </el-col>
+                <el-col :span="16">
+                    <div class="openFile-title">
+                        {{ fileInfoPreview.founder }}
+                    </div>
+                </el-col>
+            </el-row>
+            <!-- <el-row>
+                <el-col :span="8" :offset="2">
+                    <div class="openFile-title">密级：</div>
+                </el-col>
+                <el-col :span="14">
+                    <div class="openFile-title">
+                        <template v-if="fileInfoPreview.level">
+                            <div v-if="fileInfoPreview.level==1" class="bottom-item" style="">
+                                <img class="bottom-item-img" src="assets/attributeFence/confidential.jpeg">
+                            </div>
+                            <div v-else-if="fileInfoPreview.level==2" class="bottom-item">
+                                <img class="bottom-item-img" src="assets/attributeFence/confidential.jpeg">
+                            </div>
+                            <div v-else-if="fileInfoPreview.level==3" class="bottom-item">
+                                <img class="bottom-item-img" src="assets/attributeFence/confidential.jpeg">
+                            </div>
+                        </template>
+                    </div>
+                </el-col>
+            </el-row> -->
+            <el-row>
+                <el-col :span="6" :offset="2">
+                    <div class="openFile-title">内容描述：</div>
+                </el-col>
+                <el-col :span="16">
+                    <div class="openFile-title">
+                        {{ fileInfoPreview.describe }}
+                    </div>
+                </el-col>
+            </el-row>
+        </el-col>
+        <el-col :span="14" v-else>
+            <!-- <el-row>
+                <el-col :span="8" :offset="2">
+                    <div class="openFile-title">文件名称：</div>
+                </el-col>
+                <el-col :span="14">
+                    <div class="openFile-title">
+                        {{ fileInfoHoverPreview.name }}
+                    </div>
+                </el-col>
+            </el-row> -->
+            <el-row>
+                <el-col :span="6" :offset="2">
+                    <div class="openFile-title">创建时间：</div>
+                </el-col>
+                <el-col :span="16">
+                    <div class="openFile-title">
+                        {{ fileInfoHoverPreview.createTime }}
+                    </div>
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col :span="6" :offset="2">
+                    <!-- <div class="openFile-title">最后修改时间：</div> -->
+                    <div class="openFile-title">修改时间：</div>
+                </el-col>
+                <el-col :span="16">
+                    <div class="openFile-title">
+                        {{ fileInfoHoverPreview.updateTime }}
+                    </div>
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col :span="6" :offset="2">
+                    <div class="openFile-title">创建人员：</div>
+                    <!-- <div class="openFile-title">创建人：</div> -->
+                </el-col>
+                <el-col :span="16">
+                    <div class="openFile-title">
+                        {{ fileInfoHoverPreview.founder }}
+                    </div>
+                </el-col>
+            </el-row>
+            <!-- <el-row>
+                <el-col :span="8" :offset="2">
+                    <div class="openFile-title">密级：</div>
+                </el-col>
+                <el-col :span="14">
+                    <div class="openFile-title">
+                       //                       {{ fileInfoHoverPreview.level }}
+                        <template v-if="fileInfoHoverPreview.level">
+                            <div v-if="fileInfoHoverPreview.level==1" class="bottom-item" style="">
+                                <img class="bottom-item-img" src="assets/attributeFence/confidential.jpeg">
+                            </div>
+                            <div v-else-if="fileInfoHoverPreview.level==2" class="bottom-item">
+                                <img class="bottom-item-img" src="assets/attributeFence/confidential.jpeg">
+                            </div>
+                            <div v-else-if="fileInfoHoverPreview.level==3" class="bottom-item">
+                                <img class="bottom-item-img" src="assets/attributeFence/confidential.jpeg">
+                            </div>
+                        </template>
+                    </div>
+                </el-col>
+            </el-row> -->
+            <el-row>
+                <el-col :span="6" :offset="2">
+                    <div class="openFile-title">内容描述：</div>
+                </el-col>
+                <el-col :span="16">
+                    <div class="openFile-title">
+                        {{ fileInfoHoverPreview.describe }}
+                    </div>
+                </el-col>
+            </el-row>
+        </el-col>
+    </el-row>
+</el-dialog>
+<!-- 显示配置项 -->
+<!-- <el-dialog title="显示配置项" :visible.sync="optionSettings" width="600px">
+    <div style="margin-left: 80px;">
+        判据显示方式：
+        <el-switch v-model="statusData.isPop" @change="changeCriterionWay" active-text="弹出式" inactive-text="排列式">
+        </el-switch>
+    </div>
+</el-dialog> -->
+<!-- di表格 -->
+<el-dialog class="editDialog" v-draggable title="监听计算" :visible.sync="showDi" width="650px"
+    :close-on-click-modal="false">
+    <el-table :data="tableData" style="width: 100%;border: 1px solid #7d7d7d;" max-height="500"
+        :header-cell-style="{textAlign: 'center'}" :cell-style="{ textAlign: 'center' }">
+        <el-table-column label="序号" type="index"></el-table-column>
+        <el-table-column prop="date" label="时间" width="180"> </el-table-column>
+        <el-table-column prop="fileName" label="输入文件"></el-table-column>
+        <el-table-column prop="calculationResults" label="计算结果" width="120">
+            <template slot-scope="scope">
+                <div style="width: 120px;display:flex;height:12px;line-height: 12px;font-size:8px">
+                    <div v-for="(item,index) in scope.row.calculationResults" :key="index">
+                        <el-tooltip effect="dark" :content="item" placement="top">
+                            <div :style="`width:${item*120}px;text-align: center; 
+                        background: ${statusColor[scope.row.calculationResults.length][index]};
+                        color:${statusColor[scope.row.calculationResults.length][index]=='#890101'?'white':'black'}`">
+                                {{item}}
+                            </div>
+                        </el-tooltip>
+                    </div>
+                </div>
+            </template>
+        </el-table-column>
+        <el-table-column prop="totalDuration" label="耗时" width="120"></el-table-column>
+    </el-table>
+</el-dialog>
+<!-- di计算（单次） -->
+<el-dialog title="di计算（单次）" :visible.sync="failureCalculationID" width="600px">
+    <el-form ref="failureCalculationForm" :model="failureCalculationData" label-width="80px">
+        <el-form-item label="次数">
+            <el-select v-model="failureCalculationData.frequency" placeholder="请选择次数">
+                <el-option :value="1000000"></el-option>
+                <el-option :value="10000000"></el-option>
+                <el-option :value="100000000"></el-option>
+            </el-select>
+        </el-form-item>
+        <el-form-item label="精度">
+            <div style="float: left">1e-&nbsp;</div>
+            <div style="width: 40px;float: left;"><el-input type="number"
+                    v-model="failureCalculationData.accuracy"></el-input></div>
+            <div style="float: left">&nbsp;次</div>
+        </el-form-item>
+        <el-form-item label="条件">
+            <el-radio-group v-model="failureCalculationData.condition">
+                <el-radio label="或"></el-radio>
+                <el-radio label="且"></el-radio>
+            </el-radio-group>
+        </el-form-item>
+        <el-form-item>
+            <el-checkbox v-model="failureCalculationData.isWhole">优先使用整体判据</el-checkbox>
+            <el-checkbox v-model="failureCalculationData.isCheck">是否检测概率是否正确</el-checkbox>
+        </el-form-item>
+        <div style="text-align: center">
+            <el-button type="primary" @click="failureCalculation()">确定</el-button>
+            <el-button @click="failureCalculationID=false">取消</el-button>
+        </div>
+    </el-form>
+</el-dialog>
+<!-- di计算（多次） -->
+<el-dialog :title="statusData.computeStatus!=2?'di计算（多次）':'是否退出di计算（多次）'" :visible.sync="probabilityCalculationID"
+    width="600px">
+    <el-form v-if="statusData.computeStatus!=2" ref="failureCalculationForm" :model="probabilityCalculationData"
+        label-width="80px">
+        <el-form-item label="次数">
+            <el-select v-model="probabilityCalculationData.frequency" placeholder="请选择次数">
+                <el-option :value="1000000"></el-option>
+                <el-option :value="10000000"></el-option>
+                <el-option :value="100000000"></el-option>
+            </el-select>
+        </el-form-item>
+        <el-form-item label="精度">
+            <div style="float: left">1e-&nbsp;</div>
+            <div style="width: 40px;float: left;"><el-input type="number"
+                    v-model="probabilityCalculationData.accuracy"></el-input></div>
+            <div style="float: left">&nbsp;次</div>
+        </el-form-item>
+        <el-form-item label="条件">
+            <el-radio-group v-model="probabilityCalculationData.condition">
+                <el-radio label="或"></el-radio>
+                <el-radio label="且"></el-radio>
+            </el-radio-group>
+        </el-form-item>
+        <el-form-item>
+            <el-checkbox v-model="probabilityCalculationData.isCheck">是否检测概率是否正确</el-checkbox>
+        </el-form-item>
+        <div style="text-align: center">
+            <el-button type="primary" @click="probabilityCalculation()">确定</el-button>
+            <el-button @click="probabilityCalculationID=false">取消</el-button>
+        </div>
+    </el-form>
+    <div v-else>
+        <div style="text-align: center">
+            <el-button type="primary" @click="quitCompute()">确定</el-button>
+            <el-button @click="probabilityCalculationID=false">取消</el-button>
+        </div>
+    </div>
+</el-dialog>
+
+<!-- 新建 -->
+<div style="margin-left: 16px;" class="header-item"
+    :class="{'header-item-hover':!statusData.isCompute,'header-item-operation':statusData.isCompute}">
+    <el-tooltip effect="light" content="新建" placement="top">
+        <img src="assets/header/xinjian.png" @click="create()" draggable="false">
+    </el-tooltip>
+</div>
+<!-- 打开 -->
+<!-- <div class="header-item"
+    :class="{'header-item-hover':!statusData.isCompute,'header-item-operation':statusData.isCompute}">
+    <el-tooltip effect="light" content="打开" placement="top">
+        <img src="assets/header/dakai.png" @click="open()" draggable="false">
+    </el-tooltip>
+</div> -->
+<!-- 保存 -->
+<!-- , 'header-item-selected':!statusData.canvasChanged -->
+<div class="header-item" :class="{'header-item-hover':statusData.canvasChanged,
+'header-item-operation':statusData.isCompute||!statusData.canvasChanged,}">
+    <el-tooltip effect="light" content="保存" placement="top">
+        <!-- openSave fileSave -->
+        <img src="assets/header/baocun.png" @click="openSave()" draggable="false">
+    </el-tooltip>
+</div>
+
+
+<div class="bar" style="margin-left: 13px;"></div>
+
+<!-- <div class="bar" style="margin-left: 0px;margin-right: 18px;"></div> -->
+<!-- 复制 -->
+<div class="header-item"
+    :class="{'header-item-hover':statusData.operation_copy_delete,'header-item-operation':!statusData.operation_copy_delete}">
+    <el-tooltip effect="light" content="复制" placement="top">
+        <img src="assets/header/fuzhi.png" @click="copy()" draggable="false">
+    </el-tooltip>
+</div>
+<!-- 粘贴 -->
+<div class="header-item"
+    :class="{'header-item-hover':statusData.operation_paste,'header-item-operation':!statusData.operation_paste}">
+    <el-tooltip effect="light" content="粘贴" placement="top">
+        <img src="assets/header/zhantie.png" @click="paste()" draggable="false">
+    </el-tooltip>
+</div>
+
+<!-- 删除 -->
+<div class="header-item"
+    :class="{'header-item-hover':statusData.operation_copy_delete,'header-item-operation':!statusData.operation_copy_delete}">
+    <el-tooltip effect="light" content="删除" placement="top">
+        <img src="assets/header/guanbi.png" @click="delete_()" draggable="false">
+    </el-tooltip>
+</div>
+<div class="bar" style="margin-left: 12px;margin-right: 20px;"></div>
+<!-- 自动布局 -->
+<div class="header-item "
+    :class="{'header-item-hover':!statusData.isCompute,'header-item-operation':statusData.isCompute}">
+    <el-tooltip effect="light" content="自动布局" placement="top">
+        <!-- :class="{'header-item-autoLayout':isAutoLayoutMode}" -->
+        <img src="assets/header/zidongbuju.png" @click="autoLayout()" draggable="false">
+    </el-tooltip>
+</div>
+<!-- 缩小 -->
+<div class="header-item"
+    :class="{'header-item-hover':!statusData.isCompute,'header-item-operation':statusData.isCompute}">
+    <el-tooltip effect="light" content="缩小" placement="top">
+        <img src="assets/header/suoxiao.png" @click="narrow()" draggable="false">
+    </el-tooltip>
+</div>
+<div class="header-item" style="position: relative;margin: 0px 20px 0px 14px;">
+    <!--    <span class="header-item-span">%</span>-->
+    <!--    <el-input v-model="scale" type="number"></el-input>-->
+    <div style="width: 100px">
+        <el-slider v-model="scale" :min="25" :max="500"></el-slider>
+    </div>
+    <div style="width:100%;text-align:center;position: absolute;font-size: 12px;color: #666666;top: 38px;">
+        {{ scale + '%' }}
+    </div>
+</div>
+<!-- 放大 -->
+<div class="header-item"
+    :class="{'header-item-hover':!statusData.isCompute,'header-item-operation':statusData.isCompute}">
+    <el-tooltip effect="light" content="放大" placement="top">
+        <img src="assets/header/fangda.png" @click="enlarge()" draggable="false">
+    </el-tooltip>
+</div>
+<!-- 文字展示 -->
+<div style="width: 64px;" class="header-item" :class="{'header-item-hover':!statusData.isCompute,
+'header-item-operation':statusData.isCompute,
+    'header-item-selected':!isShowFtId}">
+    <el-tooltip effect="light" content="文字" placement="top">
+        <img src="assets/header/info1.png" @click="showFtId()" draggable="false">
+    </el-tooltip>
+</div>
+<!-- 图片展示 -->
+<div style="width: 64px;" class="header-item"
+    :class="{'header-item-hover':!statusData.isCompute,'header-item-operation':statusData.isCompute}">
+    <el-tooltip effect="light" content="图片" placement="top">
+        <img src="assets/header/tupianzhanshi.png" @click="showImg()" draggable="false">
+        <!--    <img src="assets/header/info1.png" @click="checkDoorCode()" draggable="false"> -->
+    </el-tooltip>
+</div>
+<div class="bar" style="margin-left: 13px;margin-right: 20px;"></div>
+
+<!-- <div class="header-item"
+    :class="{'header-item-hover':!statusData.isCompute,'header-item-operation':statusData.isCompute}">
+    <el-tooltip effect="light" content="配置项" placement="top">
+        <img src="assets/header/userManual.png" @click="openOptionSettings()" draggable="false">
+    </el-tooltip>
+</div> -->
+<!-- 系统信息 -->
+<div style="width: 64px;" class="header-item"
+    :class="{'header-item-hover':!statusData.isCompute,'header-item-operation':statusData.isCompute}">
+    <el-tooltip effect="light" content="设置" placement="top">
+        <img src="assets/header/setting.png" @click="getOSAndBrowser()" draggable="false">
+    </el-tooltip>
+</div>
+<!-- 设置 -->
+<el-dialog class="editDialog" title="设置" :visible.sync="softInfoID" width="380px">
+    <div class="formBody">
+        <h4>判据编辑与显示</h4>
+        <!-- <hr size="0.5" style="margin: 7px 0px 24px;" /> -->
+        <div class="border-line"></div>
+        <!-- 判据显示方式： -->
+        <div class="sysItem">
+            窗口布局：
+            <el-radio-group style="margin-left: 15px;" v-model="statusData.isPop" @input="changeShowWay">
+                <el-radio :label="true">弹出</el-radio>
+                <el-radio :label="false">排列</el-radio>
+                <!-- <el-radio :label="9">备选项</el-radio> -->
+            </el-radio-group>
+
+        </div>
+        <!-- 判据曲线显示方式 -->
+        <div class="sysItem">
+            曲线显示：
+            <template>
+                <el-radio-group style="margin-left: 15px;" v-model="statusData.lineShowWay">
+                    <el-radio :label="true">独立</el-radio>
+                    <el-radio :label="false">累积</el-radio>
+                </el-radio-group>
+            </template>
+        </div>
+        <!-- 判据是否可修改 -->
+        <div class="sysItem">
+            数据编辑：
+            <!-- <el-switch v-model="statusData.isEdit" active-text="编辑模式" inactive-text="仅读模式">
+        </el-switch> -->
+            <template>
+                <el-radio-group style="margin-left: 15px;" v-model="statusData.isEdit">
+                    <el-radio :label="true">读写</el-radio>
+                    <el-radio :label="false">仅读</el-radio>
+                    <!-- <el-radio :label="9">备选项</el-radio> -->
+                </el-radio-group>
+            </template>
+        </div>
+        <br />
+        <h4>计算与分析</h4>
+        <!-- <hr style="margin: 7px 0px 24px;" /> -->
+        <div class="border-line"></div>
+        <div class="sysItem">
+            分析阶数：
+            <template>
+                <el-radio-group style="margin-left: 15px;" v-model="statusData.analysisOrder">
+                    <el-radio :label="1">一阶</el-radio>
+                    <el-radio :label="2">二阶</el-radio>
+                    <el-radio :label="3">三阶</el-radio>
+                </el-radio-group>
+            </template>
+        </div>
+        <br />
+        <h4>软件信息</h4>
+        <!-- <hr style="margin: 7px 0px 24px;" /> -->
+        <div class="border-line"></div>
+        <!-- 浏览器版本： -->
+        <div class="sysItem">
+            <div class="infoName">操作系统</div>： {{ softInfo.browserInfo }}
+        </div>
+        <div class="sysItem">
+            <div class="infoName">浏览器</div>：
+            {{ softInfo.sysInfo }}
+        </div>
+        <div class="sysItem">
+            <div class="infoName">发布版本</div>：
+            {{ softInfo.softVersion }}
+        </div>
+        <div class="sysItem">
+            <div class="infoName">发布日期</div>：
+            {{softInfo.currentDate }}
+        </div>
+    </div>
+    <!-- <el-form :model="softInfo" label-width="130px">
+        <el-form-item label="浏览器版本">
+            <p>{{ softInfo.sysInfo }}</p>
+        </el-form-item>
+        <el-form-item label="操作系统">
+            <p>{{ softInfo.browserInfo }}</p>
+        </el-form-item>
+        <el-form-item label="软件版本">
+            <p>{{ softInfo.softVersion }}</p>
+        </el-form-item>
+    </el-form> -->
+</el-dialog>
+<el-dialog title="正在加载文件" center :visible.sync="loadID" width="500px" :show-close="false" :close-on-click-modal="false"
+    :close-on-press-escape="false">
+    <el-progress :percentage="progressData.openProgress"></el-progress>
+</el-dialog>

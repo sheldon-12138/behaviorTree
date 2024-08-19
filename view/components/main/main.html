@@ -1,0 +1,61 @@
+<!-- 模型列表栏 -->
+<!--<div class="model" v-show="statusData.modeID!=2" :class="{'model-active':!statusData.isShowModel}" id="mainList">-->
+<!--    <div class="list"v-show="statusData.isShowModel">-->
+<!--        <div id="list"></div>-->
+<!--        <div class="btn-left"></div>-->
+<!--    </div>-->
+<!--    <img v-if="statusData.isShowModel" class="btn-img" src="assets/main/shrink.png" @click="statusData.isShowModel=false">-->
+<!--    <img v-else src="assets/main/open.png" class="btn-img2" @click="statusData.isShowModel=true">-->
+<!--</div>-->
+
+<!-- 结构树栏 v-show="statusData.modeID!=2"-->
+<div class="tree" :style="{'width':width + 'px','transition':dragActive?'none':'all 0.5s'}"
+    :class="{'model-active':!statusData.isShowTree}" id="treeList">
+    <div class="tree-content" v-show="statusData.isShowTree">
+        <div id="tree"></div>
+        <div class="btn-left" @mousedown="dragStart"></div>
+    </div>
+    <!-- <img v-if="statusData.isShowTree" class="btn-img" src="assets/main/shrink.png" @click="statusData.isShowTree=false">
+    <img v-else src="assets/main/open.png" class="btn-img2" @click="statusData.isShowTree=true"> -->
+</div>
+
+
+<!-- 画板 -->
+<div class="drawingBoard" id="drawingBoard">
+    <div class="content" id="content" tabindex="0">
+        <div class="hiddenPopover" id="hiddenPopover" v-show="hiddenPopoverData.show" :style="{'top': hiddenPopoverData.show?hiddenPopoverData.data.pos.y + 'px':'0',
+         'left':hiddenPopoverData.show?hiddenPopoverData.data.pos.x + 'px':'0'}">
+        </div>  
+    </div>
+
+
+    <div class="axis_x" id="axis_x">
+        <canvas id="canvas_axis_x"></canvas>
+    </div>
+
+    <div class="axis_y" id="axis_y">
+        <canvas id="canvas_axis_y"></canvas>
+    </div>
+
+    <div class="tree-table" id="treeTable" v-show="modeID==2"></div>
+   <div v-if="isShowTimeline&&statusData.modeID==1" class="timeline" id="timeline"></div>
+    <div id="renderMode" v-if="statusData.computeStatus!=0"></div>
+</div>
+
+<div class="attributePop" id="attributePopList" v-if="statusData.isShowProperty">
+    <div id="attributePop"></div>
+</div>
+
+<!--  -->
+<!--    隐藏域-->
+<!--<HiddenField></HiddenField>-->
+<!-- <div class="criterion-img hide">
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="64" x="0"
+        y="0">
+        <defs>
+            <template v-for="(img, index) in criterionImgList">
+                <image :xlink:href="img.path" :id="img.name" :width="img.width" :height="img.height" />
+            </template>
+        </defs>
+    </svg>
+</div>-->

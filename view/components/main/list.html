@@ -1,0 +1,49 @@
+<div class="door-list" >
+    <div class="title">
+        模型栏
+    </div>
+
+    <div class="door-items">
+
+        <template v-for="(item, index) in eventModelList">
+            <div class="event-item model-node" :title="item.aliasName" :key="item.id">
+                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="64"
+                     height="64" x="0" y="0" >
+                    <defs>
+                        <template v-for="(img, iIndex) in item.sizeList" >
+                            <image :xlink:href="item.path" :id="item.type+iIndex" :width="img.width" :height="img.height"/>
+                            <!--<image xlink:href="" id="type0l" width="64" height="64" />-->
+                        </template>
+                    </defs>
+                    <use :xlink:href="'#'+item.type+'0'" :data-index="index" :data-type="item.type" ></use>
+                </svg>
+            </div>
+        </template>
+        <template v-for="(item, index) in doorModelList">
+            <div class="door-item model-node" :title="item.aliasName" :key="item.id" >
+                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="64"
+                     height="64" x="0" y="0" >
+                    <defs>
+                        <template v-for="(img, iIndex) in item.sizeList" >
+                            <image :xlink:href="item.path" :id="item.type+iIndex" :width="img.width" :height="img.height"/>
+                            <!--<image xlink:href="" id="type0l" width="64" height="64" />-->
+                        </template>
+                    </defs>
+                    <use :xlink:href="'#'+item.type+'0'" :data-index="index" :data-type="item.type" ></use>
+                </svg>
+            </div>
+        </template>
+    </div>
+
+</div>
+
+<div class="criterion-img hide">
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="64"
+         height="64" x="0" y="0">
+        <defs>
+            <template v-for="(img, index) in criterionImgList" >
+                <image :xlink:href="img.path" :id="img.name" :width="img.width" :height="img.height"/>
+            </template>
+        </defs>
+    </svg>
+</div>

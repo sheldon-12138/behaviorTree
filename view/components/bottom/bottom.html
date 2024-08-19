@@ -1,0 +1,47 @@
+<div class="bottom-item">
+    计算信息
+</div>
+<div class="bottom-item" style="background-color: #EAEAFF">
+    节点数 {{ bottomAmount.nodeNum }}
+</div>
+<div class="bottom-item" style="background-color: #EAEAFF">
+    层数 {{ bottomAmount.maxLayer }}
+</div>
+<div class="bottom-item" style="background-color: #FFFFEA">
+    顶事件 {{ bottomAmount.topNodeNum }}
+</div>
+<div class="bottom-item" style="background-color: #FFFFEA">
+    中间事件 {{ bottomAmount.midNodeNum }}
+</div>
+<div class="bottom-item" style="background-color: #FFFFEA">
+    底事件 {{ bottomAmount.bottomNodeNum }}
+</div>
+<div class="bottom-item" style="background-color: #EAFFD5">
+    门类型 {{ bottomAmount.doorType }}
+</div>
+<div class="bottom-item" style="background-color: #EAFFD5">
+    门个数 {{ bottomAmount.doorNum }}
+</div>
+<div class="bottom-item" style="background-color: #D4FFFB">
+    毁伤等级 {{ bottomAmount.maxDamageLevel }}
+</div>
+<div class="bottom-item" style="background-color: #D4FFFB">
+    判据个数 {{ bottomAmount.criterionNum }}
+</div>
+<div class="bottom-item" style="background-color: #D4FFFB">
+    判据类型 {{ bottomAmount.criterionTypeNum }}
+</div>
+<div class="bottom-item" style="background-color: #D4FFFB">
+    关联判据 {{ bottomAmount.criterionRelevanceNum }}
+</div>
+<template v-if="fileInfo.level">
+    <div v-if="fileInfo.level==1" class="bottom-item">
+        <img class="bottom-item-img" src="assets/attributeFence/confidential.jpeg">
+    </div>
+    <div v-else-if="fileInfo.level==2" class="bottom-item" style="background-color: rgba(255, 0, 0, 0.49)">
+        <img class="bottom-item-img" src="assets/attributeFence/confidential.jpeg">
+    </div>
+    <div v-else-if="fileInfo.level==3" class="bottom-item" style="background-color: rgba(255, 0, 0,1)">
+        <img class="bottom-item-img" src="assets/attributeFence/confidential.jpeg">
+    </div>
+</template>

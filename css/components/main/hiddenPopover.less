@@ -1,0 +1,102 @@
+.hiddenPopover-content {
+  transform:translate(-50%,-100%);
+  position: absolute;
+  margin-bottom: -10px;
+  top: -15px;
+  left: 50%;
+  width: 320px;
+  height: auto;
+  background-color: #ffffff;
+  padding: 5px;
+  border-radius: 5px;
+  z-index: 9999;
+  -moz-box-shadow:0px 0px 8px #949494; -webkit-box-shadow:0px 0px 8px #949494; box-shadow:0px 0px 8px #949494;
+  .hiddenPopover-title{
+    width: 100%;
+    line-height: 25px;
+    font-size: 16px;
+    color: #333333;
+    text-align: right;
+  }
+  .hiddenPopover-p{
+    width: 100%;
+    line-height: 25px;
+    font-size: 14px;
+    color: #333333;
+    word-break: break-all;
+  }
+  .hiddenPopover-prop{
+    .el-input{
+      .el-input__inner{
+        height: 25px;
+        line-height: 25px;
+        padding: 0 3px;
+      }
+    }
+    .input-green{
+      .el-input__inner{
+        //background-color: rgba(192, 255, 128,0.8);
+        background-color: #3CFF0080;
+      }
+    }
+    .input-yellow{
+      .el-input__inner{
+        //background-color: rgba(255, 255, 128,0.8);
+        background-color: #FFFF0080;
+      }
+    }
+    .input-orange{
+      .el-input__inner{
+        //background-color: rgba(255, 192, 128,0.8);
+        background-color: #FFC08080;
+      }
+    }
+    .input-red{
+      .el-input__inner{
+        //background-color: rgba(255, 64, 64,0.8);
+        background-color: #FF000080;
+      }
+    }
+    .input-grey{
+      .el-input__inner{
+        //background-color: rgba(192, 192, 192,0.8);
+        background-color: #89010180;
+      }
+    }
+    input[type='number']{-moz-appearance:textfield;}
+    　　input[type=number]::-webkit-inner-spin-button,
+    　　input[type=number]::-webkit-outer-spin-button {-webkit-appearance: none;margin: 0;}
+    input::-webkit-input-placeholder {
+      /* WebKit browsers */
+      font-size:13px;
+    }
+    input:-moz-placeholder {
+      /* Mozilla Firefox 4 to 18 */
+      font-size:13px;
+    }
+    input::-moz-placeholder {
+      /* Mozilla Firefox 19+ */
+      font-size:13px;
+    }
+    input:-ms-input-placeholder {
+      /* Internet Explorer 10+ */
+      font-size:13px;
+    }
+  }
+
+}
+
+.hiddenPopover-content:before {
+  position: absolute;
+  content: "";
+  width: 0;
+  height: 0;
+  top: 99%;
+  //left: 95px;
+  left: 50%;
+  transform:translate(-5px,0);
+  border-left: 5px solid transparent;
+  border-top: 10px solid #ffffff;
+  border-right: 5px solid transparent;
+  z-index: 9999;
+}

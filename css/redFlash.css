@@ -1,0 +1,120 @@
+.yellowFlash {
+    background-color: yellow;
+    overflow: visible;
+    filter: url("./yellow.xml#yellow");
+    -webkit-animation: twinkling 1s infinite ease-in-out
+}
+
+.orangeFlash {
+    background-color: orange;
+    overflow: visible;
+    filter: url("./orange.xml#orange");
+    -webkit-animation: twinkling 1s infinite ease-in-out
+}
+
+.redFlash {
+    background-color: tomato;
+    overflow: visible;
+    filter: url("./red.xml#red");
+    -webkit-animation: twinkling 1s infinite ease-in-out
+}
+
+.greyFlash {
+    background-color: grey;
+    overflow: visible;
+    filter: url("./grey.xml#grey");
+    -webkit-animation: twinkling 1s infinite ease-in-out
+}
+
+@-webkit-keyframes twinkling {
+    0% {
+        opacity: 0.5;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes twinkling {
+    0% {
+        opacity: 0.5;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+
+.yellowWave {
+    animation: GreenDot 1s ease-out 0s infinite;
+    fill: #FFFF00;
+    overflow: visible;
+}
+
+.orangeWave {
+    animation: GreenDot 1s ease-out 0s infinite;
+    fill: #FFC080;
+    overflow: visible;
+}
+
+.redWave {
+    animation: GreenDot 1s ease-out 0s infinite;
+    fill: #FF0000;
+    overflow: visible;
+}
+
+.crimsonWave {
+    animation: GreenDot 1s ease-out 0s infinite;
+    fill: #890101;
+    overflow: visible;
+}
+
+@-webkit-keyframes GreenDot {
+    0% {
+        r: 48;
+        width: 96px;
+        height: 96px;
+        x: 0;
+        y: 0;
+        rx: 10;
+        ry: 10;
+        fill-opacity: 1;
+        /* border-radius: 20px; */
+    }
+    100% {
+        r: 70;
+        width: 130px;
+        height: 130px;
+        x: -17;
+        y: -17;
+        rx: 10;
+        ry: 10;
+        fill-opacity: 0;
+    }
+}
+
+@keyframes GreenDot {
+    0% {
+        r: 48;
+        width: 96px;
+        height: 96px;
+        x: 0;
+        y: 0;
+        rx: 10;
+        ry: 10;
+        opacity: 1;
+        /* border-radius: 20px; */
+    }
+    100% {
+        r: 70;
+        width: 130px;
+        height: 130px;
+        x: -17;
+        y: -17;
+        rx: 10;
+        ry: 10;
+        opacity: 0;
+    }
+}

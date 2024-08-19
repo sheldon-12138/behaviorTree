@@ -1,0 +1,143 @@
+.pane {
+  padding: 10px;
+  border: 1px solid #ccc;
+  overflow: auto;
+}
+
+.topPane {
+  height: calc(50% - 35px);
+  margin: 10px 10px 0px;
+
+}
+
+.bottomPane {
+  height: calc(50% - 30px);
+  margin: 0px 10px;
+}
+
+.divider {
+  height: 10px;
+  background-color: #fff;
+  cursor: row-resize;
+}
+
+.treeHeader {
+  display: flex;
+  justify-content: space-between;
+  color: #606266;
+}
+
+#tree {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+  position: relative;
+  /* padding-top: 31px; */
+}
+
+.tree-content {
+  width: 100%;
+  height: 100%;
+  padding-right: 3px;
+  box-sizing: border-box;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.tree-content .tree-btn {
+  width: 18px;
+  height: 18px;
+  line-height: 18px;
+  text-align: center;
+  font-size: 14px;
+  text-transform: none;
+  float: left;
+  margin-right: 2px;
+  cursor: pointer;
+}
+
+.tree-content .el-tree-node__content {
+  border-radius: 3px;
+  /*background-clip:content-box;*/
+  transition: all 0.2s ease-in-out;
+  margin: 4px 0;
+  font-size: 14px;
+  overflow: hidden;
+  position: relative;
+}
+
+.tree-content .el-tree-node__content:hover {
+  background-color: #EAF4FE;
+}
+
+.tree-content .el-tree-node:focus>.el-tree-node__content {
+  background-color: #d5e8fc;
+}
+
+.tree-content .el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content {
+  background-color: #d5e8fc;
+}
+
+.tree-content .title {
+  width: 100%;
+  line-height: 30px;
+  font-size: 13px;
+  box-sizing: border-box;
+  background: linear-gradient(180deg, #f5f7fa, #c3cfe2);
+  border: 1px solid #A1A1A1;
+  text-align: center;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+}
+
+.tree-content .title:hover {
+  opacity: 0.8;
+}
+
+.tree-content .content-el_tree {
+  overflow: auto;
+  width: 100%;
+  height: 100%;
+}
+
+.tree-content .tree-icon {
+  width: 15px;
+  height: 15px;
+  float: left;
+  margin-top: 2px;
+  margin-right: 5px;
+}
+
+.tree-content .tree-icon-rect {
+  border: 1px solid #333333;
+}
+
+.tree-content .tree-icon-circle {
+  border-radius: 50%;
+  border: 1px solid #333333;
+}
+
+.popover-content p {
+  font-size: 14px;
+  margin: 4px;
+}
+
+.popover-content img {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.custom-tree-node:hover .tree-node-btn {
+  display: block;
+  position: absolute;
+  right: 0;
+  top: 4px;
+}
+
+/*# sourceMappingURL=tree.css.map */

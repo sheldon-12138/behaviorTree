@@ -1,0 +1,45 @@
+#list {
+  margin-left: 17px;
+  height: 100%;
+  float: left;
+  box-sizing: border-box;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+#list .title {
+  width: 100%;
+  box-sizing: border-box;
+  line-height: 30px;
+  font-size: 13px;
+  background: linear-gradient(180deg, #f5f7fa, #c3cfe2);
+  border: 1px solid #A1A1A1;
+  text-align: center;
+  cursor: pointer;
+}
+
+#list .title:hover {
+  opacity: 0.8;
+}
+
+#list .list-item {
+  width: 66px;
+}
+
+/* #list .door-items,
+#list .event-items {
+  width: 100%;
+  display: -webkit-flex;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+} */
+
+#list .new-svg-node {
+  position: absolute;
+  z-index: 99;
+}
+
+/*# sourceMappingURL=list.css.map */

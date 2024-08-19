@@ -1,0 +1,211 @@
+.border-line {
+  width: 100%;
+  border-top: 0.5px solid #a4a4a4;
+  margin: 7px 0px 20px;
+}
+
+.header {
+  width: 100%;
+  height: 62px;
+  background: linear-gradient(#ffffff, #a1a1a1);
+  /* position: fixed; */
+  z-index: 2123;
+}
+
+.editDialog .el-dialog {
+  background-color: #ececec;
+}
+
+.editDialog .el-dialog__headerbtn {
+  top: 12px;
+  right: 10px;
+}
+
+.editDialog .el-dialog__header {
+  padding: 7px 12px 3px;
+}
+
+.editDialog .el-dialog__body {
+  padding: 5px 12px 12px;
+}
+
+.formBody {
+  border: 1px solid #c1c1c1;
+  background-color: #fff;
+  padding: 10px;
+}
+
+
+.sysItem {
+  margin-left: 20px;
+  margin-bottom: 10px;
+  display: flex;
+}
+
+.sysItem .infoName {
+  width: 56px;
+  text-align: justify;
+  text-align-last: justify;
+}
+
+.el-radio {
+  width: 75px;
+  margin-right: 0px;
+}
+
+.header .header-item {
+  float: left;
+  width: 60px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.header .header-item img {
+  display: block;
+  margin-left: 10px;
+  width: 35px;
+  height: 35px;
+  user-select: none;
+  cursor: pointer;
+}
+
+.header .header-item .el-input__inner {
+  height: 30px;
+  line-height: 30px;
+}
+
+.header .header-item-hover img:hover {
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  box-shadow: 1px 1px 1px 1px #525252;
+  /* ; 2px 2px 2px 2px #525252*/
+  transform: scale(1.1);
+  transition: transform 0.3s;
+}
+
+/* .header .header-item-operation {
+  pointer-events: none;
+  opacity: 0.5;
+} */
+
+.header .header-item-selected img {
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  box-shadow: inset 1px 1px 1px 1px #525252;
+  transform: scale(1.1);
+  transition: transform 0.3s;
+}
+
+
+.header .header-item-hover svg:hover {
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  box-shadow: 1px 1px 1px 1px #525252;
+  transform: scale(1.1);
+  transition: transform 0.3s;
+}
+
+.header .header-item-operation {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+
+
+
+.header .header-item-span {
+  position: absolute;
+  left: 42px;
+  z-index: 99;
+  font-size: 14px;
+  color: #999999;
+}
+
+.header .bar {
+  width: 1px;
+  height: 40px;
+  float: left;
+  margin: 10px;
+  background-color: #666666;
+}
+
+.header .header-item-autoLayout {
+  border-radius: 5px;
+  background-color: #8c939d;
+}
+
+.header .bottom-item {
+  width: 100%;
+  height: 100%;
+}
+
+.header .bottom-item .bottom-item-img {
+  width: 100%;
+  height: 100%;
+}
+
+.header {
+  /*.el-icon-circle-plus-outline:before{*/
+  /*  font-size: 25px;*/
+  /*  line-height: 40px;*/
+  /*}*/
+}
+
+.header .el-rate {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.header input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+.header input[type=number]::-webkit-inner-spin-button,
+.header input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.founderTable th {
+  padding: 0;
+  line-height: 35px;
+  background-color: #C6E2FF;
+  color: #666666;
+  text-align: center;
+}
+
+.founderTable td {
+  text-align: center;
+}
+
+.header-item .el-slider__button {
+  width: 6px;
+  height: 6px;
+}
+
+@media screen and (max-width: 1466px) {
+  .mode-switching {
+    position: absolute;
+    right: 20px;
+    top: 17px;
+  }
+}
+
+@media screen and (min-width: 1466px) {
+  .mode-switching {
+    float: right;
+    margin-right: 20px;
+    margin-top: 17px;
+  }
+}
+
+.openFile-title {
+  line-height: 25px;
+  margin-top: 14px;
+}
+
+/*# sourceMappingURL=header.css.map */

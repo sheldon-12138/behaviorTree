@@ -1,0 +1,92 @@
+#chart .chart-info .chart-info-item .title {
+  font-size: 14px;
+  line-height: 40px;
+}
+#chart .chart-info .chart-info-item .content {
+  padding-left: 20px;
+}
+#chart .chart-info .chart-info-item .content .chart-p {
+  font-size: 12px;
+  line-height: 30px;
+}
+#chart .chart-info .chart-info-item .content .el-input {
+  line-height: 30px;
+  font-size: 12px;
+}
+#chart .chart-info .chart-info-item .content .el-input .el-input__inner {
+  height: 25px;
+  line-height: 25px;
+  padding: 0 3px;
+}
+#chart .chart-info .chart-info-item .content .el-select .el-input .el-select__caret {
+  line-height: 20px;
+}
+#chart .chart-info .chart-info-item .el-col {
+  margin-top: 0!important;
+}
+#chart .chart-table {
+  width: 80%;
+  margin: 0 auto 20px auto;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+}
+#chart .chart-table .chart-table-col {
+  flex-grow: 1;
+}
+#chart .chart-table .chart-table-col .chart-table-th {
+  width: 100%;
+  font-size: 12px;
+  color: #333333;
+  text-align: center;
+  line-height: 25px;
+  box-sizing: border-box;
+  border: 1px solid #333333;
+}
+#chart .chart-table .chart-table-col .chart-table-row {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+}
+#chart .chart-table .chart-table-col .chart-table-row .chart-table-row-td {
+  flex-grow: 1;
+  text-align: center;
+  border: 1px solid #333333;
+}
+#chart .chart-table input[type='number'] {
+  -moz-appearance: textfield;
+}
+#chart .chart-table input[type=number]::-webkit-inner-spin-button,
+#chart .chart-table input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+#chart .el-color-picker--mini {
+  top: 5px;
+}
+#chart table.gridtable {
+  font-family: verdana, arial, sans-serif;
+  font-size: 11px;
+  color: #333333;
+  border-width: 1px;
+  border-color: #666666;
+  border-collapse: collapse;
+}
+#chart table.gridtable th {
+  border-width: 1px;
+  padding: 8px;
+  border-style: solid;
+  border-color: #666666;
+  background-color: #dedede;
+}
+#chart table.gridtable td {
+  border-width: 1px;
+  padding: 8px;
+  border-style: solid;
+  border-color: #666666;
+  background-color: #ffffff;
+  min-width: 80px;
+  text-align: center;
+}
+/*# sourceMappingURL=chart.css.map */

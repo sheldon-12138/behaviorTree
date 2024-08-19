@@ -1,0 +1,334 @@
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+.main {
+  display: flex;
+  display: -webkit-flex;
+  width: 100%;
+  height: 100%;
+  min-width: 1466px;
+
+  /* bottom: 27px; */
+
+  /* position: absolute;
+  top: 62px;
+  left: 0;
+  right: 0; */
+
+  /* overflow: auto; */
+  /*模型栏*/
+  /*结构树*/
+  /*画布*/
+  /*属性栏*/
+  /*收缩后的样式*/
+}
+
+.main .criterionPop {
+  /* width: 1575px; */
+  /* overflow: auto; */
+  position: absolute;
+  bottom: 100px;
+
+  overflow-x: auto;
+  /* 水平滚动 */
+  overflow-y: hidden;
+  /* 隐藏垂直滚动条 */
+
+  pointer-events: auto;
+  /* 允许接收鼠标事件 */
+}
+
+.main .bottomMsg {
+  position: absolute;
+  bottom: 15px;
+  overflow-x: auto;
+  /* 水平滚动 */
+  overflow-y: hidden;
+}
+
+.main .icon {
+  width: 18px;
+  height: 18px;
+  position: absolute;
+  right: 1px;
+}
+
+.main .shrink-btn-left {
+  width: 10px;
+  height: 25px;
+  position: absolute;
+  right: 0;
+  top: 45%;
+  /*background-color: seagreen;*/
+  z-index: 999;
+}
+
+.main .shrink-btn-left img {
+  width: 10px;
+  height: 25px;
+  cursor: pointer;
+}
+
+.main .shrink-btn-right {
+  width: 6px;
+  height: 25px;
+  position: absolute;
+  left: 0px;
+  top: 45%;
+  z-index: 999;
+  transition: all 0.5s;
+}
+
+.main .shrink-btn-right img {
+  width: 10px;
+  height: 25px;
+  cursor: pointer;
+}
+
+.main .btn-left {
+  width: 3px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  background-color: #999999;
+  z-index: 999;
+  cursor: w-resize;
+}
+
+.main .btn-right {
+  width: 3px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  background-color: #999999;
+  z-index: 999;
+  cursor: w-resize;
+}
+
+.main .btn-img {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  position: absolute;
+  top: 5px;
+  right: 10px;
+}
+
+.main .btn-img2 {
+  width: 12px;
+  height: 12px;
+  cursor: pointer;
+  position: absolute;
+  top: 5px;
+  right: 1px;
+}
+
+.main .model {
+  min-width: 100px;
+  width: 100px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  transition: all 0.5s;
+}
+
+.main .tree {
+  min-width: 270px;
+  width: 270px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.5s;
+}
+
+.main .drawingBoard {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.main .drawingBoard #content {
+  zoom: var(--zoom);
+}
+
+.main .drawingBoard .content {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  position: relative;
+  outline: none;
+}
+
+.main .drawingBoard .content text {
+  user-select: none;
+}
+
+.main .drawingBoard .content .hsBtn {
+  position: absolute;
+  width: 208px;
+  height: 50px;
+  display: -webkit-flex;
+  /* Safari */
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap-reverse;
+  margin-top: -55px;
+  margin-left: -56px;
+}
+
+.main .drawingBoard .content .hiddenPopover {
+  position: absolute;
+  width: 96px;
+  height: 3px;
+}
+
+.main .drawingBoard .timeline {
+  position: absolute;
+  bottom: 0;
+  height: 58px;
+  z-index: 20;
+  padding-bottom: 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  width: 100%;
+  border-top: 1px solid #dddddd;
+  box-sizing: border-box;
+}
+
+.main .marquee-field {
+  position: absolute;
+  z-index: 1;
+}
+
+.main .marquee {
+  background-color: rgba(0, 160, 253, 0.486);
+  border: 1px solid #00a0fd;
+  opacity: 0.2;
+  z-index: 1;
+}
+
+.main .property {
+  width: 380px;
+  min-width: 380px;
+  overflow: hidden;
+  position: relative;
+  transition: all 0.5s;
+  height: 100%;
+}
+
+.main .model-active {
+  min-width: 15px;
+  width: 15px !important;
+  transition: all 0.5s;
+  background: -webkit-linear-gradient(to right, #bbbbbb, #eeeeee, #dddddd);
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #bbbbbb, #eeeeee, #dddddd);
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+/*# sourceMappingURL=main.css.map */
+
+
+.main .float {
+  position: absolute;
+  top: 79px;
+  right: 20px;
+  /* display: flex;
+  align-items: center; */
+  /* transition: all 0.5s; */
+}
+
+.main .float .btn {
+  position: relative;
+  z-index: 2;
+  width: 20px;
+  height: 20px;
+  /* margin: 0 3px; */
+  border-radius: 15px;
+  background-color: rgba(184, 184, 184, 0.3);
+  /* transition: all 0.5s; */
+  padding: 3px;
+}
+
+.main .float .btn img {
+  width: 100%;
+  height: 100%;
+}
+
+.floatList {
+  /* display: flex;
+  align-items: center; */
+  width: 130px;
+  position: absolute;
+  /*  top: 30px;
+  right: -6px; */
+  top: 10px;
+  right: 10px;
+  background-color: rgba(184, 184, 184, 0.3);
+  border-radius: 3px;
+  padding: 5px 0px;
+  font-size: 11px;
+  color: #4e4e4e;
+}
+
+.floatList .floatItem {
+  display: flex;
+  align-items: center;
+  height: 18px;
+  /* padding: 3px 10px; */
+  margin: 10px;
+}
+
+
+.floatItem img {
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+}
+
+
+.floatItem div {
+  width: 50px;
+  height: 24px;
+  line-height: 24px;
+  margin-right: 5px;
+  text-align: justify;
+  text-align-last: justify;
+  /*兼容ie*/
+  text-justify: distribute-all-lines;
+}
+
+/* 条形颜色选择器 */
+.color-bar {
+  /* width: 100%; */
+  width: 277px;
+  position: relative;
+  margin: 5px 0;
+  height: 20px;
+  /* background-image: linear-gradient(to right,
+      rgb(255, 0, 0),
+      rgb(255, 255, 0),
+      rgb(0, 255, 0),
+      rgb(0, 255, 255),
+      rgb(0, 0, 255),
+      rgb(255, 0, 255),
+      rgb(255, 0, 0)); */
+  background: linear-gradient(90deg, #f00, #ff0 17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00);
+  user-select: none;
+  border-radius: 12px;
+}
+
+.color-selector {
+  position: absolute;
+  top: 4px;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  box-shadow: #0003 0 0 0 0.5px;
+  box-sizing: border-box;
+  transform: translate(-10px, -4px);
+}

@@ -1,0 +1,120 @@
+.header{
+  width: 100%;
+  height: 62px;
+  background: linear-gradient(rgb(255, 255, 255), rgb(161, 161, 161));
+  //overflow: hidden;
+  position: relative;
+  .header-item{
+    float: left;
+    width: 60px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    img{
+      display: block;
+      margin-left: 10px;
+      width: 35px;
+      height: 35px;
+      user-select: none;
+      cursor: pointer;
+    }
+    .el-input__inner{
+      height: 30px;
+      line-height: 30px;
+      //padding: 0 10px;
+    }
+  }
+  .header-item-hover{
+    img:hover{
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      box-shadow: 2px 2px 2px 2px #525252;
+      transform: scale(1.1);
+      transition: transform 0.3s;
+    }
+  }
+  .header-item-operation{
+    pointer-events: none;
+    opacity: 0.5;
+  }
+  .header-item-span{
+    position: absolute;
+    left: 42px;
+    z-index: 99;
+    font-size: 14px;
+    color: #999999;
+  }
+  .bar{
+    width: 1px;
+    height: 40px;
+    float: left;
+    margin: 10px;
+    background-color: #666666;
+  }
+  .header-item-autoLayout{
+    border-radius: 5px;
+    background-color: #8c939d;
+  }
+  .bottom-item{
+    width: 100%;
+    height: 100%;
+    .bottom-item-img{
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
+.header{
+  .el-rate{
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  input[type='number']{-moz-appearance:textfield;}
+  　　input[type=number]::-webkit-inner-spin-button,
+  　　input[type=number]::-webkit-outer-spin-button {-webkit-appearance: none;margin: 0;}
+  /*.el-icon-circle-plus-outline:before{*/
+  /*  font-size: 25px;*/
+  /*  line-height: 40px;*/
+  /*}*/
+
+}
+
+.founderTable{
+  th{
+    padding: 0;
+    line-height: 35px;
+    background-color: #C6E2FF;
+    color: #666666;
+    text-align: center;
+  }
+  td {
+    text-align: center;
+  }
+}
+.header-item{
+  .el-slider__button {
+    width: 6px;
+    height: 6px;
+  }
+}
+
+@media screen and (max-width: 1466px) {
+  .mode-switching{
+    position: absolute;
+    right: 20px;
+    top: 17px;
+  }
+}
+@media screen and (min-width: 1466px) {
+  .mode-switching{
+    float: right;
+    margin-right: 20px;
+    margin-top: 17px;
+  }
+}
+
+.openFile-title{
+  line-height: 25px;
+  margin-top: 14px;
+}

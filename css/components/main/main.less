@@ -1,0 +1,185 @@
+.main{
+  display: flex;
+  display: -webkit-flex; /* Safari */
+  width: 100%;
+  min-width: 1466px;
+  overflow: hidden;
+  position: absolute;
+  bottom: 27px;
+  top: 62px;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  .icon{
+    width: 18px;
+    height: 18px;
+    position: absolute;
+    right: 1px;
+  }
+  .shrink-btn-left{
+    width: 10px;
+    height: 25px;
+    position: absolute;
+    right: 0;
+    top: 45%;
+    /*background-color: seagreen;*/
+    z-index: 999;
+    img {
+      width: 10px;
+      height: 25px;
+      cursor: pointer;
+    }
+  }
+  .shrink-btn-right{
+    width: 6px;
+    height: 25px;
+    position: absolute;
+    left: 0px;
+    top: 45%;
+    z-index: 999;
+    transition: all 0.5s;
+    img {
+      width: 10px;
+      height: 25px;
+      cursor: pointer;
+    }
+  }
+  .btn-left{
+    width: 3px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    background-color: #999999;
+    z-index: 999;
+    cursor: w-resize;
+  }
+  .btn-right{
+    width: 3px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    background-color: #999999;
+    z-index: 999;
+    cursor: w-resize;
+  }
+  .btn-img {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    position: absolute;
+    top: 5px;
+    right: 10px;
+  }
+  .btn-img2 {
+    width: 12px;
+    height: 12px;
+    cursor: pointer;
+    position: absolute;
+    top: 5px;
+    right: 1px;
+  }
+  /*模型栏*/
+  .model{
+    min-width: 100px;
+    width: 100px;
+    overflow-y: auto;
+    overflow-x:hidden;
+    position: relative;
+    transition: all 0.5s;
+  }
+  /*结构树*/
+  .tree{
+    min-width: 270px;
+    width: 270px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.5s;
+
+  }
+  /*画布*/
+  .drawingBoard{
+    flex: 1;
+    overflow: hidden;
+    position:relative;
+    #content{
+      zoom:var(--zoom);
+    }
+    .content{
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      //overflow-y: hidden;
+      position:relative;
+      outline:none;
+      text{
+        user-select: none;
+      }
+      .hsBtn{
+        position: absolute;
+        width: 208px;
+        height: 50px;
+        display: -webkit-flex; /* Safari */
+        display: flex;
+        justify-content:center;
+        flex-wrap:wrap-reverse;
+        margin-top: -55px;
+        margin-left: -56px;
+      }
+      .hiddenPopover{
+        position: absolute;
+        //zoom: 1!important;
+        width: 96px;
+        height: 3px;
+        //background-color: #5daf34;
+      }
+    }
+    .timeline{
+      position: absolute;
+      bottom: 0;
+      height: 58px;
+      z-index: 20;
+      padding-bottom: 8px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      width: 100%;
+      border-top: 1px solid #dddddd;
+      box-sizing: border-box;
+    }
+  }
+  .marquee-field{
+    position:absolute;
+    z-index: 1;
+  }
+  .marquee{
+    background-color: rgba(0, 160, 253, 0.486);
+    border: 1px solid rgb(0, 160, 253);
+    opacity:0.2;
+    z-index: 1;
+  }
+  /*属性栏*/
+  .property{
+    width: 380px;
+    min-width: 380px;
+    overflow: hidden;
+    position: relative;
+    transition: all 0.5s;
+    height: 100%;
+  }
+  /*收缩后的样式*/
+  //.model-active{
+  //  min-width: 15px;
+  //  width: 15px;
+  //  transition: all 0.5s;
+  //  background: -webkit-linear-gradient(to right, #bbbbbb, #eeeeee, #dddddd);  /* Chrome 10-25, Safari 5.1-6 */
+  //  background: linear-gradient(to right, #bbbbbb, #eeeeee, #dddddd); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  //}
+  .model-active{
+    min-width: 15px;
+    width: 15px!important;
+    transition: all 0.5s;
+    background: -webkit-linear-gradient(to right, #bbbbbb, #eeeeee, #dddddd);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #bbbbbb, #eeeeee, #dddddd); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  }
+}

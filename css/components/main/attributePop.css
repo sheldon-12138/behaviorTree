@@ -1,0 +1,255 @@
+.dragPop {
+  position: absolute;
+  /* width: 30%; */
+  /* height: 300px; */
+  margin: 0 auto 50px;
+  border-radius: 2px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
+  box-sizing: border-box;
+  /* overflow-y: auto; */
+  background-color: #eee;
+  z-index: 999;
+}
+
+.dragPop header {
+  /* height: 10px; */
+  padding: 5px 6px;
+  font-size: 12px;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+}
+
+.dragPop header img {
+  width: 17px;
+  height: 17px;
+  margin-right: 5px;
+}
+
+.dragPop header button {
+  position: absolute;
+  top: 7px;
+  right: 12px;
+  padding: 0;
+  background: 0 0;
+  border: none;
+  outline: 0;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.dragPop .content {
+  box-sizing: border-box;
+  /* height: calc(100% - 48px); */
+  overflow: auto;
+  padding: 13px 10px 10px;
+  word-break: break-all;
+}
+
+.dragPop .item {
+  padding: 5px 10px 1px;
+  font-size: 15px;
+  display: flex;
+}
+
+.dragPop .item .label {
+  width: 120px;
+  font-weight: 700;
+}
+
+.dragPop .item input {
+  width: 505px;
+  height: 22px;
+  padding-left: 3px;
+  font-size: 15px;
+}
+
+.dragPop .activeTab {
+  background-color: #fff;
+  border-bottom-color: #fff !important;
+}
+
+.dragPop .tab {
+  /* width: 100px; */
+  height: 30px;
+  margin-top: 15px;
+  padding: 0px 5px;
+  text-align: center;
+  line-height: 30px;
+  border: 1px solid #666;
+  border-radius: 5px 5px 0 0;
+  cursor: pointer;
+}
+
+.dragPop .tabPane {
+  border-radius: 0 2px 2px 2px;
+  background-color: #fff;
+  border: 1px solid #666;
+  padding: 7px 10px;
+  margin-bottom: 32px;
+  position: relative;
+}
+
+.dragPop .tabPane::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  /* 使伪元素与上边框对齐 */
+  left: 0px;
+  width: 354px;
+  height: 0;
+  border-top: 1px solid white;
+  /* 伪元素覆盖上边框的一段 */
+  background: white;
+  /* 确保覆盖边框的颜色 */
+}
+
+.dragPop .tabPane textarea {
+  resize: none;
+  padding: 5px;
+  box-sizing: border-box;
+}
+
+.dragPop .tabPane textarea:focus {
+  outline: none !important;
+}
+
+.ifTextarea {
+  width: 535px;
+  height: 53px;
+}
+
+.ifLine {
+  display: flex;
+  margin-bottom: 7px;
+}
+
+.dragPop .tabPane .description {
+  margin-top: 7px;
+  padding: 10px;
+  width: 100%;
+  height: 210px;
+  box-sizing: border-box;
+  font-size: 15px;
+}
+
+
+.dragPop footer {
+  position: absolute;
+  bottom: 7px;
+  right: 12px;
+  font-size: 16px;
+}
+
+.dragPop footer .btn {
+  height: 30px;
+  padding: 0 5px;
+  background-color: #fff;
+  border: 1px solid #666;
+  border-radius: 5px;
+}
+
+/* 新增节点模型 */
+.flexItemCenter {
+  display: flex;
+  align-items: center;
+}
+
+.msgLine select {
+  margin: 0px 6px 0px 4px;
+  width: 120px;
+  height: 26px;
+  font-size: 16px;
+}
+
+.msgLine input {
+  width: 438px;
+  height: 23px;
+  padding-left: 5px;
+  font-size: 16px;
+}
+
+.iconLine {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+.dragPop .el-table thead>th {
+  background: linear-gradient(to bottom, #606060, #444444, #606060);
+  color: #fff;
+  text-align: center;
+  padding: 5px 0px;
+}
+
+
+
+.dragPop .table {
+  width: 100%;
+  background-color: #fff;
+  border-collapse: collapse;
+  /* 去掉表格边框的间隙 */
+}
+
+.dragPop .table .thead>th {
+  background: linear-gradient(to bottom, #606060, #444444, #606060);
+  color: #fff;
+  text-align: center;
+  padding: 5px 0px;
+}
+
+/* .dragPop .table td {
+  font-size: 14px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+} */
+
+.dragPop .table-container {
+  width: 100%;
+  height: 115px;
+  background-color: #fff;
+  overflow-y: auto;
+}
+
+/* .dragPop .table-container .table td:nth-child(1) {
+  width: 27%;
+}
+
+.dragPop .table-container .table td:nth-child(2) {
+  width: 23%;
+}
+
+.dragPop .table-container .table td:nth-child(3) {
+  width: 23%;
+}
+
+.dragPop .table-container .table td:nth-child(4) {
+  width: 27%;
+}
+
+.dragPop .table-container input {
+  width: 100%;
+  height: 100%;
+}
+
+.dragPop .table-container select {
+  width: 100%;
+  height: 100%;
+} */
+
+
+.dragPop .leftBox {
+  height: 7px;
+  width: 7px;
+  float: left;
+  cursor: ne-resize;
+}
+
+.dragPop .rightBox {
+  height: 7px;
+  width: 7px;
+  float: right;
+  cursor: nw-resize;
+}

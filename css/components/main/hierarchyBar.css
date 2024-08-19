@@ -1,0 +1,13 @@
+.hierarchyBar {
+  width: 15px;
+  background-color: #00a0fd;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.hierarchyBar .hierarchyBarItem {
+  border: 1px solid white;
+  text-align: center;
+  height: 200px;
+}
+/*# sourceMappingURL=hierarchyBar.css.map */

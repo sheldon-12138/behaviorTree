@@ -1,0 +1,22 @@
+<svg version="1.1"
+     xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     xmlns:ev="http://www.w3.org/2001/xml-events"
+     baseProfile="full">
+    <defs>
+        <!-- Filter declaration -->
+        <filter id="heightLight">
+
+            <!-- offsetBlur -->
+            <feGaussianBlur in="SourceAlpha" stdDeviation="2" result="blur" />
+            <feOffset in="blur" dx="1" dy="1" result="offsetBlur" />
+<!--            <feFlood flood-color="green" flood-opacity="1" result="flood"/>-->
+<!--            <feComposite in="flood" in2="blur" operator="in" result="OUTLINE"/>-->
+            <!-- merge SourceGraphic + offsetBlur -->
+            <feMerge>
+                <feMergeNode in="offsetBlur" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+</svg>

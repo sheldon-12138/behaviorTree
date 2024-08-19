@@ -1,0 +1,36 @@
+<svg
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        xmlns="http://www.w3.org/2000/svg">
+
+<defs>
+        <filter id="node-ware">
+            <feMorphology in="SourceAlpha" result="DILATED" operator="dilate" radius="1.2 1">
+                <animate attributeName="radius" dur="1s" values="1;2;3;4;5;6;7" repeatCount="indefinite"/>
+            </feMorphology>
+
+            <feFlood flood-color="green" flood-opacity="1" result="flood"></feFlood>
+            <feComposite in="flood" in2="DILATED" operator="in" result="OUTLINE"></feComposite>
+
+
+            <feMerge>
+                <feMergeNode in="DILATED" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+
+
+    <filter id="node-name-border">
+        <feMorphology in="SourceAlpha" result="DILATED" operator="dilate" radius="0.1">
+        </feMorphology>
+
+        <feFlood flood-color="white" flood-opacity="1" result="flood"></feFlood>
+        <feComposite in="flood" in2="DILATED" operator="in" result="OUTLINE"></feComposite>
+
+
+        <feMerge>
+            <feMergeNode in="DILATED" />
+            <feMergeNode in="SourceGraphic" />
+        </feMerge>
+    </filter>
+</defs>
+</svg>

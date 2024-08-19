@@ -1,0 +1,58 @@
+.bottomMsg .calculationList {
+    border: 1px solid #ccc;
+    padding: 10px 15px;
+    display: flex;
+    background-color: #fff;
+    overflow-x: auto;
+}
+
+.bottomMsg .calculationList .x {
+    position: absolute;
+    right: 3px;
+    top: 1px;
+    font-size: 10px;
+    color: #8b8b8b;
+    cursor: default;
+}
+
+.bottomMsg .calculationList .item {
+    position: relative;
+    font-size: 13px;
+    border: 1px solid #ebebeb;
+    border-radius: 2px;
+    margin-right: 15px;
+}
+
+.bottomMsg .calculationList .item:last-child {
+    margin-right: 0px;
+}
+
+.bottomMsg .calculationList .item span {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    line-height: 15px;
+    margin-top: 5px;
+    font-size: 8px;
+    text-align: center;
+}
+
+.bottomMsg .calculationList .item .probability {
+    border-bottom: 1px solid #ccc;
+    padding: 5px 20px 2px;
+}
+
+.circularIds {
+    margin: 8px 0px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.circularIds div {
+    width: 25px;
+    height: 25px;
+    line-height: 25px;
+    text-align: center;
+    background-color: #ccc;
+    border-radius: 50%;
+}

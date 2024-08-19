@@ -1,0 +1,103 @@
+.hiddenPopover-content {
+  transform: translate(-50%, -100%);
+  position: absolute;
+  margin-bottom: -10px;
+  top: -15px;
+  left: 50%;
+  width: 320px;
+  height: auto;
+  background-color: #ffffff;
+  padding: 2px 5px 5px;
+  border-radius: 5px;
+  z-index: 9999;
+  -moz-box-shadow: 0px 0px 8px #949494;
+  -webkit-box-shadow: 0px 0px 8px #949494;
+  box-shadow: 0px 0px 8px #949494;
+}
+
+.hiddenPopover-content .hiddenPopover-title {
+  width: 100%;
+  line-height: 20px;
+  /* text-align: right; */
+}
+
+.hiddenPopover-content .hiddenPopover-p {
+  width: 100%;
+  line-height: 20px;
+  word-break: break-all;
+}
+
+.hiddenPopover-content .hiddenPopover-prop .el-input .el-input__inner {
+  height: 20px;
+  line-height: 20px;
+  padding: 0 3px;
+  font-size: 12px;
+  text-align: center;
+  color: black;
+}
+
+.hiddenPopover-content .hiddenPopover-prop .input-green .el-input__inner {
+  background-color: #3CFF0080;
+}
+
+.hiddenPopover-content .hiddenPopover-prop .input-yellow .el-input__inner {
+  background-color: #FFFF0080;
+}
+
+.hiddenPopover-content .hiddenPopover-prop .input-orange .el-input__inner {
+  background-color: #FFC08080;
+}
+
+.hiddenPopover-content .hiddenPopover-prop .input-red .el-input__inner {
+  background-color: #FF000080;
+}
+
+.hiddenPopover-content .hiddenPopover-prop .input-grey .el-input__inner {
+  background-color: #89010180;
+}
+
+.hiddenPopover-content .hiddenPopover-prop input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+.hiddenPopover-content .hiddenPopover-prop input[type=number]::-webkit-inner-spin-button,
+.hiddenPopover-content .hiddenPopover-prop input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.hiddenPopover-content .hiddenPopover-prop input::-webkit-input-placeholder {
+  /* WebKit browsers */
+  font-size: 10px;
+}
+
+.hiddenPopover-content .hiddenPopover-prop input:-moz-placeholder {
+  /* Mozilla Firefox 4 to 18 */
+  font-size: 10px;
+}
+
+.hiddenPopover-content .hiddenPopover-prop input::-moz-placeholder {
+  /* Mozilla Firefox 19+ */
+  font-size: 10px;
+}
+
+.hiddenPopover-content .hiddenPopover-prop input:-ms-input-placeholder {
+  /* Internet Explorer 10+ */
+  font-size: 10px;
+}
+
+.hiddenPopover-content:before {
+  position: absolute;
+  content: "";
+  width: 0;
+  height: 0;
+  top: 99%;
+  left: 50%;
+  transform: translate(-5px, 0);
+  border-left: 5px solid transparent;
+  border-top: 10px solid #ffffff;
+  border-right: 5px solid transparent;
+  z-index: 9999;
+}
+
+/*# sourceMappingURL=hiddenPopover.css.map */

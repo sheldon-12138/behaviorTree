@@ -1,6 +1,6 @@
 function splitFileName(fileName) {
     const lastDotIndex = fileName.lastIndexOf('.')
-    const name = fileName.substring(lastDotIndex)
+    const name = fileName.substring(0, lastDotIndex);
     const type = fileName.substring(lastDotIndex + 1)
     return [name, type];
 }

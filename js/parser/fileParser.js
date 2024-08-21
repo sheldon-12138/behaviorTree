@@ -337,22 +337,34 @@ function ftParser(content) {
 };
 
 // 解析xml文件
-function xmlParser(content) {
+function xmlParser(content, xmlName) {
     if (content === "") { return; }
     let { BehaviorTree, TreeNodesModel } = content.root
-    handeTreeNodesModel(TreeNodesModel[0])
-    // console.log('BehaviorTree', BehaviorTree);
-    // console.log('TreeNodesModel', TreeNodesModel);
+    let projectObj = gContextDao.getGContextProp("projectObj");
+    if (xmlName) {
+        let projStruct = []
+        BehaviorTree.forEach(item => {
+            // console.log(item.$.ID)
+            projectObj[xmlName] = {
+                [`${item.$.ID}`]: item
+            }
+            projStruct.push({ label: item.$.ID })
+            // console.log(index, parseEntityArr(item))
+        })
+        return projStruct
+    } else {//读单个xml文件
+        handeTreeNodesModel(TreeNodesModel[0])
+        loadXml(BehaviorTree[0])
+    }
 
-    // BehaviorTree.forEach((item, index) => {
-    //     console.log(index, parseEntityArr(item))
-    // })
-    // let eventEntityMap = gContextDao.getGContextProp("eventEntityMap");
 
+}
+
+function loadXml(BehaviorTree) {
     let tempNodes = {};
     let tempNodesBtID = [];
 
-    let entityArr = parseEntityArr(BehaviorTree[0])
+    let entityArr = parseEntityArr(BehaviorTree)
     // console.log(entityArr)
     for (let i = 0; i < entityArr.length; i++) {
         // console.log(entityArr[i])
@@ -361,12 +373,6 @@ function xmlParser(content) {
             _onSuccess, _onFailure, _onHalted, _post } = entityArr[i]
         let type = findParentTypeById(modelName)
 
-
-        // let entity = gContextController.createNode(type || 'Top',
-        //     {
-        //         x: 100 * (i + 1),
-        //         y: 100 * (i + 1)
-        //     }, modelName || 'Root', btID, ID)
         let model = gContextDao.getModelByType(type || 'Top');
         // console.log('model', model)
         let entityProp = {
@@ -409,13 +415,34 @@ function xmlParser(content) {
             btLine(tempNodesBtID[k], entityArr[k].downEntity, tempNodes);
         }
     }
-
-    // console.log(eventEntityMap)
 }
 
 // 解析proj文件
 function projParser(content) {
     if (content === "") { return; }
+
+    let { include, TreeNodesModel } = content.root
+    let btFormat = content.root.$.BTCPP_format
+    let projectName = content.root.$.project_name
+
+    handeTreeNodesModel(TreeNodesModel[0])
+    let pathArr = handeInclude(include)
+    let obj = {
+        btFormat,
+        projectName,
+        pathArr
+    }
+    return obj
+    // console.log(content, pathArr);
+}
+
+// 处理项目文件中的 include 标签
+function handeInclude(include) {
+    let pathArr = []
+    include.forEach(item => {
+        pathArr.push(item.$.path)
+    });
+    return pathArr;
 }
 
 // 解析树结构，返回实体数组

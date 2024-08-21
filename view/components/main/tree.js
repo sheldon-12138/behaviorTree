@@ -3,6 +3,7 @@ import gContextController from "../../../js/controller/gContextController.js"
 import nodesOPController from "../../../js/controller/nodesOPController.js";
 import viewOPController from "../../../js/controller/viewOPController.js";
 import fileController from "../../../js/controller/fileController.js";
+import fileParser from "../../../js/parser/fileParser.js";
 import Utils from "../../../js/utils/utils.js";
 
 export function treeVm() {
@@ -10,50 +11,30 @@ export function treeVm() {
         el: '#treeList',
         data() {
             return {
-                fileList: [],
-                fileContent: '',
+                fileContents: [],
+                pathArr: [],//项目文件中存的路径数组
 
                 project: [{
-                    label: 'Project'
+                    label: 'Project',
+                    children: []
                 }],
                 model: g.gContext.modelList,
                 defaultProps: {
                     children: 'children',
                     label: 'label'
                 },
-                openID2: true,
-                currentID: 1,
-                visible: false,
+
                 statusData: g.gContext.statusData,
                 treeData: g.gContext.entityTree,
                 attrData: g.gContext.attrData,
-                width: 270,
-                startWidth: 0,   //保存拖拽开始时的width值
-                dragActive: false,   //拖拽状态
-                dragStartCoordinateX: 0,   //保存拖拽开始的位置
-                dragMoveCoordinateX: 0,  //拖拽移动的位置
             };
         },
-        updated() {
-            // if (g.gContext.attrData.entity.id) {
-            //     this.$refs.tree.setCurrentKey(g.gContext.attrData.entity.id);
-            //     let container = $('#content-el_tree');
-            //     let scrollTo = $('#' + g.gContext.attrData.entity.id + '_tree');
-            //     if (scrollTo.offset().top) {
-            //         container.animate({
-            //             scrollTop: scrollTo.offset().top - container.offset().top + container.scrollTop()
-            //         });
-            //     }
-            // }
-        },
-        watch: {
-            // dragMoveCoordinateX(newVal){
-            //     let w = this.width + (newVal - this.dragStartCoordinateX);
-            //     this.width = w;
-            //     console.log(this.width);
-            // }
-        },
+
         methods: {
+            //选中树
+            handleNodeClick(node, selected, event) {
+                // console.log(node, selected, event)
+            },
             triggerFileInput() {
                 this.$refs.fileInput.click();
             },
@@ -63,17 +44,16 @@ export function treeVm() {
             // 打开本地项目
             handleFileChange(event) {
                 const files = event.target.files;
-                console.log(files);
+                this.project[0].children = [];
+                // console.log(files);
                 if (files.length == 1) {//xml单文件
                     const file = files[0];
-                    // const lastDotIndex = file.name.lastIndexOf('.')
                     const fileName = Utils.splitFileName(file.name)[0];
-                    // const type = file.name.substring(lastDotIndex + 1);
-
                     const reader = new FileReader();
                     reader.onload = (e) => {
                         fileController.analysisXml({ xml: e.target.result }).then((result) => {
                             // console.log(result)
+
                             if (result.flag) {
                                 const treeName = JSON.parse(result.content).root.BehaviorTree[0].$.ID;
                                 this.$set(this.project[0], 'children', [{
@@ -90,17 +70,65 @@ export function treeVm() {
                     }
                     reader.readAsText(file);
                 } else if (files.length > 1) {
-                    for (let key in files) {
-                        if (key == 'length') continue;
+                    this.fileContents = []; // 清空上次的文件内容
 
-                        const file = files[key];
+                    for (let file of files) {
                         const nameArr = Utils.splitFileName(file.name);
-                        if (nameArr[1] == 'btproj') {
-                        }
+
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            if (nameArr[1] == 'btproj') {
+                                fileController.analysisXml({ xml: e.target.result, status: 'proj' }).then((result) => {
+                                    this.handerPathArr(result.pathArr, result.projectName)
+                                }).catch((err) => {
+                                    console.log('解析失败', err);
+                                })
+                            }
+                            else {
+                                this.fileContents.push({
+                                    fileName: file.name,
+                                    name: nameArr[0],
+                                    xml: e.target.result
+                                });
+                            }
+                        };
+
+                        reader.onerror = (e) => {
+                            console.error(`Error reading file ${file.name}: ${e.target.error}`);
+                        };
+                        reader.readAsText(file);
                     }
-                    // files.forEach(file => {
-                    //     console.log(file.type);
-                    // });
+                    // console.log(this.fileContents);
+                }
+            },
+
+            // 比较 项目文件的路径数组 和 文件夹下的xml文件
+            handerPathArr(pathArr, projectName) {
+                // console.log(pathArr)
+                // console.log(this.fileContents)
+                let flag = true;
+                pathArr.forEach(item => {
+                    const index = this.fileContents.findIndex(file => file.fileName == item);
+                    if (index != -1) {
+                        const { xml, name } = this.fileContents[index];
+                        fileController.analysisXml({ xml, status: 'forXml', name }).then((result) => {
+                            if (result.treeNameArr.length > 0) {
+                                this.project[0].children.push({
+                                    label: name,
+                                    children: result.treeNameArr
+                                })
+                            }
+                        }).catch((err) => {
+                            console.log('解析失败', err);
+                        })
+                    }
+                    else {
+                        if (flag) flag = false
+                        console.log(`${item}不存在`)
+                    }
+                })
+                if (flag) {//项目文件中全部路径都存在，才改项目名
+                    this.project[0].label = projectName
                 }
             },
 
@@ -121,6 +149,7 @@ export function treeVm() {
                 this.statusData.isShowProperty = true
                 this.statusData.attrID = 2;
             },
+            importNode() { },
             // 保存项目
             saveProject() {
                 this.statusData.isShowProperty = true
@@ -131,76 +160,15 @@ export function treeVm() {
                 this.statusData.isShowProperty = true
                 this.statusData.attrID = 6;
             },
-            importNode() {
-                // 删除最后一个节点
-                if (this.model.length > 0) {
-                    this.model.pop();
-                } else {
-                    this.$message.warning('没有节点可以删除');
-                }
-            },
-            allowDrop(draggingNode, dropNode, type) {
-                //仅允许叶子结点可拖动
-
-                return dropNode.data.children === undefined || dropNode.data.children.length === 0 || type == 'inner';
-            },
-            handleDragStart(node, event) {
-                // 仅当节点是叶节点时才允许拖动
-                if (node.data.children && node.data.children.length > 0) {
-                    event.preventDefault();
-                }
-            },
-
 
 
             // ——————————————————————————————————————————————————————————————————————————————————
-            //增加节点
-            append(data, type, node) {
-                gContextController.createChildNode(data.data.ftID, type);
-                nodesOPController.updateLayer();
-                nodesOPController.updateTreeData();
-            },
-            //删除节点
-            remove(node, data) {
-                nodesOPController.deleteTreeByFtID(data.data.ftID);
-                nodesOPController.updateTreeData();
-            },
-            //是否允许被拖拽
-            allowDrag(node) {
-                if (node.data.type == 'EVENT_TOP') {
-                    return false;
-                } else {
-                    return true;
-                }
-            },
 
-            //在树中选中节点，同步在画板中聚焦
-            tagCollapse(id) {
-                console.log(g.gContext.entityTree);
-                gContextController.focusEntityByID(id);
-                viewOPController.updateOperationStatus();
-            },
             //节点拖拽函数
             nodeDrop(draggingNode, dropNode) {
                 gContextController.changeNodeParent(draggingNode.data.id, dropNode.data.id);
             },
-            dragStart(e) {
-                // console.log(e);
-                this.dragActive = true;
-                this.dragStartCoordinateX = e.clientX;
-                this.startWidth = this.width;
-                window.addEventListener('mousemove', this.dragMove);
-                window.addEventListener('mouseup', this.dragEnd);
-            },
-            dragEnd() {
-                this.dragActive = false;
-                window.removeEventListener("mousemove", this.dragMove);
-                window.removeEventListener('mouseup', this.dragEnd);
 
-            },
-            dragMove(e) {
-                this.width = this.startWidth + (e.clientX - this.dragStartCoordinateX);
-            },
             startDrag(event) {
                 this.isDragging = true;
                 this.startY = event.clientY;

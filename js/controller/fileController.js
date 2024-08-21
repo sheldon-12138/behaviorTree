@@ -103,50 +103,57 @@ function openUserProject(param) {
 // 解析本地xml文件
 function analysisXml(param) {
     // console.log(param)
-    return fileRequest.analysisXml(param).then((data) => {
-        // console.log(data)
+    return fileRequest.analysisXml({ xml: param.xml }).then((data) => {
         if (data.flag) {
             let xmlContent = JSON.parse(data.content);
-            // console.log(xmlContent);
-            let progress = gContextDao.getGContextProp("progressData");
+            if (param.status == 'proj') {//项目文件
+                let proj = fileParser.projParser(xmlContent);
 
-            //清空Context和dom相关数据
-            gContextDao.clearContext();
-            let nodes = dom.queryAll(".node");
-            let lines = dom.queryAll(".line");
-            // let len = nodes.length;
-            let mainSVG = dom.query("#mainSVG");
-            for (let i = nodes.length - 1; i >= 0; --i) {
-                mainSVG.removeChild(nodes[i]);
+                return Promise.resolve(proj);
+            } else if (param.status == 'forXml') {//通过项目打开的xml文件
+                // console.log(xmlContent, param.name);
+                const treeNameArr = fileParser.xmlParser(xmlContent, param.name);
+
+                return Promise.resolve({ treeNameArr });
+            } else {//单打开的xml文件
+
+                // console.log(xmlContent);
+                let progress = gContextDao.getGContextProp("progressData");
+
+                //清空Context和dom相关数据
+                gContextDao.clearContext();
+                let nodes = dom.queryAll(".node");
+                let lines = dom.queryAll(".line");
+                // let len = nodes.length;
+                let mainSVG = dom.query("#mainSVG");
+                for (let i = nodes.length - 1; i >= 0; --i) {
+                    mainSVG.removeChild(nodes[i]);
+                }
+                for (let i = lines.length - 1; i >= 0; --i) {
+                    mainSVG.removeChild(lines[i]);
+                }
+                progress.openProgress = 10;
+
+                //解析xml数据并将数据添加到gContext中
+                fileParser.xmlParser(xmlContent);
+
+
+                progress.openProgress = 30;
+                //根据数据渲染dom
+                renderFTree.renderByContext();
+                progress.openProgress = 80;
+
+                // 自动布局
+                nodesOPController.nodeLayout();
+                progress.openProgress = 100;
+
+                gContextController.updateMainSVGSizeUp();
+
+                return Promise.resolve(data);
             }
-            for (let i = lines.length - 1; i >= 0; --i) {
-                mainSVG.removeChild(lines[i]);
-            }
-            progress.openProgress = 10;
-
-            //解析xml数据并将数据添加到gContext中
-            fileParser.xmlParser(xmlContent);
-
-
-            progress.openProgress = 30;
-            //根据数据渲染dom
-            renderFTree.renderByContext();
-            progress.openProgress = 80;
-
-            // 自动布局
-            nodesOPController.nodeLayout();
-            progress.openProgress = 100;
-
-            gContextController.updateMainSVGSizeUp();
-
-            return Promise.resolve(data);
-
-            let projContent = JSON.parse(data.content);
-            // console.log(data)
-            fileParser.projParser(projContent);
-
 
         }
+
     }).catch((err) => {
         console.log(err);
         return Promise.reject(err);

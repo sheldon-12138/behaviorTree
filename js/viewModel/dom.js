@@ -176,6 +176,28 @@ function updateNameNode(entity, strList, fontSize) {
 
 }
 
+// 返回节点图标名
+function imgName(entity) {
+    if (entity.type == 'Action') {
+        return 'Action'
+    } else if (entity.type == 'Condition') {
+        return 'Condition'
+    } else if (entity.type == 'Control') {
+        if (entity.name == 'Fallback') return 'Fallback'
+        else if (entity.name == 'Parallel') return 'Parallel'
+        else if (entity.name == 'Sequence') return 'Sequence'
+        else return false
+    } else if (entity.type == 'Decorator') {
+        if (entity.name == 'Repeat') return 'Repeat'
+        else if (entity.name == 'Timeout') return 'Timeout'
+        else if (entity.name == 'RetryUntilSuccessful') return 'RetryUntilSuccessful'
+        else if (entity.name == 'ForceSuccess') return 'ForceSuccess'
+        else if (entity.name == 'ForceFailure') return 'ForceFailure'
+        else if (entity.name == 'Inverter') return 'Inverter'
+        else return false
+    } else if (entity.type == 'Top') return 'Top'
+    else return false
+}
 
 // 创建节点rect
 function createRect(entity) {
@@ -204,10 +226,53 @@ function createNode(entity) {
     let entityNode = doc.createElementNS("http://www.w3.org/2000/svg", "svg");
     let entityFragment = doc.createDocumentFragment();
 
+    const iconName = imgName(entity)
+
     //节点渐变底色框
     entityFragment.appendChild(createRect(entity));
 
 
+    //添加名称 
+    if (entity.name !== "") {
+        let eName = createSVGElement(
+            "text",
+            {
+                "x": entity.size.width / 2 + (iconName ? 15 : 0) - (entity._description ? 15 : 0),
+                "y": "30",
+                "text-anchor": "middle", //根据文字中心点定位
+                "dominant-baseline": "middle",
+                "fill": entity.textColor,
+                "font-size": "20px",
+                // "font-family": "Arial",
+                "font-family": "Consolas,Monaco,Courier,Courier New ",  // 使用等宽字体
+                "font-weight": "bold"
+            },
+            []
+        );
+        eName.textContent = entity.name;
+        entityFragment.appendChild(eName);
+    }
+    // 添加别名
+    // console.log(entity.aliasName)
+    if (entity.aliasName !== "" && entity.aliasName !== entity.name) {
+        let eName = createSVGElement(
+            "text",
+            {
+                "x": entity.size.width / 2.0,
+                "y": entity.size.height / 2.0 + 20,
+                "text-anchor": "middle",
+                "dominant-baseline": "middle",
+                "fill": entity.textColor,
+                "font-size": "20px",
+                "font-family": "Consolas,Monaco,Courier,Courier New ",  // 使用等宽字体
+                "font-weight": "bold"
+            },
+            []
+        );
+        eName.textContent = entity.aliasName;
+        entityFragment.appendChild(eName);
+    }
+    // console.log(entity)
     if (entity.hasUpNodes) {
         let upCircle = createSVGElement("circle", {
             "r": 4,
@@ -230,27 +295,32 @@ function createNode(entity) {
         entityFragment.appendChild(downCircle);
     }
 
-    // console.log(entity)
-    //添加名称
-    if (entity.name !== "") {
-        let eName = createSVGElement(
-            "text",
-            {
-                "x": entity.size.width / 2.0,
-                "y": entity.size.height / 2.0,
-                "text-anchor": "middle",
-                "dominant-baseline": "middle",
-                "fill": entity.textColor,
-                "font-size": "20px",
-                "font-family": "Arial",
-                "font-weight": "bold"
-            },
-            []
-        );
-        eName.textContent = entity.name;
-        entityFragment.appendChild(eName);
+    // 添加节点图标
+    if (iconName) {
+        let img = createSVGElement("image", {
+            href: `../assets/node/${iconName}.svg`,
+            x: "10",
+            y: "15",
+            width: "25",
+            height: "25"
+        });
+        entityFragment.appendChild(img);
     }
 
+    // 添加描述信息图标
+    if (entity._description) {
+        let img = createSVGElement("image", {
+            href: `../assets/node/msg.svg`,
+            x: entity.size.width - 30,
+            y: 15,
+            width: "25",
+            height: "25"
+        });
+        entityFragment.appendChild(img);
+    }
+
+    // 添加端口
+    
 
     entityNode.setAttribute("x", entity.pos.x);
     entityNode.setAttribute("y", entity.pos.y);
@@ -588,8 +658,6 @@ function createUnfoldCollapseDefs() {
     unfold.appendChild(line2);
     return unfold;
 };
-
-
 
 //创建网格
 function createGrid(grid) {
@@ -973,6 +1041,7 @@ function deleteUserLine() {
 
 
 export default {
+    imgName,
     deleteUserLine,
     createNode,
     createLine,

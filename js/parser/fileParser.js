@@ -5,6 +5,7 @@ import codec from "../codec/codec.js"
 import color from "../utils/color.js";
 import computeController from "../controller/computeController.js";
 import gContextController from "../controller/gContextController.js"
+import dom from "../viewModel/dom.js";
 
 //将解析节点函数注册到解析器中
 // const parseNode = {
@@ -374,11 +375,25 @@ function loadXml(BehaviorTree) {
         let type = findParentTypeById(modelName)
 
         let model = gContextDao.getModelByType(type || 'Top');
-        // console.log('model', model)
+        // console.log(entityArr[i])
+
+        let len = modelName ? modelName.length : 4
+        let nameLength = 0
+        let haveAlias = name && name !== modelName
+        if (haveAlias) nameLength = name.length
+
+        const iconName = dom.imgName({ type: type || 'Top', name: modelName })
+        const width = Math.max(20 + (iconName ? 30 : 0) + len * 11 + (_description ? 30 : 0), nameLength * 11 + 20);
+        const height = 60 + (haveAlias ? 30 : 0)
+
         let entityProp = {
             btID,
             type: model.type,
-            size: model.sizeList[1],
+            // size: model.sizeList[1],
+            size: {
+                width: width || model.sizeList[1].width,
+                height: height || model.sizeList[1].height
+            },
             pos: { x: 100 * (i + 1), y: 100 * (i + 1) },
             hasUpNodes: model.hasUpNodes,
             hasDownNodes: model.hasDownNodes,
@@ -570,7 +585,7 @@ function findParentTypeById(targetId) {
     for (const node of modelList) {
         if (node.children) {
             for (const child of node.children) {
-                if (child.ID === targetId) {
+                if (child.ID == targetId) {
                     return node.type; // 返回当前节点的 type
                 }
             }

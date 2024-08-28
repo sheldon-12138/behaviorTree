@@ -832,6 +832,7 @@ function openAutoLayoutMode() {
 }
 function nodeLayout() {
     _nodeLayout();
+    // console.log(g.gContext.eventEntityMap)
     // updateEffectPos();
     // updateHSStandardPos();
 }
@@ -881,7 +882,6 @@ function _nodeLayout() {
         // console.log(treeNode.id);
     }
     let lineMap = gContextDao.getGContextProp("lineMap");
-    let userLineMap = gContextDao.getGContextProp("userLineMap");
     for (let key in lineMap) {
         let line = lineMap[key];
         let ids = key.split("-");
@@ -916,30 +916,6 @@ function _nodeLayout() {
             });
         }
     }
-
-    for (let key in userLineMap) {//自动布局改变判据连线的起点
-        let line = userLineMap[key];
-        const dom_index = line.id.slice(-2); // 取最后两位即index 00
-        const entityId = line.id.slice(4, -2); // 取ID
-        const entity = gContextDao.findEntity(entityId)
-
-        if (entity) {
-            const angle = ((15 - dom_index) / 16) * 1.05 * Math.PI + 0.02;
-            line.begin.posX = entity.pos.x + 48 + 54 * Math.cos(angle); // 计算小圆的 x 坐标
-            line.begin.posY = entity.pos.y + 48 + 54 * Math.sin(angle);
-
-            line.update();
-            dom.setAttributeByDom(line.dom, {
-                "x": line.pos.x,
-                "y": line.pos.y,
-            });
-            dom.setAttributeByDom(line.dom.querySelector(".polyline"), {
-                "points": line.path,
-            });
-        }
-
-    }
-
 
     let mainSVG = dom.query("#mainSVG");
     mainSVG.appendChild(fragment);

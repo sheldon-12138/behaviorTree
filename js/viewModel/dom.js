@@ -320,7 +320,23 @@ function createNode(entity) {
     }
 
     // 添加端口
-    
+    // if (true) {
+    //     let foreignObject = createSVGElement("foreignObject", {
+    //         x: "20",
+    //         y: entity.size.height - 20,
+    //         width: entity.size.width - 20,
+    //         height: "30"
+    //     }, ["clickable"]);
+
+    //     // 创建 input 元素并设置样式
+    //     let input = document.createElement("input");
+    //     input.setAttribute("type", "text");
+    //     input.style.width = "90px"; // 样式调整
+    //     input.style.height = "20px";
+
+    //     foreignObject.appendChild(input);
+    //     entityFragment.appendChild(foreignObject);
+    // }
 
     entityNode.setAttribute("x", entity.pos.x);
     entityNode.setAttribute("y", entity.pos.y);

@@ -30,10 +30,12 @@
         </div>
         <el-tree id="modelTree" :data="model" default-expand-all>
             <template #default="{ node, data }">
-                <div :data-type="node.parent.data.type" :data-isLeaf="node.isLeaf">
+                <span :data-type="node.parent.data.type" :data-isLeaf="node.isLeaf"
+                    :style="{ color: data.isUser ? '#0000ff' : 'inherit' ,width:'100%'}">
                     <i v-if="data.isUser" class="el-icon-edit"></i>
-                    <span :style="{ color: data.isUser ? '#0000ff' : 'inherit' }"> {{ data.ID }}</span>
-                </div>
+                    {{ data.ID }}
+                </span>
+                <!--  -->
             </template>
         </el-tree>
     </div>

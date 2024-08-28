@@ -189,7 +189,6 @@ function doubleClick(e) {
 
 // 模型树按下
 function modelTreeMouseDown(e) {
-
     if (g.gContext.statusData.isShowProperty) return;
     Utils.stopDefault(e);
     Utils.stopBubble(e);
@@ -197,8 +196,7 @@ function modelTreeMouseDown(e) {
     const dom_type = downDom.getAttribute("data-type");
     const isLeaf = downDom.getAttribute("data-isLeaf");
 
-    const name = downDom.textContent
-    // console.log('downDom', downDom)
+    const name = downDom.textContent.trim();//去除两端空格
     if (!isLeaf) return
 
     if (dom_type) {

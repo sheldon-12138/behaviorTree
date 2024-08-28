@@ -280,9 +280,16 @@ function createNode(type, pos, name) {
         }
     }
 
+    let len = name ? name.length : 4
+    const iconName = dom.imgName({ type, name })
+    const width = 20 + (iconName ? 30 : 0) + len * 11;
+
     let entityProp = {
         type: model.type,
-        size: model.sizeList[1],
+        size: {
+            width: width || model.sizeList[1].width,
+            height: model.sizeList[1].height
+        },
         pos: { x: pos.x, y: pos.y },
         hasUpNodes: model.hasUpNodes,
         hasDownNodes: model.hasDownNodes,

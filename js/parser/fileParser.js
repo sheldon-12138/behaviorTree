@@ -357,8 +357,6 @@ function xmlParser(content, xmlName) {
         handeTreeNodesModel(TreeNodesModel[0])
         loadXml(BehaviorTree[0])
     }
-
-
 }
 
 function loadXml(BehaviorTree) {

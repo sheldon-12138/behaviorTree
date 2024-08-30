@@ -782,7 +782,7 @@ function selectEntity(key) {
     let attrData = gContextDao.getGContextProp("attrData");
     let entity = gContextDao.findEntity(key);
 
-    // console.log('选中的entity', entity)
+    console.log('选中的entity', entity)
     statusData.attrID = 1;
     attrData.entity = entity;
 };
@@ -793,7 +793,7 @@ function selectModel(type, name) {
     let statusData = gContextDao.getGContextProp("statusData");
     let attrData = gContextDao.getGContextProp("attrData");
 
-    const arr = ['Action', 'Condition', 'Control', 'Decorator']
+    const arr = ['Action', 'Condition', 'Control', 'Decorator', 'SubTree']
     let index = arr.indexOf(type)
 
     const model = modelList[index].children.find(item => item.ID === name);

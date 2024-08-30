@@ -20,7 +20,7 @@
             </div>
             <div class="item">
                 <div class="label" style="line-height: 24px;">Instance name:</div>
-                <input type="text" v-model="entityInfo.aliasName" :placeholder="entityInfo.name">
+                <input type="text" v-model="entityInfo.aliasName" max="20" :placeholder="entityInfo.name">
             </div>
             <div style="display: flex;">
                 <div v-for="(item,index) in tabsArr" :key="index" :class="`tab ${avtiveTab==index?'activeTab':''}`"

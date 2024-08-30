@@ -12,7 +12,7 @@ import { g } from "../structure/gContext.js";
 import fileParser from "../parser/fileParser.js";
 
 // 节点别名改动后的处理
-function handleAliasName(entity, aliasFlag, orgFlag, orgDesIsNull) {
+function handleNodeSurface(entity, aliasFlag, orgFlag, orgDesIsNull) {
     // console.log('aliasFlag', aliasFlag, 'orgFlag', orgFlag, 'orgDesIsNull', orgDesIsNull)
     if (!aliasFlag && !orgFlag && orgDesIsNull && (!entity._description)) return
 
@@ -1533,7 +1533,7 @@ function bottomUserCode(id) {
 
 
 export default {
-    handleAliasName,
+    handleNodeSurface,
     eSort,
     returnTree,
     criterionP,

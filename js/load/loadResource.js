@@ -59,6 +59,17 @@ export function loadResource() {
         hasDownNodes: true,
         category: "event",
     });
+    gContextController.createModel({
+        path: "./assets/model/mid_event.svg",
+        type: "SubTree",
+        name: "SubTree",
+        aliasName: "SubTree",
+        textColor: '#fff',
+        sizeList: [{ width: 30, height: 30 }, { width: 100, height: 60 }],
+        hasUpNodes: true,
+        hasDownNodes: false,
+        category: "event",
+    });
 
 
     // 创建拖拽框对象，用于框选

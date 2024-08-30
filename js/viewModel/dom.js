@@ -180,7 +180,9 @@ function updateNameNode(entity, strList, fontSize) {
 // 返回节点图标名
 function imgName(entity) {
     if (entity.type == 'Action') {
-        return 'Action'
+        if (entity.name == 'Script') return 'Script'
+        else if (entity.name == 'SetBlackboard') return 'SetBlackboard'
+        else return 'Action'
     } else if (entity.type == 'Condition') {
         return 'Condition'
     } else if (entity.type == 'Control') {
@@ -196,7 +198,7 @@ function imgName(entity) {
         else if (entity.name == 'ForceFailure') return 'ForceFailure'
         else if (entity.name == 'Inverter') return 'Inverter'
         else return false
-    } else if (entity.type == 'Top') return 'Top'
+    } else if (entity.type == 'Top' || entity.type == 'SubTree') return 'Top'
     else return false
 }
 
@@ -437,22 +439,6 @@ function createDesIcon(width) {
     }, ["desIcon"]);
     return img
 }
-
-// 增加节点别名
-function addAliasName(entity) {
-
-}
-
-// 移除节点别名
-function removeAliasName(entity) {
-
-}
-
-// 修改别名
-function updateAliasName(entity) {
-
-}
-
 
 // 更新实体尺寸
 function updateEntitySize(entity, hasAlias = false) {
@@ -1165,12 +1151,6 @@ function deleteUserLine() {
 
 
 export default {
-    addAliasName,
-    removeAliasName,
-    updateAliasName,
-
-
-
     updateEntitySize,
     updateConnectionPoints,
     updateNodeElements,

@@ -342,8 +342,18 @@ function xmlParser(content, xmlName) {
     if (content === "") { return; }
     let { BehaviorTree, TreeNodesModel } = content.root
     let projectObj = gContextDao.getGContextProp("projectObj");
-    if (xmlName) {
+
+    if (xmlName) {//通过项目遍历读文件
         let projStruct = []
+
+        let modelList = gContextDao.getGContextProp("modelList");
+        if (modelList.length == 4) {
+            modelList.push({
+                ID: '子树',
+                type: 'SubTree',
+                children: []
+            })
+        }
         BehaviorTree.forEach(item => {
             // console.log(item.$.ID)
             projectObj[xmlName] = {
@@ -351,6 +361,8 @@ function xmlParser(content, xmlName) {
             }
             projStruct.push({ label: item.$.ID })
             // console.log(index, parseEntityArr(item))
+            modelList[4].children.push({ ID: item.$.ID, isUser: true, })
+            // 
         })
         return projStruct
     } else {//读单个xml文件
@@ -364,15 +376,26 @@ function loadXml(BehaviorTree) {
     let tempNodesBtID = [];
 
     let entityArr = parseEntityArr(BehaviorTree)
+
+    // 添加子树节点
+    let modelList = gContextDao.getGContextProp("modelList");
+    if (modelList.length == 4) {
+        modelList.push({ ID: '子树', type: 'SubTree', children: [] })
+    }
+    modelList[4].children.push({ ID: BehaviorTree.$.ID, isUser: true, })
+
     // console.log(entityArr)
     for (let i = 0; i < entityArr.length; i++) {
         // console.log(entityArr[i])
-        const { ID, modelName, btID, name, _description,
+        let { ID, modelName, btID, name, _description,
             _skipif, _successif, _failureif, _while,
             _onSuccess, _onFailure, _onHalted, _post } = entityArr[i]
+
         let type = findParentTypeById(modelName)
+        if (modelName == 'SubTree') modelName = ID
 
         let model = gContextDao.getModelByType(type || 'Top');
+        // console.log('modelName', modelName, 'type', type, 'model', model)
         // console.log(entityArr[i])
 
         let len = modelName ? modelName.length : 4
@@ -579,6 +602,7 @@ function handeTreeNodesModel(TreeNodesModel) {
 }
 
 function findParentTypeById(targetId) {
+    if (targetId == 'SubTree') return 'SubTree'
     let modelList = gContextDao.getGContextProp("modelList");
     for (const node of modelList) {
         if (node.children) {

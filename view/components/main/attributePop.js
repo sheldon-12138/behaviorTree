@@ -182,7 +182,7 @@ export function attributePopVm() {
                     const orgFlag = (this.entity.aliasName !== this.entity.name) //原本有别名 
                     const orgDesIsNull = (!this.entity._description) //原本描述为空
                     
-                    nodesOPController.handleAliasName(eventEntityMap[this.entity.id], aliasFlag, orgFlag, orgDesIsNull)
+                    nodesOPController.handleNodeSurface(eventEntityMap[this.entity.id], aliasFlag, orgFlag, orgDesIsNull)
                 }
                 else if (attrID == '2') {//新增节点模型
                     const tableObj = this.handleTableData();

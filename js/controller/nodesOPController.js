@@ -11,6 +11,59 @@ import gContextController from "./gContextController.js";
 import { g } from "../structure/gContext.js";
 import fileParser from "../parser/fileParser.js";
 
+// 节点别名改动后的处理
+function handleAliasName(entity, aliasFlag, orgFlag, orgDesIsNull) {
+    // console.log('aliasFlag', aliasFlag, 'orgFlag', orgFlag, 'orgDesIsNull', orgDesIsNull)
+    if (!aliasFlag && !orgFlag && orgDesIsNull && (!entity._description)) return
+
+    // 更新实体尺寸
+    dom.updateEntitySize(entity, aliasFlag);
+    // 更新连接点位置
+    dom.updateConnectionPoints(entity);
+    // 更新节点元素
+    dom.updateNodeElements(entity, aliasFlag, orgFlag, orgDesIsNull);
+    // 更新连线
+    gContextController.updateLine({ [`${entity.id}`]: entity })
+    // 
+    // if (aliasFlag) {
+    //     if (orgFlag) {//修改别名
+    //         // console.log('修改别名')
+    //         // dom.updateAliasName(entity)
+
+    //         // 更新实体尺寸
+    //         dom.updateEntitySize(entity, true);
+    //         // 更新连接点位置
+    //         dom.updateConnectionPoints(entity);
+    //         // 更新节点元素
+    //         dom.updateNodeElements(entity, true, handleDes, true);
+    //         // 更新连线
+    //         gContextController.updateLine({ [`${entity.id}`]: entity })
+    //     } else {//加别名
+    //         // console.log('加别名')
+    //         // dom.addAliasName(entity)
+    //         dom.updateEntitySize(entity, true);
+    //         // 更新连接点位置
+    //         dom.updateConnectionPoints(entity);
+    //         // 更新节点元素
+    //         dom.updateNodeElements(entity, true, handleDes);
+    //         // 更新连线
+    //         gContextController.updateLine({ [`${entity.id}`]: entity })
+    //     }
+    // } else {
+    //     if (orgFlag) { //删除别名
+    //         // console.log('删除别名')
+    //         // dom.removeAliasName(entity)
+
+    //         dom.updateEntitySize(entity, false);
+    //         // 更新连接点位置
+    //         dom.updateConnectionPoints(entity);
+    //         // 更新节点元素
+    //         dom.updateNodeElements(entity, false, handleDes);
+    //         // 更新连线
+    //         gContextController.updateLine({ [`${entity.id}`]: entity })
+    //     }
+    // }
+}
 
 function _copy() {
 
@@ -1480,6 +1533,7 @@ function bottomUserCode(id) {
 
 
 export default {
+    handleAliasName,
     eSort,
     returnTree,
     criterionP,

@@ -842,8 +842,8 @@ function clearObserver(entity) {
 //拖拽更新节点视图
 function updateEntityPos(initialPosition, offset) {
     let activedMap = gContextDao.getGContextProp("activedEntityMap");
-    let lineMap = gContextDao.getGContextProp("lineMap");
-    let userLineMap = gContextDao.getGContextProp("userLineMap");
+
+    // let userLineMap = gContextDao.getGContextProp("userLineMap");
     let mainSVG = dom.query("#mainSVG");
     // let content = dom.query("#content");
     // let rect = dom.createRect();
@@ -873,6 +873,48 @@ function updateEntityPos(initialPosition, offset) {
             // dom.removeClassByDOM(entity.dom, "hide");
         }
     }
+
+    updateLine(activedMap)
+    // for (let key in userLineMap) {//拖拽改变判据连线的起点
+    //     let line = userLineMap[key];
+
+    //     // lineizs5btaicg12f894800
+    //     const dom_index = line.id.slice(-2); // 取最后两位即index 00
+    //     const entityId = line.id.slice(4, -2); // 取ID
+    //     // console.log(line.id, entityId, dom_index)
+    //     const entity = activedMap[entityId]
+
+
+    //     if (entity) {
+    //         const angle = ((15 - dom_index) / 16) * 1.05 * Math.PI + 0.02;
+    //         const upFlag = (entity.pos.y + 48 + 54 * Math.sin(angle)) > line.end.posY
+
+    //         line.begin.posX = entity.pos.x + 48 + 54 * Math.cos(angle); // 计算小圆的 x 坐标
+    //         line.begin.posY = entity.pos.y + (upFlag ? 43 : 53) + 54 * Math.sin(angle);
+
+    //         line.update();
+    //         dom.setAttributeByDom(line.dom, {
+    //             "x": line.pos.x,
+    //             "y": line.pos.y,
+    //         });
+    //         dom.setAttributeByDom(line.dom.querySelector(".polyline"), {
+    //             "d": line.path,
+    //         });
+    //     }
+
+    // }
+
+
+    // mainSVG.removeChild(rect);
+    // mainSVG.appendChild(entityFragment);
+    // mainSVG.classList.remove("hide");
+    // mainSVG.scrollLeft;
+};
+
+
+// 更新连线
+function updateLine(activedMap) {
+    let lineMap = gContextDao.getGContextProp("lineMap");
     for (let key in lineMap) {
         let line = lineMap[key];
         let ids = key.split("-");
@@ -906,42 +948,7 @@ function updateEntityPos(initialPosition, offset) {
             });
         }
     }
-
-    for (let key in userLineMap) {//拖拽改变判据连线的起点
-        let line = userLineMap[key];
-
-        // lineizs5btaicg12f894800
-        const dom_index = line.id.slice(-2); // 取最后两位即index 00
-        const entityId = line.id.slice(4, -2); // 取ID
-        // console.log(line.id, entityId, dom_index)
-        const entity = activedMap[entityId]
-
-
-        if (entity) {
-            const angle = ((15 - dom_index) / 16) * 1.05 * Math.PI + 0.02;
-            const upFlag = (entity.pos.y + 48 + 54 * Math.sin(angle)) > line.end.posY
-
-            line.begin.posX = entity.pos.x + 48 + 54 * Math.cos(angle); // 计算小圆的 x 坐标
-            line.begin.posY = entity.pos.y + (upFlag ? 43 : 53) + 54 * Math.sin(angle);
-
-            line.update();
-            dom.setAttributeByDom(line.dom, {
-                "x": line.pos.x,
-                "y": line.pos.y,
-            });
-            dom.setAttributeByDom(line.dom.querySelector(".polyline"), {
-                "d": line.path,
-            });
-        }
-
-    }
-
-
-    // mainSVG.removeChild(rect);
-    // mainSVG.appendChild(entityFragment);
-    // mainSVG.classList.remove("hide");
-    // mainSVG.scrollLeft;
-};
+}
 //实时更新画布大小
 function updateMainSVGSize() {
     // console.log('根据用户操作更新大小（不包括放大缩小）')
@@ -1254,6 +1261,7 @@ function createCriterionDefs(criterionImgList) {
 }
 
 export default {
+    updateLine,
     isAttrData,
     updateUserLine,
     test,

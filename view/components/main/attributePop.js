@@ -8,6 +8,7 @@ import fileParser from "../../../js/parser/fileParser.js";
 import computeController from "../../../js/controller/computeController.js";
 import gContextController from "../../../js/controller/gContextController.js";
 import color from "../../../js/utils/color.js";
+import dom from "../../../js/viewModel/dom.js";
 
 export function attributePopVm() {
     new Vue({
@@ -171,10 +172,17 @@ export function attributePopVm() {
             handleSave(attrID) {
                 let eventEntityMap = g.gContext.eventEntityMap
                 if (attrID == '1') {//编辑节点信息
+                    if (this.entityInfo.aliasName == '') this.entityInfo.aliasName = this.entityInfo.name
                     Vue.set(eventEntityMap, this.entity.id, {
                         ...this.entity,
                         ...this.entityInfo
                     })
+
+                    const aliasFlag = (this.entityInfo.aliasName !== this.entityInfo.name) //有别名
+                    const orgFlag = (this.entity.aliasName !== this.entity.name) //原本有别名 
+                    const orgDesIsNull = (!this.entity._description) //原本描述为空
+                    
+                    nodesOPController.handleAliasName(eventEntityMap[this.entity.id], aliasFlag, orgFlag, orgDesIsNull)
                 }
                 else if (attrID == '2') {//新增节点模型
                     const tableObj = this.handleTableData();

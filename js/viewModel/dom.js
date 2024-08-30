@@ -1,5 +1,6 @@
 import { g } from "../structure/gContext.js"
 import gContextDao from "../dao/gContextDao.js";
+import gContextController from "../controller/gContextController.js";
 
 var doc = document;
 
@@ -215,7 +216,7 @@ function createRect(entity) {
             "data-class": 'event',
             "data-key": entity.id,
         },
-        ["clickable"]
+        ["clickable", "rect"]
     );
     return rect
 }
@@ -247,7 +248,7 @@ function createNode(entity) {
                 "font-family": "Consolas,Monaco,Courier,Courier New ",  // 使用等宽字体
                 "font-weight": "bold"
             },
-            []
+            ["name"]
         );
         eName.textContent = entity.name;
         entityFragment.appendChild(eName);
@@ -255,21 +256,7 @@ function createNode(entity) {
     // 添加别名
     // console.log(entity.aliasName)
     if (entity.aliasName !== "" && entity.aliasName !== entity.name) {
-        let eName = createSVGElement(
-            "text",
-            {
-                "x": entity.size.width / 2.0,
-                "y": entity.size.height / 2.0 + 20,
-                "text-anchor": "middle",
-                "dominant-baseline": "middle",
-                "fill": entity.textColor,
-                "font-size": "20px",
-                "font-family": "Consolas,Monaco,Courier,Courier New ",  // 使用等宽字体
-                "font-weight": "bold"
-            },
-            []
-        );
-        eName.textContent = entity.aliasName;
+        let eName = createAliasName(entity)
         entityFragment.appendChild(eName);
     }
     // console.log(entity)
@@ -280,7 +267,7 @@ function createNode(entity) {
             "cy": entity.upNodeOffset.y,
             "data-key": entity.id,
             "data-class": "conn-up",
-        }, ["connection"]);
+        }, ["connection", "conn-up"]);
         entityFragment.appendChild(upCircle);
     }
 
@@ -291,7 +278,7 @@ function createNode(entity) {
             "cy": entity.downNodeOffset.y,
             "data-key": entity.id,
             "data-class": "conn-down",
-        }, ["connection"]);
+        }, ["connection", "conn-down"]);
         entityFragment.appendChild(downCircle);
     }
 
@@ -309,14 +296,8 @@ function createNode(entity) {
 
     // 添加描述信息图标
     if (entity._description) {
-        let img = createSVGElement("image", {
-            href: `../assets/node/msg.svg`,
-            x: entity.size.width - 30,
-            y: 15,
-            width: "25",
-            height: "25"
-        });
-        entityFragment.appendChild(img);
+        let desIcon = createDesIcon(entity.size.width)
+        entityFragment.appendChild(desIcon);
     }
 
     // 添加端口
@@ -425,7 +406,126 @@ function createLine(line) {
     return lineG;
 };
 
+// 创建别名
+function createAliasName(entity) {
+    let eName = createSVGElement(
+        "text",
+        {
+            "x": entity.size.width / 2.0,
+            "y": entity.size.height / 2.0 + 20,
+            "text-anchor": "middle",
+            "dominant-baseline": "middle",
+            "fill": entity.textColor,
+            "font-size": "20px",
+            "font-family": "Consolas,Monaco,Courier,Courier New ",  // 使用等宽字体
+            "font-weight": "bold"
+        },
+        ["aliasName"]
+    );
+    eName.textContent = entity.aliasName;
+    return eName
+}
 
+// 创建描述信息图标
+function createDesIcon(width) {
+    let img = createSVGElement("image", {
+        href: `../assets/node/msg.svg`,
+        x: width - 30,
+        y: 15,
+        width: "25",
+        height: "25"
+    }, ["desIcon"]);
+    return img
+}
+
+// 增加节点别名
+function addAliasName(entity) {
+
+}
+
+// 移除节点别名
+function removeAliasName(entity) {
+
+}
+
+// 修改别名
+function updateAliasName(entity) {
+
+}
+
+
+// 更新实体尺寸
+function updateEntitySize(entity, hasAlias = false) {
+    const { type, name, aliasName, _description } = entity;
+    const len = name.length;
+    const nameLength = aliasName?.length || 0;
+    const iconName = imgName({ type, name });
+
+    const baseWidth = 20 + (iconName ? 30 : 0) + len * 11 + (_description ? 30 : 0);
+    const aliasWidth = nameLength * 11 + 20;
+    const width = hasAlias ? Math.max(baseWidth, aliasWidth) : baseWidth;
+    const height = hasAlias ? 90 : 60;
+
+    const widthFlag = entity.size.width == width
+    entity.size.width = width;
+    entity.size.height = height;
+
+    return widthFlag
+}
+
+// 更新连接点位置
+function updateConnectionPoints(entity) {
+    const { size, dom, upNodeOffset, downNodeOffset, hasUpNodes, hasDownNodes } = entity;
+
+    if (hasUpNodes) {
+        upNodeOffset.x = size.width / 2;
+        const up = dom.querySelector(".conn-up");
+        setAttributeByDom(up, { "cx": upNodeOffset.x });
+    }
+
+    if (hasDownNodes) {
+        downNodeOffset.x = size.width / 2;
+        downNodeOffset.y = size.height - 2;
+        const down = dom.querySelector(".conn-down");
+        setAttributeByDom(down, { "cx": downNodeOffset.x, "cy": downNodeOffset.y });
+    }
+}
+
+// 更新节点元素
+function updateNodeElements(entity, aliasFlag, orgFlag, orgDesIsNull = true) {
+    // console.log(aliasFlag, orgFlag, handleDes)
+    const { dom, size, type, name, _description } = entity;
+    const iconName = imgName({ type, name });
+
+    // 更新节点大小
+    const rect = dom.querySelector(".rect");
+    setAttributeByDom(rect, { "width": size.width, "height": size.height });
+
+    // 更新节点名位置
+    const nodeName = dom.querySelector(".name");
+    setAttributeByDom(nodeName, {
+        "x": size.width / 2 + (iconName ? 15 : 0) - (_description ? 15 : 0),
+    });
+
+    // 更新别名[修改、增加、移除]
+    if (aliasFlag) {
+        if (orgFlag) removeDomsByClass(dom, ".aliasName");
+
+        const eName = createAliasName(entity);
+        dom.appendChild(eName)
+    } else {
+        if (orgFlag) removeDomsByClass(dom, ".aliasName");
+    }
+
+    // 更新描述信息图标[修改、增加、移除]
+    if (_description) {
+        if (!orgDesIsNull) removeDomsByClass(dom, ".desIcon");
+        dom.appendChild(createDesIcon(size.width));
+    } else {
+        if (!orgDesIsNull) removeDomsByClass(dom, ".desIcon");
+    }
+
+}
 
 //添加高亮动画
 // function createLineAnimate(ps) {
@@ -867,6 +967,14 @@ function addClassByID(key, className) {
 function addClassByDOM(dom, className) {
     return dom.classList.add(className);
 };
+
+
+// 通过class删除DOM下指定元素
+function removeDomsByClass(dom, className) {
+    let child = dom.querySelector(className);
+    dom.removeChild(child);
+}
+
 //通过dom删除指定class
 function removeClassByDOM(dom, className) {
     return dom.classList.remove(className);
@@ -1057,6 +1165,16 @@ function deleteUserLine() {
 
 
 export default {
+    addAliasName,
+    removeAliasName,
+    updateAliasName,
+
+
+
+    updateEntitySize,
+    updateConnectionPoints,
+    updateNodeElements,
+
     imgName,
     deleteUserLine,
     createNode,

@@ -100,6 +100,7 @@ export function attributePopVm() {
                 }
             },
             model() {
+                console.log('attr的model', this.model)
                 if (this.model) {
                     this.newModel = {
                         typeIndex: this.typeList.indexOf(this.model.type),
@@ -117,6 +118,11 @@ export function attributePopVm() {
                     this.tipText = '';
                     this.isOk = true;
                     // console.log('model', this.model)
+                } else {
+                    this.newModel = {
+                        typeIndex: 0,
+                        name: '',
+                    }
                 }
             }
         },
@@ -181,7 +187,7 @@ export function attributePopVm() {
                     const aliasFlag = (this.entityInfo.aliasName !== this.entityInfo.name) //有别名
                     const orgFlag = (this.entity.aliasName !== this.entity.name) //原本有别名 
                     const orgDesIsNull = (!this.entity._description) //原本描述为空
-                    
+
                     nodesOPController.handleNodeSurface(eventEntityMap[this.entity.id], aliasFlag, orgFlag, orgDesIsNull)
                 }
                 else if (attrID == '2') {//新增节点模型

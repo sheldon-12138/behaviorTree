@@ -397,6 +397,12 @@ function mouseUp(e) {
                 newSVGNode.name);
             nodesOPController.updateLayer();
             nodesOPController.updateTreeData();
+
+
+            let attrData = gContextDao.getGContextProp("attrData");
+            attrData.model = null
+
+            console.log('daol ', g.gContext.attrData)
         }
         // else {
         //     gContextController.createNode(newSVGNode.type, { x: 20 + newNodeNum * 10, y: 20 + newNodeNum * 10 }, newSVGNode.name);

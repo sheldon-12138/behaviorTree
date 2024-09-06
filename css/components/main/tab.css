@@ -1,0 +1,18 @@
+.activeTab {
+    background-color: #fff!important;
+    border-bottom-color: #fff !important;
+}
+
+.tab {
+    /* width: 100px; */
+    height: 30px;
+    padding: 0px 5px;
+    box-sizing: border-box;
+    background-color: #dddde0;
+    text-align: center;
+    line-height: 30px;
+    border: 1px solid #666;
+    border-radius: 5px 5px 0 0;
+    cursor: pointer;
+    font-size: 14px;
+}

@@ -62,8 +62,12 @@ export function attributePopVm() {
                 tipText: '模型名不可为空',
                 tipTextList: ['模型名不能为空', '模型名已存在', '模型名无效:仅允许使用字母、数字和下划线', '端口名无效:仅允许使用字母、数字和下划线'],
                 tableData: [],
+                nodePortData: [],
+                nodePortItem: { portName: 'port_name', value: '{tree_port_name}' },
                 tableItem: { portName: 'key_name', direction: 'input_port', defaultValue: '', description: '' },
-                tabsArr: ['Pre Conditions', 'Post Conditions', 'Description'],
+                selectPortIndex: -1,//选中的端口索引
+                selectNodePortIndex: -1,//选中的端口索引
+                tabsArr: ['Port Remapping', 'Pre Conditions', 'Post Conditions', 'Description'],
                 avtiveTab: 0,
             }
         },
@@ -100,11 +104,12 @@ export function attributePopVm() {
                 }
             },
             model() {
-                console.log('attr的model', this.model)
+                // console.log('attr的model', this.model)
                 if (this.model) {
                     this.newModel = {
                         typeIndex: this.typeList.indexOf(this.model.type),
                         name: this.model.ID,
+                        type: this.model.type
                     }
                     // console.log('model', this.model)
                     for (let key in this.model.port) {
@@ -171,8 +176,26 @@ export function attributePopVm() {
                 return regex.test(str);
             },
             // 增加端口
-            addPort() {
-                this.tableData.push(JSON.parse(JSON.stringify(this.tableItem)));//深拷贝,避免改变tableItem
+            addPort(flag) {
+                if (flag) {
+                    this.tableData.push(JSON.parse(JSON.stringify(this.tableItem)));//深拷贝,避免改变tableItem
+                }
+                else {//子树新增端口
+                    this.nodePortData.push(JSON.parse(JSON.stringify(this.nodePortItem)));
+                }
+            },
+            // 删除端口
+            deletePort(flag) {
+                if (flag) {
+                    if (this.selectPortIndex == -1) return
+                    this.tableData.splice(this.selectPortIndex, 1)
+                    if (this.tableData.length == 0) this.selectPortIndex = -1
+                }
+                else {//子树删除端口
+                    if (this.selectNodePortIndex == -1) return
+                    this.nodePortData.splice(this.selectNodePortIndex, 1)
+                    if (this.nodePortData.length == 0) this.selectNodePortIndex = -1
+                }
             },
             // 保存
             handleSave(attrID) {
@@ -233,7 +256,10 @@ export function attributePopVm() {
             },
             // 关闭弹窗
             handleClose() {
+                // console.log('')
                 let { attrID } = this.statusData
+
+                // 
                 let attrData = gContextDao.getGContextProp("attrData");
                 if (attrID == 1) {//节点信息
                     this.entityInfo = {
@@ -259,7 +285,7 @@ export function attributePopVm() {
                     this.isOk = false
                     this.newModel = {
                         typeIndex: 0,
-                        name: '',
+                        name: ''
                     }
                     this.tableData.length = 0;
                     attrData.model = null;

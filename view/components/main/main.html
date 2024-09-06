@@ -17,28 +17,40 @@
     <img v-else src="assets/main/open.png" class="btn-img2" @click="statusData.isShowTree=true"> -->
 </div>
 
-
-<!-- 画板 -->
-<div class="drawingBoard" id="drawingBoard">
-    <div class="content" id="content" tabindex="0">
-        <div class="hiddenPopover" id="hiddenPopover" v-show="hiddenPopoverData.show" :style="{'top': hiddenPopoverData.show?hiddenPopoverData.data.pos.y + 'px':'0',
-         'left':hiddenPopoverData.show?hiddenPopoverData.data.pos.x + 'px':'0'}">
+<div>
+    <div class="tabs" id="tabList">
+        <div class="tab-content" v-show="statusData.isShowTab">
+            <div id="tab"></div>
         </div>
     </div>
 
 
-    <div class="axis_x" id="axis_x">
-        <canvas id="canvas_axis_x"></canvas>
-    </div>
+    <!-- 画板 -->
+    <div class="drawingBoard" id="drawingBoard">
+        <div class="content" id="content" tabindex="0">
+            <div class="hiddenPopover" id="hiddenPopover" v-show="hiddenPopoverData.show" :style="{'top': hiddenPopoverData.show?hiddenPopoverData.data.pos.y + 'px':'0',
+         'left':hiddenPopoverData.show?hiddenPopoverData.data.pos.x + 'px':'0'}">
+            </div>
+        </div>
 
-    <div class="axis_y" id="axis_y">
-        <canvas id="canvas_axis_y"></canvas>
-    </div>
 
-    <div class="tree-table" id="treeTable" v-show="modeID==2"></div>
-    <div v-if="isShowTimeline&&statusData.modeID==1" class="timeline" id="timeline"></div>
-    <div id="renderMode" v-if="statusData.computeStatus!=0"></div>
+        <div class="axis_x" id="axis_x">
+            <canvas id="canvas_axis_x"></canvas>
+        </div>
+
+        <div class="axis_y" id="axis_y">
+            <canvas id="canvas_axis_y"></canvas>
+        </div>
+
+        <div class="tree-table" id="treeTable" v-show="modeID==2"></div>
+        <div v-if="isShowTimeline&&statusData.modeID==1" class="timeline" id="timeline"></div>
+        <div id="renderMode" v-if="statusData.computeStatus!=0"></div>
+    </div>
 </div>
+
+
+
+
 
 <div class="attributePop" id="attributePopList" v-if="statusData.isShowProperty">
     <div id="attributePop"></div>

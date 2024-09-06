@@ -1048,8 +1048,12 @@ function updateMainSVGSizeUp() {
     };
     // (statusData.isShowCriterionPop ? 300 : 200)
     // console.log(newSize.height)
-    newSize.width = Math.max(1872 / (svgCanvas.zoom < 1 ? svgCanvas.zoom : 1), newSize.width)// 基于最大位置坐标调整新尺寸
-    newSize.height = Math.max(892 / (svgCanvas.zoom < 1 ? svgCanvas.zoom : 1), newSize.height) + (statusData.isShowCriterionPop ? 100 : 0)// 当尺寸大于原来尺寸时再扩大
+
+    //  newSize.width = Math.max(1872 /
+    // newSize.height = Math.max(892 /
+
+    newSize.width = Math.max(1632 / (svgCanvas.zoom < 1 ? svgCanvas.zoom : 1), newSize.width)// 基于最大位置坐标调整新尺寸
+    newSize.height = Math.max(860 / (svgCanvas.zoom < 1 ? svgCanvas.zoom : 1), newSize.height) + (statusData.isShowCriterionPop ? 100 : 0)// 当尺寸大于原来尺寸时再扩大
     // newSize.height = newSize.height 
     // console.log(newSize.height)
     // console.log('maxX', maxPosition.x, '画布宽', newSize.width)

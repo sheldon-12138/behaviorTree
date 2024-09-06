@@ -29,22 +29,51 @@
                 </div>
             </div>
             <div class="tabPane">
-                <!-- preConditions -->
+                <!-- portRemapping 端口重映射 -->
                 <template v-if="avtiveTab==0">
+                    <div class="iconLine" style="margin-top: 0px;">
+                        <div style="margin-left: 4px;font-size: 20px;">
+                            <i class="el-icon-plus" @click="addPort(false)" style="margin-right: 2px;"></i>
+                            <i class="el-icon-delete" @click="deletePort(false)"
+                                :style="{ backgroundColor:selectNodePortIndex==-1 ? '#dddde0' : 'inherit',padding: '3px',borderRadius: '5px' }"></i>
+                        </div>
+                        <!-- <span style="color: red;">{{tipText}}</span> -->
+                    </div>
+                    <div :style="`border: 1px solid #666;margin:5px 0px 32px;`">
+                        <table class="table">
+                            <tr class="thead">
+                                <th>Subtree Port</th>
+                                <th>Value or Parent Port</th>
+                            </tr>
+                        </table>
+                        <div class="table-container">
+                            <table class="table">
+                                <tr v-for="(item,index) in nodePortData" :key="item.portName"
+                                    @click="selectNodePortIndex = index"
+                                    :style="{ backgroundColor:selectNodePortIndex==index ? '#bceae1' : 'inherit'}">
+                                    <td><input type="text" v-model="item.portName"></td>
+                                    <td><input type="text" v-model="item.value"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </template>
+                <!-- preConditions 前提 -->
+                <template v-if="avtiveTab==1">
                     <div v-for="item in preTextArr" :key="item" class="ifLine">
                         <div style="width: 95px;">{{item}}</div>
                         <textarea class="ifTextarea" v-model="entityInfo[item]"></textarea>
                     </div>
                 </template>
-                <!-- postConditions -->
-                <template v-else-if="avtiveTab==1">
+                <!-- postConditions 端口条件-->
+                <template v-else-if="avtiveTab==2">
                     <div v-for="item in postTextArr" :key="item" class="ifLine">
                         <div style="width: 95px;">{{item}}</div>
                         <textarea class="ifTextarea" v-model="entityInfo[item]"></textarea>
                     </div>
                 </template>
-                <!-- descriptions -->
-                <template v-else-if="avtiveTab==2">
+                <!-- descriptions 描述-->
+                <template v-else-if="avtiveTab==3">
                     Add a Description/Comments to this node:
                     <textarea class="description" v-model="entityInfo._description"></textarea>
                 </template>
@@ -53,7 +82,11 @@
         <!-- 增加/修改 节点模型框 -->
         <template v-else-if="statusData.attrID == '2'||statusData.attrID == '3'||statusData.attrID == '4'">
             <div class="msgLine">Type:
-                <select :disabled="statusData.attrID == '4'" v-model="newModel.typeIndex">
+                <!-- v-model="newModel.type" -->
+                <select v-if="newModel.type=='SubTree'" disabled>
+                    <option value="SubTree">SubTree</option>
+                </select>
+                <select v-else :disabled="statusData.attrID == '4'" v-model="newModel.typeIndex">
                     <option v-for="(item,index) in typeList" :key="item" :value="index">{{item}}</option>
                 </select>
                 <input :disabled="statusData.attrID == '4'" @input="modelNameChange" type="text" v-model="newModel.name"
@@ -61,8 +94,9 @@
             </div>
             <div v-if="statusData.attrID != '4'" class="iconLine">
                 <div style="margin-left: 4px;font-size: 20px;">
-                    <i class="el-icon-plus" @click="addPort" style="margin-right: 6px;"></i>
-                    <i class="el-icon-delete"></i>
+                    <i class="el-icon-plus" @click="addPort(true)" style="margin-right: 2px;"></i>
+                    <i class="el-icon-delete" @click="deletePort(true)"
+                        :style="{ backgroundColor:selectPortIndex==-1 ? '#dddde0' : 'inherit',padding: '3px',borderRadius: '5px' }"></i>
                 </div>
                 <span style="color: red;">{{tipText}}</span>
             </div>
@@ -77,10 +111,11 @@
                 </table>
                 <div class="table-container">
                     <table class="table">
-                        <tr v-for="item in tableData" :key="item.portName">
+                        <tr v-for="(item,index) in tableData" :key="item.portName" @click="selectPortIndex = index"
+                            :style="{ backgroundColor:selectPortIndex==index ? '#bceae1' : 'inherit'}">
                             <td><input :disabled="statusData.attrID == '4'" type="text" v-model="item.portName"></td>
                             <td>
-                                <select :disabled="statusData.attrID == '4'" v-model=" item.direction">
+                                <select :disabled="statusData.attrID == '4'" v-model="item.direction">
                                     <option value="input_port">Input</option>
                                     <option value="output_port">Output</option>
                                     <option value="inout_port">In/Out</option>

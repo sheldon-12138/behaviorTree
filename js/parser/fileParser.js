@@ -343,6 +343,9 @@ function xmlParser(content, xmlName) {
     let { BehaviorTree, TreeNodesModel } = content.root
     let projectObj = gContextDao.getGContextProp("projectObj");
 
+    // 调整结构
+
+
     if (xmlName) {//通过项目遍历读文件
         let projStruct = []
 
@@ -361,13 +364,18 @@ function xmlParser(content, xmlName) {
             }
             projStruct.push({ label: item.$.ID })
             // console.log(index, parseEntityArr(item))
-            modelList[4].children.push({ ID: item.$.ID, isUser: true, })
-            // 
+            modelList[4].children.push({ ID: item.$.ID, isUser: true })
+            // haidesgudaxyued
         })
         return projStruct
     } else {//读单个xml文件
         handeTreeNodesModel(TreeNodesModel[0])
-        loadXml(BehaviorTree[0])
+        loadXml(BehaviorTree[1])
+        // BehaviorTree.forEach(item => {
+
+        // })
+
+
     }
 }
 
@@ -391,6 +399,19 @@ function loadXml(BehaviorTree) {
             _skipif, _successif, _failureif, _while,
             _onSuccess, _onFailure, _onHalted, _post } = entityArr[i]
 
+
+        // 添加自定义节点的端口信息
+        const port = findNodePort(modelName)
+        let portLength = 0
+        if (port) {
+            Object.keys(port).forEach(key => {
+                if (entityArr[i][key]) {
+                    port[key].value = entityArr[i][key];
+                }
+            });
+            portLength = Object.keys(port).length
+        }
+
         let type = findParentTypeById(modelName)
         if (modelName == 'SubTree') modelName = ID
 
@@ -405,7 +426,7 @@ function loadXml(BehaviorTree) {
 
         const iconName = dom.imgName({ type: type || 'Top', name: modelName })
         const width = Math.max(20 + (iconName ? 30 : 0) + len * 11 + (_description ? 30 : 0), nameLength * 11 + 20);
-        const height = 60 + (haveAlias ? 30 : 0)
+        const height = 60 + (haveAlias ? 30 : 0) + portLength * 53 + (type == 'SubTree' ? 15 : 0)
 
         let entityProp = {
             btID,
@@ -437,6 +458,8 @@ function loadXml(BehaviorTree) {
             _onHalted: _onHalted || '',
             _post: _post || '',
 
+            port: port || null,
+
         }
         const entity = gContextDao.addEntity(entityProp);
         // console.log('entity', entity)
@@ -451,6 +474,21 @@ function loadXml(BehaviorTree) {
             btLine(tempNodesBtID[k], entityArr[k].downEntity, tempNodes);
         }
     }
+}
+
+
+function findNodePort(modelName) {
+    let modelList = gContextDao.getGContextProp("modelList");
+    // console.log('modelList', modelList)
+    let result = null
+    for (let i = 0; i < 4; i++) {
+        modelList[i].children.forEach(item => {
+            if (item.port && Object.keys(item.port).length > 0 && item.ID == modelName) {
+                result = item.port
+            }
+        })
+    }
+    return result
 }
 
 // 解析proj文件

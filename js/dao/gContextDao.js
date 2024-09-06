@@ -104,6 +104,8 @@ function addEventEntity(entity) {
     event.modelType = entity.modelType;
     event.textColor = entity.textColor;
 
+    event.port = entity.port;
+
     // event.desc = entity.desc || "";
     // console.log('event',event)
     return gContext.eventEntityMap[id] = event;

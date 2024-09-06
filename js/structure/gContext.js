@@ -61,7 +61,7 @@ export const g = {
                 }, {
                     ID: 'Parallel'
                 }, {
-                    ID: 'ParallelAl'
+                    ID: 'ParallelAll'
                 }, {
                     ID: 'ReactiveFallback'
                 }, {
@@ -154,14 +154,14 @@ export const g = {
 
         viewPort: {
             width: window.innerWidth - 280,//-10
-            height: window.innerHeight - 74,
+            height: window.innerHeight - 104,
         },
 
         //svgCanvas
         svgCanvas: {
             _size: {
-                width: window.innerWidth - 280,//1872,window.innerWidth 1453 2080
-                height: window.innerHeight - 74,//892 999
+                width: window.innerWidth - 280,//-280 1872,window.innerWidth 1453 2080
+                height: window.innerHeight - 104,// -74 892 999
                 // width: window.innerWidth-10,//1872,window.innerWidth 1453 2080
                 // height: window.innerHeight-74,//892 999
             },
@@ -185,6 +185,10 @@ export const g = {
         //当前模式包括 编辑模式/显示模式
         currentMode: null,
 
+        // tab页数据
+        tabsArr: [{ id: 'dfdsf', name: '测试1tab' }, { id: 'dfddsfsasf', name: '测试2tab' }],
+
+
         //各种状态控制
         statusData: {
             modeID: 1, //视图模式：1-编辑视图， 2-统计视图
@@ -192,6 +196,7 @@ export const g = {
             isShowFloat: false,//是否收缩浮窗信息框
             isShowModel: true,   //是否收缩模型栏
             isShowTree: true,    //是否收缩结构树栏
+            isShowTab: true, //是否显示tab页
             isShowProperty: false,    //是否收缩属性栏  是否显示属性框弹窗
             isShowCriterionPop: false,    //是否显示判据弹窗
             isShowBottomMsg: false,//是否显示分析计算弹窗

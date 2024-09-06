@@ -144,6 +144,12 @@ input::-webkit-inner-spin-button {
   transition: all 0.5s;
 }
 
+.main .tabs {
+  width: 500px;
+  height: 30px;
+  /* overflow: hidden; */
+}
+
 .main .drawingBoard {
   flex: 1;
   overflow: hidden;

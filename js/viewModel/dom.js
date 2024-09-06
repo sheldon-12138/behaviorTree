@@ -188,6 +188,8 @@ function imgName(entity) {
     } else if (entity.type == 'Control') {
         if (entity.name == 'Fallback') return 'Fallback'
         else if (entity.name == 'Parallel') return 'Parallel'
+        else if (entity.name == 'ParallelAll') return 'ParallelAll'
+        else if (entity.name == 'ReactiveSequence') return 'ReactiveSequence'
         else if (entity.name == 'Sequence') return 'Sequence'
         else return false
     } else if (entity.type == 'Decorator') {
@@ -223,11 +225,90 @@ function createRect(entity) {
     return rect
 }
 
+const portNameObj = {
+    "input_port": 'IN',
+    "output_port": 'OUT',
+    "inout_port": 'IN/OUT',
+}
+
+// 创建节点端口
+function createPortDefs(port, width, haveAlias) {
+    let portG = createSVGElement("g", {}, []);
+
+    let num = 0
+    for (let key in port) {
+        let portType = createSVGElement(
+            "text",
+            {
+                "x": 10,
+                "y": (haveAlias ? 35 : 0) + 60 + num * 55,
+                "fill": "#fff",
+                "font-size": "18px",
+                "font-family": "Consolas,Monaco,Courier,Courier New ",  // 使用等宽字体
+                "font-weight": "bold"
+            },
+            ["portType"]
+        );
+        portType.textContent = `${portNameObj[port[key].direction]}:`;
+        portG.appendChild(portType);
+
+        let portName = createSVGElement(
+            "text",
+            {
+                "x": 80,
+                "y": (haveAlias ? 35 : 0) + 60 + num * 55,
+                "fill": "#fff",
+                "font-size": "16px",
+                "font-family": "Consolas,Monaco,Courier,Courier New ",  // 使用等宽字体
+            },
+            ["portName"]
+        );
+        portName.textContent = key;
+        portG.appendChild(portName);
+
+        let portRect = createSVGElement("rect",
+            {
+                "x": 10,
+                "y": (haveAlias ? 35 : 0) + 70 + num * 55,
+                "width": width - 20,
+                "height": 20,
+                "fill": "white",
+                "stroke": "black"
+            },
+            []
+        );
+        let portValue = createSVGElement(
+            "text",
+            {
+                "x": 15,
+                "y": (haveAlias ? 35 : 0) + 85 + num * 55,
+                "fill": "#000",
+                "font-size": "16px",
+                "font-family": "Consolas,Monaco,Courier,Courier New ",  // 使用等宽字体
+            },
+            ["portValue"]
+        );
+        // portValue.textContent = portName[key].value || portName[key].defaultValue || '';
+        console.log(port[key])
+        portValue.textContent = port[key]?.value ?? port[key]?.defaultValue ?? '';
+        portG.appendChild(portRect);
+        portG.appendChild(portValue);
+
+        num++
+        // entityFragment.appendChild(eName);
+    }
+
+
+    return portG
+}
+
 //创建节点
 function createNode(entity) {
     // console.log(entity)
     let entityNode = doc.createElementNS("http://www.w3.org/2000/svg", "svg");
     let entityFragment = doc.createDocumentFragment();
+
+    let haveAlias = entity.aliasName !== "" && entity.aliasName !== entity.name
 
     const iconName = imgName(entity)
 
@@ -257,7 +338,7 @@ function createNode(entity) {
     }
     // 添加别名
     // console.log(entity.aliasName)
-    if (entity.aliasName !== "" && entity.aliasName !== entity.name) {
+    if (haveAlias) {
         let eName = createAliasName(entity)
         entityFragment.appendChild(eName);
     }
@@ -303,23 +384,49 @@ function createNode(entity) {
     }
 
     // 添加端口
-    // if (true) {
-    //     let foreignObject = createSVGElement("foreignObject", {
-    //         x: "20",
-    //         y: entity.size.height - 20,
-    //         width: entity.size.width - 20,
-    //         height: "30"
-    //     }, ["clickable"]);
+    if (entity.port) {
+        // console.log(entity.port)
+        let portDefs = createPortDefs(entity.port, entity.size.width, haveAlias)
+        entityFragment.appendChild(portDefs);
+    }
 
-    //     // 创建 input 元素并设置样式
-    //     let input = document.createElement("input");
-    //     input.setAttribute("type", "text");
-    //     input.style.width = "90px"; // 样式调整
-    //     input.style.height = "20px";
+    //  添加子树折叠
+    if (entity.modelType == 'SubTree') {
+        let checked = createSVGElement(
+            "use",
+            {
+                "href": "#unchecked",
+                "x": 10,
+                "y": entity.size.height - 27,
+                "data-key": entity.id,
+                "data-class": "collapse",
+            },
+            ["collapse"]
+        );
+        entityFragment.appendChild(checked);
 
-    //     foreignObject.appendChild(input);
-    //     entityFragment.appendChild(foreignObject);
-    // }
+        let text = createSVGElement("text", {
+            "x": 30,
+            "y": entity.size.height - 20,
+            "dominant-baseline": "middle",
+            "fill": '#fff'
+        }, []);
+        text.textContent = "_autoremap";
+        entityFragment.appendChild(text);
+
+        let collapse = createSVGElement(
+            "use",
+            {
+                "href": "#unfold",
+                "x": entity.size.width - 30,
+                "y": entity.size.height - 30,
+                "data-key": entity.id,
+                "data-class": "collapse",
+            },
+            ["absolute", "collapse"]
+        );
+        entityFragment.appendChild(collapse);
+    }
 
     entityNode.setAttribute("x", entity.pos.x);
     entityNode.setAttribute("y", entity.pos.y);
@@ -414,7 +521,8 @@ function createAliasName(entity) {
         "text",
         {
             "x": entity.size.width / 2.0,
-            "y": entity.size.height / 2.0 + 20,
+            "y": 60,
+            // entity.size.height / 2.0 + 20
             "text-anchor": "middle",
             "dominant-baseline": "middle",
             "fill": entity.textColor,
@@ -442,7 +550,11 @@ function createDesIcon(width) {
 
 // 更新实体尺寸
 function updateEntitySize(entity, hasAlias = false) {
-    const { type, name, aliasName, _description } = entity;
+    const { type, name, aliasName, _description, port } = entity;
+    let portLength = 0
+    if (port) portLength = Object.keys(port).length
+
+
     const len = name.length;
     const nameLength = aliasName?.length || 0;
     const iconName = imgName({ type, name });
@@ -450,7 +562,11 @@ function updateEntitySize(entity, hasAlias = false) {
     const baseWidth = 20 + (iconName ? 30 : 0) + len * 11 + (_description ? 30 : 0);
     const aliasWidth = nameLength * 11 + 20;
     const width = hasAlias ? Math.max(baseWidth, aliasWidth) : baseWidth;
-    const height = hasAlias ? 90 : 60;
+    // const height = (hasAlias ? 90 : 60);
+    const height = 60 + (hasAlias ? 30 : 0) + portLength * 53
+
+
+    // + portLength * 53
 
     const widthFlag = entity.size.width == width
     entity.size.width = width;
@@ -510,6 +626,8 @@ function updateNodeElements(entity, aliasFlag, orgFlag, orgDesIsNull = true) {
     } else {
         if (!orgDesIsNull) removeDomsByClass(dom, ".desIcon");
     }
+
+    // 更新端口位置 （加名后， 高度宽度）
 
 }
 
@@ -624,7 +742,7 @@ function createCanvas(size) {
 
     // // 将背景矩形添加到 SVG 的最底层
     // canvas.appendChild(backgroundRect);
-    // canvas.appendChild(createDefs());
+    canvas.appendChild(createDefs());
     // canvas.appendChild(createTips());
     canvas.appendChild(createLinearGradientDefs());//插入节点渐变背景
 
@@ -668,8 +786,14 @@ function createDefs() {
     let fold = createFoldCollapseDefs();
     let unfold = createUnfoldCollapseDefs();
 
+    let checked = createCheckedCollapseDefs();
+    let unchecked = createUnCheckedCollapseDefs();
+
     defs.appendChild(fold);
     defs.appendChild(unfold);
+
+    defs.appendChild(checked);
+    defs.appendChild(unchecked);
 
     return defs;
 }
@@ -681,33 +805,13 @@ function createFoldCollapseDefs() {
         },
         [],
     );
-    let rect = createSVGElement(
-        "rect",
-        {
-            "x": 0,
-            "y": 0,
-            "width": 10,
-            "height": 10,
-            "stroke": "rgba(128, 128, 128, 0.3)",//rgb(30, 30, 30)
-            "stroke-width": 0.5,
-            "fill": "#f5f7fa",
-        },
-        []
-    );
-    fold.appendChild(rect);
-    let line = createSVGElement(
-        "line",
-        {
-            "x1": 0.5,//0
-            "x2": 9.5,//10
-            "y1": 5,
-            "y2": 5,
-            "stroke": "rgba(128, 128, 128, 0.5)",//rgb(249, 109, 118)
-            "stroke-width": 0.5,
-        },
-        []
-    );
-    fold.appendChild(line);
+    let img = createSVGElement("image", {
+        href: `../assets/node/fold.svg`,
+        width: "20",
+        height: "20"
+    }, ["fold"]);
+
+    fold.appendChild(img);
     return fold;
 };
 function createUnfoldCollapseDefs() {
@@ -718,47 +822,48 @@ function createUnfoldCollapseDefs() {
         },
         [],
     );
-    let rect = createSVGElement(
-        "rect",
-        {
-            "x": 0,
-            "y": 0,
-            "width": 10,
-            "height": 10,
-            "stroke": "rgba(128, 128, 128, 0.3)",//rgb(30, 30, 30)
-            "stroke-width": 0.5,
-            "fill": "#f5f7fa",
-        },
-        []
-    );
-    unfold.appendChild(rect);
-    let line1 = createSVGElement(
-        "line",
-        {
-            "x1": 0.5,//0
-            "x2": 9.5,//10
-            "y1": 5,
-            "y2": 5,
-            "stroke": "rgba(128, 128, 128, 0.5)",//#b7f7a7
-            "stroke-width": 0.5,
-        },
-        []
-    );
-    unfold.appendChild(line1);
-    let line2 = createSVGElement(
-        "line",
-        {
-            "x1": 5,
-            "x2": 5,
-            "y1": 0.5,//0
-            "y2": 9.5,//10
-            "stroke": "rgba(128, 128, 128, 0.5)",//#b7f7a7
-            "stroke-width": 0.5,
-        },
-        []
-    );
-    unfold.appendChild(line2);
+    let img = createSVGElement("image", {
+        href: `../assets/node/unfold.svg`,
+        width: "20",
+        height: "20"
+    }, ["fold"]);
+
+    unfold.appendChild(img);
     return unfold;
+};
+function createCheckedCollapseDefs() {
+    let checked = createSVGElement(
+        "g",
+        {
+            "id": "checked",
+        },
+        [],
+    );
+    let img = createSVGElement("image", {
+        href: `../assets/node/checked.svg`,
+        width: "15",
+        height: "15"
+    }, ["checked"]);
+
+    checked.appendChild(img);
+    return checked;
+};
+function createUnCheckedCollapseDefs() {
+    let unchecked = createSVGElement(
+        "g",
+        {
+            "id": "unchecked",
+        },
+        [],
+    );
+    let img = createSVGElement("image", {
+        href: `../assets/node/unchecked.svg`,
+        width: "15",
+        height: "15"
+    }, ["unchecked"]);
+
+    unchecked.appendChild(img);
+    return unchecked;
 };
 
 //创建网格
@@ -997,8 +1102,6 @@ function addNodeImg(entity) {
         }
         reader.readAsDataURL(file);
     }
-
-
 }
 
 function addImg(svg, imgData, entity) {

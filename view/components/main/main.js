@@ -2,6 +2,7 @@ import { g } from "../../../js/structure/gContext.js"
 import utils from "../../../js/utils/utils.js";
 import { listVm } from "./list.js"
 import { treeVm } from "./tree.js"
+import { tabVm } from "./tab.js"
 // import { treeTableVm } from "./treeTable.js";
 import { attributePopVm } from "./attributePop.js"
 
@@ -21,6 +22,9 @@ export function mainVm() {
     // });
     jQuery('#tree').load('view/components/main/tree.html', function () {
         treeVm();
+    });
+    jQuery('#tab').load('view/components/main/tab.html', function () {
+        tabVm();
     });
     // jQuery('#treeTable').load('view/components/main/treeTable.html', function () {
     //     treeTableVm();

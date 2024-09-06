@@ -96,7 +96,8 @@
   top: -1px;
   /* 使伪元素与上边框对齐 */
   left: 0px;
-  width: 354px;
+  width: 435px;
+  /* //491 */
   height: 0;
   border-top: 1px solid white;
   /* 伪元素覆盖上边框的一段 */

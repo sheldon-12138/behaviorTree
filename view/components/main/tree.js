@@ -27,14 +27,17 @@ export function treeVm() {
                 statusData: g.gContext.statusData,
                 treeData: g.gContext.entityTree,
                 attrData: g.gContext.attrData,
+
+                treeMap: g.gContext.treeMap,
             };
         },
 
         methods: {
             //选中树
-            handleNodeClick(node, selected, event) {
+            handleTreeClick(node, selected, event) {
                 // console.log(node, selected, event)
-                
+                nodesOPController.selectedTree(node.treeId)
+
             },
             triggerFileInput() {
                 this.$refs.fileInput.click();
@@ -56,13 +59,21 @@ export function treeVm() {
                             // console.log(result)
 
                             if (result.flag) {
-                                const treeName = JSON.parse(result.content).root.BehaviorTree[0].$.ID;
+                                // const treeName = JSON.parse(result.content).root.BehaviorTree[0].$.ID;
+                                // console.log(this.treeMap)
+
                                 this.$set(this.project[0], 'children', [{
                                     label: fileName,
-                                    children: [{
-                                        label: treeName,
-                                    }]
+                                    children: []
                                 }]);
+
+                                for (let key in this.treeMap) {
+                                    this.project[0].children[0].children.push({
+                                        treeId: key,
+                                        label: this.treeMap[key].ID,
+                                    })
+                                }
+
                             }
                         }).catch((err) => {
                             console.log('解析失败', err);

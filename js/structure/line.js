@@ -1,4 +1,5 @@
-export default function Line(id, begin, end, show, color, lineWidth, orginX) {
+export default function Line(treeId, id, begin, end, show, color, lineWidth, orginX) {
+  this.treeId = treeId;
   this.id = id;
   this.begin = begin;
   this.end = end;

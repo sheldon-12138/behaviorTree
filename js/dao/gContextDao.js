@@ -85,7 +85,7 @@ function addEntity(entity) {
 };
 function generateID() {
     let id = Utils.GenNonDuplicateID();
-    while (gContext.eventEntityMap[id] || gContext.doorEntityMap[id]) {
+    while (gContext.eventEntityMap[id]) {
         id = Utils.GenNonDuplicateID();
     }
     return id;
@@ -97,7 +97,7 @@ function addEventEntity(entity) {
         entity.hasUpNodes, entity.hasDownNodes, entity.collapse,
         entity.textColor || '#fff',
         entity._description, entity._skipif, entity._successif, entity._failureif, entity._while,
-        entity._onSuccess, entity._onFailure, entity._onHalted, entity._post);
+        entity._onSuccess, entity._onFailure, entity._onHalted, entity._post, entity.treeId || 'newTree',);
 
     event.dom = entity.dom || null;
 
@@ -180,9 +180,9 @@ function removeEntity(key) {
     return false;
 };
 
-function addLine(begin, end) {
+function addLine(begin, end, treeId) {
     let lineId = begin.entityID + "-" + end.entityID;
-    let newLine = new Line(lineId, begin, end, true);
+    let newLine = new Line(treeId, lineId, begin, end, true);
     newLine.update();
     return gContext.lineMap[lineId] = newLine;
 };
@@ -291,9 +291,10 @@ function clearContext() {
     gContext.hsStandard.currentIndex = -1;
 };
 //遍历节点列表迭代器
-function* traverseNode() {
+function* traverseNode(treeId) {
     for (let key in g.gContext.eventEntityMap) {
-        yield g.gContext.eventEntityMap[key];
+        if (treeId == g.gContext.eventEntityMap[key].treeId)
+            yield g.gContext.eventEntityMap[key];
     }
     for (let key in g.gContext.doorEntityMap) {
         yield g.gContext.doorEntityMap[key];
@@ -530,6 +531,7 @@ let effectProxy = (function () {
 })();
 
 export default {
+    generateID,
     returnTree,
     findTopNodeId,
     checkCriterion,

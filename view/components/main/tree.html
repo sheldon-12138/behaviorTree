@@ -13,7 +13,7 @@
                 <i class="el-icon-delete"></i>
             </div>
         </div>
-        <el-tree :data="project" :props="defaultProps" @node-click="handleNodeClick" default-expand-all>
+        <el-tree :data="project" :props="defaultProps" @node-click="handleTreeClick" default-expand-all>
             <!-- <template #default="{ node, data }">
                 <span :data-name="node.parent.data.lable">{{ data.ID}}</span>
             </template> -->

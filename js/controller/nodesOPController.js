@@ -8,9 +8,35 @@ import viewOPController from "./viewOPController.js";
 import Layout from "../algorithm/layout.js"
 import TreeNode from "../structure/treeNode.js";
 import gContextController from "./gContextController.js";
+import renderFTree from "../render/renderFTree.js";
 import { g } from "../structure/gContext.js";
 import fileParser from "../parser/fileParser.js";
 
+function selectedTree(treeId) {
+    // console.log(treeId)
+    //清空画布树
+    clearTreeDom()
+    // 根据数据渲染dom
+    renderFTree.renderByContext(treeId);
+    // 自动布局
+    _nodeLayout(treeId);
+    // 调整画布大小
+    gContextController.updateMainSVGSizeUp();
+}
+
+// 清空画布树
+function clearTreeDom() {
+    let nodes = dom.queryAll(".node");
+    let lines = dom.queryAll(".line");
+    // let len = nodes.length;
+    let mainSVG = dom.query("#mainSVG");
+    for (let i = nodes.length - 1; i >= 0; --i) {
+        mainSVG.removeChild(nodes[i]);
+    }
+    for (let i = lines.length - 1; i >= 0; --i) {
+        mainSVG.removeChild(lines[i]);
+    }
+}
 // 节点别名改动后的处理
 function handleNodeSurface(entity, aliasFlag, orgFlag, orgDesIsNull) {
     // console.log('aliasFlag', aliasFlag, 'orgFlag', orgFlag, 'orgDesIsNull', orgDesIsNull)
@@ -890,10 +916,11 @@ function nodeLayout() {
     // updateHSStandardPos();
 }
 //自动布局
-function _nodeLayout() {
+function _nodeLayout(treeId) {
     // console.log('自动布局了')
     let roots = new TreeNode(null);
-    let traver = gContextDao.traverseNode();
+    let traver = gContextDao.traverseNode(treeId);
+
     let node = traver.next();
     while (!node.done) {
 
@@ -905,7 +932,9 @@ function _nodeLayout() {
 
     for (let i = 0, len = roots.children.length; i < len; ++i) {//构建树模型
         let entity = gContextDao.findEntity(roots.children[i].id);
-        roots.children[i] = addTreeNode(entity, roots.children[i]);
+        if (entity.treeId == treeId)
+            roots.children[i] = addTreeNode(entity, roots.children[i]);
+        else console.log('不是同一棵树')
     }
 
     let layout = gContextDao.getGContextProp("layout");
@@ -918,7 +947,7 @@ function _nodeLayout() {
         let treeNode = queue.shift();
         if (treeNode.id !== null) {
             let entity = gContextDao.findEntity(treeNode.id);
-            if (entity) {
+            if (entity && entity.treeId == treeId) {
                 entity.pos.x = Math.floor(treeNode.pos.x);
                 entity.pos.y = Math.floor(treeNode.pos.y);
                 fragment.appendChild(entity.dom);
@@ -937,6 +966,7 @@ function _nodeLayout() {
     let lineMap = gContextDao.getGContextProp("lineMap");
     for (let key in lineMap) {
         let line = lineMap[key];
+        if (line.treeId !== treeId) continue;
         let ids = key.split("-");
         let begin = ids[0], end = ids[1];
         let beginE = gContextDao.findEntity(begin);
@@ -1533,6 +1563,7 @@ function bottomUserCode(id) {
 
 
 export default {
+    selectedTree,
     handleNodeSurface,
     eSort,
     returnTree,

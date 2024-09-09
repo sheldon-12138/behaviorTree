@@ -289,7 +289,7 @@ function createPortDefs(port, width, haveAlias) {
             ["portValue"]
         );
         // portValue.textContent = portName[key].value || portName[key].defaultValue || '';
-        console.log(port[key])
+        // console.log(port[key])
         portValue.textContent = port[key]?.value ?? port[key]?.defaultValue ?? '';
         portG.appendChild(portRect);
         portG.appendChild(portValue);
@@ -396,7 +396,7 @@ function createNode(entity) {
             "use",
             {
                 "href": "#unchecked",
-                "x": 10,
+                "x": 15,
                 "y": entity.size.height - 27,
                 "data-key": entity.id,
                 "data-class": "collapse",
@@ -406,7 +406,7 @@ function createNode(entity) {
         entityFragment.appendChild(checked);
 
         let text = createSVGElement("text", {
-            "x": 30,
+            "x": 35,
             "y": entity.size.height - 20,
             "dominant-baseline": "middle",
             "fill": '#fff'

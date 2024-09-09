@@ -67,7 +67,7 @@ export function loadResource() {
         textColor: '#fff',
         sizeList: [{ width: 30, height: 30 }, { width: 100, height: 60 }],
         hasUpNodes: true,
-        hasDownNodes: false,
+        hasDownNodes: true,
         category: "event",
     });
 

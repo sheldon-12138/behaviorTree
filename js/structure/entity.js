@@ -4,7 +4,7 @@ var maxID = 1;
 
 function Entity(id, btID, type, name, aliasName, size, pos, hasUpNodes, hasDownNodes, collapse, textColor, _description,
   _skipif, _successif, _failureif, _while,
-  _onSuccess, _onFailure, _onHalted, _post) {
+  _onSuccess, _onFailure, _onHalted, _post, treeId) {
   //内部id
   this.id = id;
   //btID
@@ -38,6 +38,8 @@ function Entity(id, btID, type, name, aliasName, size, pos, hasUpNodes, hasDownN
   this._onHalted = _onHalted;
   this._post = _post
 
+  this.treeId = treeId
+
   this.dom = null;
 
   this.modelType = "";
@@ -59,10 +61,10 @@ export function setBtID(btID) {
 
 export function EventEntity(id, btID, type, name, aliasName, size, pos, hasUpNodes, hasDownNodes, collapse, textColor, _description,
   _skipif, _successif, _failureif, _while,
-  _onSuccess, _onFailure, _onHalted, _post) {
+  _onSuccess, _onFailure, _onHalted, _post, treeId) {
   Entity.call(this, id, btID, type, name, aliasName, size, pos, hasUpNodes, hasDownNodes, collapse, textColor, _description,
     _skipif, _successif, _failureif, _while,
-    _onSuccess, _onFailure, _onHalted, _post);
+    _onSuccess, _onFailure, _onHalted, _post, treeId);
   // console.log(this)
   //等级
   // this.size = { width: size.width, height: size.height }

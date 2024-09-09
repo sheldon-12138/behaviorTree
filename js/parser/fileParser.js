@@ -342,9 +342,7 @@ function xmlParser(content, xmlName) {
     if (content === "") { return; }
     let { BehaviorTree, TreeNodesModel } = content.root
     let projectObj = gContextDao.getGContextProp("projectObj");
-
-    // 调整结构
-
+    let treeMap = gContextDao.getGContextProp("treeMap");
 
     if (xmlName) {//通过项目遍历读文件
         let projStruct = []
@@ -370,16 +368,15 @@ function xmlParser(content, xmlName) {
         return projStruct
     } else {//读单个xml文件
         handeTreeNodesModel(TreeNodesModel[0])
-        loadXml(BehaviorTree[1])
-        // BehaviorTree.forEach(item => {
-
-        // })
-
-
+        BehaviorTree.forEach(item => {
+            const treeId = loadXml(item)
+            treeMap[treeId] = { ID: item.$.ID }
+        })
     }
 }
 
 function loadXml(BehaviorTree) {
+    const treeId = gContextDao.generateID();
     let tempNodes = {};
     let tempNodesBtID = [];
 
@@ -387,18 +384,20 @@ function loadXml(BehaviorTree) {
 
     // 添加子树节点
     let modelList = gContextDao.getGContextProp("modelList");
-    if (modelList.length == 4) {
-        modelList.push({ ID: '子树', type: 'SubTree', children: [] })
-    }
-    modelList[4].children.push({ ID: BehaviorTree.$.ID, isUser: true, })
+
+    modelList[4].children.push({ ID: BehaviorTree.$.ID, isUser: true })
 
     // console.log(entityArr)
     for (let i = 0; i < entityArr.length; i++) {
-        // console.log(entityArr[i])
         let { ID, modelName, btID, name, _description,
             _skipif, _successif, _failureif, _while,
             _onSuccess, _onFailure, _onHalted, _post } = entityArr[i]
 
+        let type = findParentTypeById(modelName)
+
+        if (modelName == 'SubTree') {
+            modelName = ID
+        }
 
         // 添加自定义节点的端口信息
         const port = findNodePort(modelName)
@@ -412,12 +411,8 @@ function loadXml(BehaviorTree) {
             portLength = Object.keys(port).length
         }
 
-        let type = findParentTypeById(modelName)
-        if (modelName == 'SubTree') modelName = ID
-
         let model = gContextDao.getModelByType(type || 'Top');
-        // console.log('modelName', modelName, 'type', type, 'model', model)
-        // console.log(entityArr[i])
+
 
         let len = modelName ? modelName.length : 4
         let nameLength = 0
@@ -429,6 +424,7 @@ function loadXml(BehaviorTree) {
         const height = 60 + (haveAlias ? 30 : 0) + portLength * 53 + (type == 'SubTree' ? 15 : 0)
 
         let entityProp = {
+            treeId,
             btID,
             type: model.type,
             // size: model.sizeList[1],
@@ -474,6 +470,8 @@ function loadXml(BehaviorTree) {
             btLine(tempNodesBtID[k], entityArr[k].downEntity, tempNodes);
         }
     }
+
+    return treeId
 }
 
 
@@ -481,7 +479,7 @@ function findNodePort(modelName) {
     let modelList = gContextDao.getGContextProp("modelList");
     // console.log('modelList', modelList)
     let result = null
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 5; i++) {
         modelList[i].children.forEach(item => {
             if (item.port && Object.keys(item.port).length > 0 && item.ID == modelName) {
                 result = item.port

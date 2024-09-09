@@ -111,6 +111,10 @@ export const g = {
                 }, {
                     ID: 'Timeout',
                 }]
+            }, {
+                ID: '子树',
+                type: 'SubTree',
+                children: []
             }],
 
         //资源
@@ -120,6 +124,7 @@ export const g = {
         //实体
         doorEntityMap: {},  //门数据
         eventEntityMap: {}, //事件数据
+        treeMap: {},//树数据
         lineMap: {},  //连线数据
         userLineMap: {},//判据和圆圈的连线数据
 

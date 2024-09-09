@@ -78,6 +78,7 @@ function openUserProject(param) {
 
         // progress.openProgress = 30;
         // //根据数据渲染dom
+
         // renderFTree.renderByContext();
         // progress.openProgress = 80;
 
@@ -137,17 +138,19 @@ function analysisXml(param) {
                 //解析xml数据并将数据添加到gContext中
                 fileParser.xmlParser(xmlContent);
 
-
                 progress.openProgress = 30;
                 //根据数据渲染dom
-                renderFTree.renderByContext();
+                // let treeMap = gContextDao.getGContextProp("treeMap");
+                // console.log(treeMap)
+
+                // renderFTree.renderByContext();
                 progress.openProgress = 80;
 
                 // 自动布局
-                nodesOPController.nodeLayout();
-                progress.openProgress = 100;
+                // nodesOPController.nodeLayout();
+                // progress.openProgress = 100;
 
-                gContextController.updateMainSVGSizeUp();
+                // gContextController.updateMainSVGSizeUp();
 
                 return Promise.resolve(data);
             }

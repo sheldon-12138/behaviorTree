@@ -191,11 +191,13 @@ export const g = {
         currentMode: null,
 
         // tab页数据
-        tabsArr: [{ id: 'dfdsf', name: '测试1tab' }, { id: 'dfddsfsasf', name: '测试2tab' }],
-
+        // { id: 'dfdsf', name: '测试1tab' }, { id: 'dfddsfsasf', name: '测试2tab' }
+        tabsArr: [],
 
         //各种状态控制
         statusData: {
+            currentTreeID: '',//当前树id
+
             modeID: 1, //视图模式：1-编辑视图， 2-统计视图
             attrID: 1, //属性栏状态： 1-整体属性， 2-模型属性
             isShowFloat: false,//是否收缩浮窗信息框

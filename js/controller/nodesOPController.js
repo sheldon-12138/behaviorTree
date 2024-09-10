@@ -12,8 +12,10 @@ import renderFTree from "../render/renderFTree.js";
 import { g } from "../structure/gContext.js";
 import fileParser from "../parser/fileParser.js";
 
-function selectedTree(treeId) {
-    // console.log(treeId)
+function selectedTree(treeId, name) {
+    let statusData = gContextDao.getGContextProp("statusData");
+    if (treeId === statusData.currentTreeID) return
+
     //清空画布树
     clearTreeDom()
     // 根据数据渲染dom
@@ -22,6 +24,17 @@ function selectedTree(treeId) {
     _nodeLayout(treeId);
     // 调整画布大小
     gContextController.updateMainSVGSizeUp();
+
+    // 添加tab页
+    if (name) {
+        let tabsArr = gContextDao.getGContextProp("tabsArr");
+        const exists = tabsArr.some(element => element.id === treeId);
+        if (exists) {
+        } else {
+            tabsArr.push({ id: treeId, name });
+        }
+    }
+    statusData.currentTreeID = treeId;
 }
 
 // 清空画布树

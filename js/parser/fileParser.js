@@ -371,6 +371,7 @@ function xmlParser(content, xmlName) {
         BehaviorTree.forEach(item => {
             const treeId = loadXml(item)
             treeMap[treeId] = { ID: item.$.ID }
+            // this.$set(treeMap, treeId, { ID: item.$.ID });
         })
     }
 }

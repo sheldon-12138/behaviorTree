@@ -1,7 +1,7 @@
 <div style="display: flex;">
-    <div v-for="(item,index) in tabsArr" :key="item.id" :class="`tab ${avtiveTab==index?'activeTab':''}`"
-        @click="clickTab(index)">
+    <div v-for="(item,index) in tabsArr" :key="item.id"
+        :class="`tab ${statusData.currentTreeID==item.id?'activeTab':''}`" @click="clickTab(item.id)">
         {{item.name}}
-        <i class="el-icon-circle-close" @click="closeTab(index)"></i>
+        <i class="el-icon-circle-close" @click.stop="closeTab(index)"></i>
     </div>
 </div>

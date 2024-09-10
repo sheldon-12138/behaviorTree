@@ -134,7 +134,6 @@ function analysisXml(param) {
                     mainSVG.removeChild(lines[i]);
                 }
                 progress.openProgress = 10;
-
                 //解析xml数据并将数据添加到gContext中
                 fileParser.xmlParser(xmlContent);
 

@@ -266,6 +266,15 @@ function clearContext() {
     gContext.eventEntityMap = {};
     gContext.entityTree = [];
     gContext.lineMap = {};
+
+    // Object.assign(gContext.treeMap, {});
+    Object.keys(gContext.treeMap).forEach(key => {
+        delete gContext.treeMap[key];
+    });
+    gContext.tabsArr.splice(0, gContext.tabsArr.length);
+    // console.log(gContext.tabsArr)
+
+    
     // gContext.userLineMap = {};
     //gContext.attrData.entity = {criterions:null};
     // gContext.attrData.entity = Object.assign(gContext.attrData.entity, {});

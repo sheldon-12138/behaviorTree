@@ -273,8 +273,10 @@ function clearContext() {
     });
     gContext.tabsArr.splice(0, gContext.tabsArr.length);
     // console.log(gContext.tabsArr)
+    //  modelList初始化
+    gContext.modelList.splice(0, gContext.modelList.length, ...gContext.modelList1);
+    // console.log(gContext.modelList)
 
-    
     // gContext.userLineMap = {};
     //gContext.attrData.entity = {criterions:null};
     // gContext.attrData.entity = Object.assign(gContext.attrData.entity, {});

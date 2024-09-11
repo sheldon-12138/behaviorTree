@@ -115,6 +115,96 @@ export const g = {
                 type: 'SubTree',
                 children: []
             }],
+        modelList1: [
+            {
+                ID: '行为节点',
+                type: 'Action',
+                children: [{
+                    ID: 'AlwaysFailure'
+                }, {
+                    ID: 'AlwaysSuccess'
+                }, {
+                    ID: 'Script'
+                }, {
+                    ID: 'SetBlackboard'
+                }, {
+                    ID: 'Sleep'
+                }]
+            }, {
+                ID: '条件节点',
+                type: 'Condition',
+                children: [{
+                    ID: 'ScriptCondition'
+                }]
+            }, {
+                ID: '控制节点',
+                type: 'Control',
+                children: [{
+                    ID: 'AsyncFallback'
+                }, {
+                    ID: 'AsyncSequence'
+                }, {
+                    ID: 'Fallback'
+                }, {
+                    ID: 'IfThenElse'
+                }, {
+                    ID: 'Parallel'
+                }, {
+                    ID: 'ParallelAll'
+                }, {
+                    ID: 'ReactiveFallback'
+                }, {
+                    ID: 'ReactiveSequence'
+                }, {
+                    ID: 'Sequence'
+                }, {
+                    ID: 'SequenceWithMemory'
+                }, {
+                    ID: 'Switch2'
+                }, {
+                    ID: 'Switch3'
+                }, {
+                    ID: 'Switch4'
+                }, {
+                    ID: 'Switch5'
+                }, {
+                    ID: 'Switch6'
+                }, {
+                    ID: 'WhileDoElse'
+                },]
+            }, {
+                ID: '装饰节点',
+                type: 'Decorator',
+                children: [{
+                    ID: 'Delay',
+                }, {
+                    ID: 'ForceFailure',
+                }, {
+                    ID: 'ForceSuccess',
+                }, {
+                    ID: 'Inverter',
+                }, {
+                    ID: 'KeepRunningUntilFailure',
+                }, {
+                    ID: 'LoopDouble',
+                }, {
+                    ID: 'LoopString',
+                }, {
+                    ID: 'Precondition',
+                }, {
+                    ID: 'Repeat',
+                }, {
+                    ID: 'RetryUntilSuccessful',
+                }, {
+                    ID: 'RunOnce',
+                }, {
+                    ID: 'Timeout',
+                }]
+            }, {
+                ID: '子树',
+                type: 'SubTree',
+                children: []
+            }],
 
         //资源
         doorModelList: [],  //门模型列表

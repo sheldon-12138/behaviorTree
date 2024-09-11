@@ -471,7 +471,8 @@ export function headerVm() {
                 this.statusData.autoLayoutMode = !this.statusData.autoLayoutMode;
                 this.statusData.canvasChanged = true;
                 if (this.statusData.autoLayoutMode) {
-                    nodesOPController.nodeLayout();
+                    // const currentIndex=this.statusData.currentTreeID
+                    nodesOPController.nodeLayout(this.statusData.currentTreeID);
                     gContextController.updateMainSVGSizeUp();
                     nodesOPController.openAutoLayoutMode();
                 }

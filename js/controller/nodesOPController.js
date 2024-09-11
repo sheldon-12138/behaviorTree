@@ -20,10 +20,6 @@ function selectedTree(treeId, name) {
     clearTreeDom()
     // 根据数据渲染dom
     renderFTree.renderByContext(treeId);
-    // 自动布局
-    _nodeLayout(treeId);
-    // 调整画布大小
-    gContextController.updateMainSVGSizeUp();
 
     // 添加tab页
     if (name) {
@@ -32,9 +28,13 @@ function selectedTree(treeId, name) {
         if (exists) {
         } else {
             tabsArr.push({ id: treeId, name });
+            // 自动布局(新开tab页时才自动布局)
+            _nodeLayout(treeId);
         }
     }
     statusData.currentTreeID = treeId;
+    // 调整画布大小
+    gContextController.updateMainSVGSizeUp();
 }
 
 // 清空画布树
@@ -162,10 +162,10 @@ function paste(pasteOffset) {
     let statusData = gContextDao.getGContextProp("statusData");
     if (statusData.isCompute) return;
     _paste();
-    if (statusData.autoLayoutMode) {
-        nodeLayout();
-        gContextController.updateMainSVGSizeUp();
-    }
+    // if (statusData.autoLayoutMode) {
+    //     nodeLayout();
+    //     gContextController.updateMainSVGSizeUp();
+    // }
     viewOPController.updateOperationStatus();
 }
 
@@ -308,10 +308,10 @@ function _delete() {
     let statusData = gContextDao.getGContextProp("statusData");
     if (statusData.isCompute) return;
     __delete();
-    if (statusData.autoLayoutMode) {
-        nodeLayout();
-        gContextController.updateMainSVGSizeUp();
-    }
+    // if (statusData.autoLayoutMode) {
+    //     nodeLayout();
+    //     gContextController.updateMainSVGSizeUp();
+    // }
     viewOPController.updateOperationStatus();
     let hsStand = gContextDao.getGContextProp("hsStandard");
     for (let key in hsStand.standardList) {
@@ -922,8 +922,8 @@ function openAutoLayoutMode() {
     // statusData.autoLayoutMode = true;
     gContextDao.setGContextProp("statusData", statusData);
 }
-function nodeLayout() {
-    _nodeLayout();
+function nodeLayout(currentTreeID) {
+    _nodeLayout(currentTreeID);
     // console.log(g.gContext.eventEntityMap)
     // updateEffectPos();
     // updateHSStandardPos();

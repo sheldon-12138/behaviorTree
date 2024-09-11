@@ -283,7 +283,7 @@ function filterResultsRender() {
             }
         }
     }
-    nodesOPController.nodeLayout();
+    // nodesOPController.nodeLayout();
 }
 
 // function ActivedisEmpty(){

@@ -661,10 +661,10 @@ function createChildNode(ftId, child_type) {
         { entityID: child_node.id, posX: child_pos.x, posY: child_pos.y, type: "up" });
     createLine(line);
 
-    if (statusData.autoLayoutMode) {
-        nodesOPController.nodeLayout();
-        updateMainSVGSizeUp();
-    }
+    // if (statusData.autoLayoutMode) {
+    //     nodesOPController.nodeLayout();
+    //     updateMainSVGSizeUp();
+    // }
 
 }
 
@@ -726,11 +726,11 @@ function changeNodeParent(childID, parentID) {
             { entityID: child.id, posX: child_pos.x, posY: child_pos.y, type: "up" });
         createLine(line);
 
-        let statusData = gContextDao.getGContextProp("statusData");
-        if (statusData.autoLayoutMode) {
-            nodesOPController.nodeLayout();
-            updateMainSVGSizeUp();
-        }
+        // let statusData = gContextDao.getGContextProp("statusData");
+        // if (statusData.autoLayoutMode) {
+        //     nodesOPController.nodeLayout();
+        //     updateMainSVGSizeUp();
+        // }
     }
 }
 

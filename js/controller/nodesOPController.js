@@ -1576,6 +1576,7 @@ function bottomUserCode(id) {
 
 
 export default {
+    clearTreeDom,
     selectedTree,
     handleNodeSurface,
     eSort,

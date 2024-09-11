@@ -119,31 +119,32 @@ function analysisXml(param) {
             } else {//单打开的xml文件
 
                 // console.log(xmlContent);
-                let progress = gContextDao.getGContextProp("progressData");
+                // let progress = gContextDao.getGContextProp("progressData");
 
                 //清空Context和dom相关数据
                 gContextDao.clearContext();
-                let nodes = dom.queryAll(".node");
-                let lines = dom.queryAll(".line");
-                // let len = nodes.length;
-                let mainSVG = dom.query("#mainSVG");
-                for (let i = nodes.length - 1; i >= 0; --i) {
-                    mainSVG.removeChild(nodes[i]);
-                }
-                for (let i = lines.length - 1; i >= 0; --i) {
-                    mainSVG.removeChild(lines[i]);
-                }
-                progress.openProgress = 10;
+                nodesOPController.clearTreeDom()
+                // let nodes = dom.queryAll(".node");
+                // let lines = dom.queryAll(".line");
+                // // let len = nodes.length;
+                // let mainSVG = dom.query("#mainSVG");
+                // for (let i = nodes.length - 1; i >= 0; --i) {
+                //     mainSVG.removeChild(nodes[i]);
+                // }
+                // for (let i = lines.length - 1; i >= 0; --i) {
+                //     mainSVG.removeChild(lines[i]);
+                // }
+                // progress.openProgress = 10;
                 //解析xml数据并将数据添加到gContext中
                 fileParser.xmlParser(xmlContent);
 
-                progress.openProgress = 30;
+                // progress.openProgress = 30;
                 //根据数据渲染dom
                 // let treeMap = gContextDao.getGContextProp("treeMap");
                 // console.log(treeMap)
 
                 // renderFTree.renderByContext();
-                progress.openProgress = 80;
+                // progress.openProgress = 80;
 
                 // 自动布局
                 // nodesOPController.nodeLayout();

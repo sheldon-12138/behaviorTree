@@ -341,29 +341,23 @@ function ftParser(content) {
 function xmlParser(content, xmlName) {
     if (content === "") { return; }
     let { BehaviorTree, TreeNodesModel } = content.root
-    let projectObj = gContextDao.getGContextProp("projectObj");
     let treeMap = gContextDao.getGContextProp("treeMap");
 
     if (xmlName) {//通过项目遍历读文件
         let projStruct = []
 
         let modelList = gContextDao.getGContextProp("modelList");
-        if (modelList.length == 4) {
-            modelList.push({
-                ID: '子树',
-                type: 'SubTree',
-                children: []
-            })
-        }
         BehaviorTree.forEach(item => {
-            // console.log(item.$.ID)
-            projectObj[xmlName] = {
-                [`${item.$.ID}`]: item
-            }
-            projStruct.push({ label: item.$.ID })
+            const treeId = loadXml(item)
+            treeMap[treeId] = { ID: item.$.ID }
+
+            projStruct.push({ label: item.$.ID, treeId })
             // console.log(index, parseEntityArr(item))
-            modelList[4].children.push({ ID: item.$.ID, isUser: true })
-            // haidesgudaxyued
+
+            // 添加子树节点
+            if (!checkExists(item.$.ID, 'SubTree')) {
+                modelList[4].children.push({ ID: item.$.ID, isUser: true })
+            }
         })
         return projStruct
     } else {//读单个xml文件
@@ -371,7 +365,6 @@ function xmlParser(content, xmlName) {
         BehaviorTree.forEach(item => {
             const treeId = loadXml(item)
             treeMap[treeId] = { ID: item.$.ID }
-            // this.$set(treeMap, treeId, { ID: item.$.ID });
         })
     }
 }
@@ -384,9 +377,10 @@ function loadXml(BehaviorTree) {
     let entityArr = parseEntityArr(BehaviorTree)
 
     // 添加子树节点
-    let modelList = gContextDao.getGContextProp("modelList");
-
-    modelList[4].children.push({ ID: BehaviorTree.$.ID, isUser: true })
+    if (!checkExists(BehaviorTree.$.ID, 'SubTree')) {
+        let modelList = gContextDao.getGContextProp("modelList");
+        modelList[4].children.push({ ID: BehaviorTree.$.ID, isUser: true })
+    }
 
     // console.log(entityArr)
     for (let i = 0; i < entityArr.length; i++) {
@@ -413,7 +407,6 @@ function loadXml(BehaviorTree) {
         }
 
         let model = gContextDao.getModelByType(type || 'Top');
-
 
         let len = modelName ? modelName.length : 4
         let nameLength = 0
@@ -601,41 +594,61 @@ function handeTreeNodesModel(TreeNodesModel) {
     for (let key in TreeNodesModel) {
         for (let item of modelList) {
             if (key == item.type) {
-                // console.log('TreeNodesModel[key]', TreeNodesModel[key])
-                //{$: {"ID": "ApproachObject","editable": "true"}, input_port: [{$: {name: 'key_name3'}}]"
+                // if (TreeNodesModel[key].$.ID) { }
+                // console.log('TreeNodesModel[key]', TreeNodesModel[key], item)
+                //[{$: {"ID": "ApproachObject","editable": "true"}, input_port: [{$: {name: 'key_name3'}}]"
                 const children = TreeNodesModel[key].map(item2 => {
-                    const result = { ...item2.$, isUser: true, port: {} };
+                    // console.log(item2)
+                    // console.log(checkExists(item2.$.ID, item.type), item2.$.ID, item.type)
+                    if (checkExists(item2.$.ID, item.type)) return null;
+                    else {
+                        const result = { ...item2.$, isUser: true, port: {} };
 
-                    // 处理 input_port
-                    if (item2.input_port) {
-                        item2.input_port.forEach(port => {
-                            result.port[port.$.name] = { direction: 'input_port', defaultValue: port.$.default || '', description: port._ || '' }
-                        });
+                        // 处理 input_port
+                        if (item2.input_port) {
+                            item2.input_port.forEach(port => {
+                                result.port[port.$.name] = { direction: 'input_port', defaultValue: port.$.default || '', description: port._ || '' }
+                            });
+                        }
+
+                        // 处理 output_port
+                        if (item2.output_port) {
+                            item2.output_port.forEach(port => {
+                                result.port[port.$.name] = { direction: 'output_port', defaultValue: port.$.default || '', description: port._ || '' }
+                            });
+                        }
+
+                        // 处理 inout_port
+                        if (item2.inout_port) {
+                            item2.inout_port.forEach(port => {
+                                result.port[port.$.name] = { direction: 'inout_port', defaultValue: port.$.default || '', description: port._ || '' };
+                            });
+                        }
+                        return result;
                     }
-
-                    // 处理 output_port
-                    if (item2.output_port) {
-                        item2.output_port.forEach(port => {
-                            result.port[port.$.name] = { direction: 'output_port', defaultValue: port.$.default || '', description: port._ || '' }
-                        });
-                    }
-
-                    // 处理 inout_port
-                    if (item2.inout_port) {
-                        item2.inout_port.forEach(port => {
-                            result.port[port.$.name] = { direction: 'inout_port', defaultValue: port.$.default || '', description: port._ || '' };
-                        });
-                    }
-
-                    return result;
                 });
 
-                item.children.push(...children);
-                break; // 提前退出循环，因为找到了匹配的类型
+                if (children) item.children.push(...children);
+                break; // 找到匹配的类型，提前退出循环
             }
         }
     }
     // console.log('modelList', modelList)
+}
+
+
+// 检查模型名是否存在
+function checkExists(name, type) {
+    let modelList = gContextDao.getGContextProp("modelList");
+    const typeList = ['Action', 'Condition', 'Control', 'Decorator', 'SubTree']
+    const typeIndex = typeList.indexOf(type)
+
+    const found = modelList[typeIndex].children.some(child => child.ID === name)
+
+    // const found = modelList.some(node =>
+    //     node.children.some(child => child.ID === name)
+    // );
+    return found;
 }
 
 function findParentTypeById(targetId) {

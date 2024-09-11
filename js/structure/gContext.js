@@ -1,7 +1,6 @@
 export const g = {
 
     gContext: {
-        projectObj: {},
         publish: null,
 
         //鼠标位置枚举

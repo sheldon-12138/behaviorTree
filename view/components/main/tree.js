@@ -35,8 +35,9 @@ export function treeVm() {
             //选中树
             handleTreeClick(node, selected, event) {
                 // console.log(node, selected, event)
-                nodesOPController.selectedTree(node.treeId, node.label)
-
+                if (node.treeId) {
+                    nodesOPController.selectedTree(node.treeId, node.label)
+                }
             },
             triggerFileInput() {
                 this.$refs.fileInput.click();

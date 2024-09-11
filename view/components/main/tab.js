@@ -14,17 +14,12 @@ export function tabVm() {
         data() {
             return {
                 tabsArr: g.gContext.tabsArr,
-                // avtiveTab: -1,
-                // currentTreeID: g.gContext.statusData.currentTreeID,
                 statusData: g.gContext.statusData,
             }
         },
-        watch: {
-
-        },
         methods: {
             clickTab(treeID) {
-                this.statusData.currentTreeID = treeID
+                // this.statusData.currentTreeID = treeID
                 nodesOPController.selectedTree(treeID)
             },
             closeTab(index) {

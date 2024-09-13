@@ -153,7 +153,6 @@ function filterEventsByImgName(imgName) {
             }
         }
     }
-
     return filteredEvents;
 }
 function setEntity(key, entity) {

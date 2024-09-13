@@ -1,5 +1,5 @@
 export default function Line(treeId, id, begin, end, show, color, lineWidth, orginX) {
-  this.treeId = treeId;
+  this.treeId = treeId;//新增的属性
   this.id = id;
   this.begin = begin;
   this.end = end;

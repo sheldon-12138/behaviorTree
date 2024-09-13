@@ -552,6 +552,7 @@ function addActivedChildEntityByID(id, initialPosition) {
 }
 //连接线拖拽创建时的增删改操作
 function createNewLine(type, beginPoint) {
+    console.log("createNewLine", type, beginPoint)
     //let lines = gContextDao.getGContextProp("lineMap");
     let newLine = gContextDao.getGContextProp("newLine");
     let entity = gContextDao.findEntity(beginPoint.id);
@@ -563,9 +564,10 @@ function createNewLine(type, beginPoint) {
         y: entity.pos.y + entity[point].y + entity.lineOffset[t]
     };
     if (!newLine) {
-        newLine = new Line("newLine",
+        newLine = new Line("newTreeLine", "newLine",
             { entityID: beginPoint.id, posX: pos.x, posY: pos.y, type: t },
             { posX: pos.x, posY: pos.y, type: et }, true);
+        console.log("newLine", newLine)
         newLine.update();// 更新连接线的属性
         gContextDao.setGContextProp("newLine", newLine);// 将新连接线对象存储到gContext中
         let line = dom.createLine(newLine);
@@ -752,7 +754,7 @@ function createLine(line) {
 
 
     if (!lineMap[id] && !lineMap[id2]) {//检查没有重复的线
-        let newLine = new Line(id, line.begin, line.end, true);
+        let newLine = new Line('newTreeLine', id, line.begin, line.end, true);
         let begin = gContextDao.findEntity(line.begin.entityID);
         let end = gContextDao.findEntity(line.end.entityID);
         if (newLine) {

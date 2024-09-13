@@ -233,29 +233,33 @@ const portNameObj = {
 
 // 创建节点端口
 function createPortDefs(port, width, haveAlias) {
-    let portG = createSVGElement("g", {}, []);
+    let portG = createSVGElement("g", {}, ['portG']);
 
     let num = 0
     for (let key in port) {
-        let portType = createSVGElement(
-            "text",
-            {
-                "x": 10,
-                "y": (haveAlias ? 35 : 0) + 60 + num * 55,
-                "fill": "#fff",
-                "font-size": "18px",
-                "font-family": "Consolas,Monaco,Courier,Courier New ",  // 使用等宽字体
-                "font-weight": "bold"
-            },
-            ["portType"]
-        );
-        portType.textContent = `${portNameObj[port[key].direction]}:`;
-        portG.appendChild(portType);
+        let portType = null
+        if (port[key].direction) {
+            portType = createSVGElement(
+                "text",
+                {
+                    "x": 10,
+                    "y": (haveAlias ? 35 : 0) + 60 + num * 55,
+                    "fill": "#fff",
+                    "font-size": "18px",
+                    "font-family": "Consolas,Monaco,Courier,Courier New ",  // 使用等宽字体
+                    "font-weight": "bold"
+                },
+                ["portType"]
+            );
+            portType.textContent = `${portNameObj[port[key].direction]}:`;
+            portG.appendChild(portType);
+        }
+
 
         let portName = createSVGElement(
             "text",
             {
-                "x": 80,
+                "x": portType ? 80 : 10,
                 "y": (haveAlias ? 35 : 0) + 60 + num * 55,
                 "fill": "#fff",
                 "font-size": "16px",
@@ -392,40 +396,7 @@ function createNode(entity) {
 
     //  添加子树折叠
     if (entity.modelType == 'SubTree') {
-        let checked = createSVGElement(
-            "use",
-            {
-                "href": "#unchecked",
-                "x": 15,
-                "y": entity.size.height - 27,
-                "data-key": entity.id,
-                "data-class": "collapse",
-            },
-            ["collapse"]
-        );
-        entityFragment.appendChild(checked);
-
-        let text = createSVGElement("text", {
-            "x": 35,
-            "y": entity.size.height - 20,
-            "dominant-baseline": "middle",
-            "fill": '#fff'
-        }, []);
-        text.textContent = "_autoremap";
-        entityFragment.appendChild(text);
-
-        let collapse = createSVGElement(
-            "use",
-            {
-                "href": "#unfold",
-                "x": entity.size.width - 30,
-                "y": entity.size.height - 30,
-                "data-key": entity.id,
-                "data-class": "collapse",
-            },
-            ["absolute", "collapse"]
-        );
-        entityFragment.appendChild(collapse);
+        entityFragment.appendChild(createSubTreeLine(entity));
     }
 
     entityNode.setAttribute("x", entity.pos.x);
@@ -548,6 +519,47 @@ function createDesIcon(width) {
     return img
 }
 
+// 创建子树的icon和折叠按钮
+function createSubTreeLine(entity) {
+    let subTreeG = createSVGElement("g", {}, ['subTreeG']);
+    let checked = createSVGElement(
+        "use",
+        {
+            "href": "#unchecked",
+            "x": 15,
+            "y": entity.size.height - 27,
+            "data-key": entity.id,
+            "data-class": "collapse",
+        },
+        ["collapse"]
+    );
+    subTreeG.appendChild(checked);
+
+    let text = createSVGElement("text", {
+        "x": 35,
+        "y": entity.size.height - 20,
+        "dominant-baseline": "middle",
+        "fill": '#fff'
+    }, []);
+    text.textContent = "_autoremap";
+    subTreeG.appendChild(text);
+
+    let collapse = createSVGElement(
+        "use",
+        {
+            "href": "#unfold",
+            "x": entity.size.width - 30,
+            "y": entity.size.height - 30,
+            "data-key": entity.id,
+            "data-class": "collapse",
+        },
+        ["absolute", "collapse"]
+    );
+    subTreeG.appendChild(collapse);
+
+    return subTreeG
+}
+
 // 更新实体尺寸
 function updateEntitySize(entity, hasAlias = false) {
     const { type, name, aliasName, _description, port } = entity;
@@ -563,7 +575,7 @@ function updateEntitySize(entity, hasAlias = false) {
     const aliasWidth = nameLength * 11 + 20;
     const width = hasAlias ? Math.max(baseWidth, aliasWidth) : baseWidth;
     // const height = (hasAlias ? 90 : 60);
-    const height = 60 + (hasAlias ? 30 : 0) + portLength * 53
+    const height = 60 + (hasAlias ? 30 : 0) + portLength * 53 + (type == 'SubTree' ? 15 : 0)
 
 
     // + portLength * 53
@@ -596,7 +608,7 @@ function updateConnectionPoints(entity) {
 // 更新节点元素
 function updateNodeElements(entity, aliasFlag, orgFlag, orgDesIsNull = true) {
     // console.log(aliasFlag, orgFlag, handleDes)
-    const { dom, size, type, name, _description } = entity;
+    const { dom, size, type, name, _description, port } = entity;
     const iconName = imgName({ type, name });
 
     // 更新节点大小
@@ -628,7 +640,21 @@ function updateNodeElements(entity, aliasFlag, orgFlag, orgDesIsNull = true) {
     }
 
     // 更新端口位置 （加名后， 高度宽度）
+    // console.log(port)
+    if (port) {
+        // console.log(port)
+        removeDomsByClass(dom, ".portG");
+        let portDefs = createPortDefs(port, size.width, aliasFlag)
+        dom.appendChild(portDefs);
 
+    }
+
+    //  子树折叠
+    if (type == 'SubTree') {
+        removeDomsByClass(dom, ".subTreeG");
+        let subTreeG = createSubTreeLine(entity)
+        dom.appendChild(subTreeG);
+    }
 }
 
 //添加高亮动画
@@ -1063,7 +1089,7 @@ function addClassByDOM(dom, className) {
 // 通过class删除DOM下指定元素
 function removeDomsByClass(dom, className) {
     let child = dom.querySelector(className);
-    dom.removeChild(child);
+    if (child) dom.removeChild(child);
 }
 
 //通过dom删除指定class

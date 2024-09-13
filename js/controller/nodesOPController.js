@@ -12,12 +12,17 @@ import renderFTree from "../render/renderFTree.js";
 import { g } from "../structure/gContext.js";
 import fileParser from "../parser/fileParser.js";
 
+// 选中打开树
 function selectedTree(treeId, name) {
     let statusData = gContextDao.getGContextProp("statusData");
     if (treeId === statusData.currentTreeID) return
 
     //清空画布树
     clearTreeDom()
+
+    //加载子树
+    loadSubTree(treeId);
+
     // 根据数据渲染dom
     renderFTree.renderByContext(treeId);
 
@@ -37,6 +42,10 @@ function selectedTree(treeId, name) {
     gContextController.updateMainSVGSizeUp();
 }
 
+// 加载子树
+function loadSubTree(treeId) {
+}
+
 // 清空画布树
 function clearTreeDom() {
     let nodes = dom.queryAll(".node");
@@ -53,7 +62,7 @@ function clearTreeDom() {
 // 节点别名改动后的处理
 function handleNodeSurface(entity, aliasFlag, orgFlag, orgDesIsNull) {
     // console.log('aliasFlag', aliasFlag, 'orgFlag', orgFlag, 'orgDesIsNull', orgDesIsNull)
-    if (!aliasFlag && !orgFlag && orgDesIsNull && (!entity._description)) return
+    // if (!aliasFlag && !orgFlag && orgDesIsNull && (!entity._description)) return
 
     // 更新实体尺寸
     dom.updateEntitySize(entity, aliasFlag);

@@ -124,8 +124,6 @@ function mainMouseDown(e) {
     }
 
     else if (dom_class === "conn-up" || dom_class === "conn-down") {//连接点
-
-
         const acLine = gContextDao.getGContextProp("activedLine");
         // if (acLine && (acLine.begin.entityID == dom_key || acLine.end.entityID == dom_key)) {
         //     // 进入更改线条的情况
@@ -402,7 +400,7 @@ function mouseUp(e) {
             let attrData = gContextDao.getGContextProp("attrData");
             attrData.model = null
 
-            console.log('daol ', g.gContext.attrData)
+            // console.log('daol ', g.gContext.attrData)
         }
         // else {
         //     gContextController.createNode(newSVGNode.type, { x: 20 + newNodeNum * 10, y: 20 + newNodeNum * 10 }, newSVGNode.name);

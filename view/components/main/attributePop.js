@@ -100,6 +100,18 @@ export function attributePopVm() {
                         // _onHalted: this.entity._onHalted,
                         // _post: this.entity._post,
                     }
+
+                    // 节点端口
+                    for (let key in this.entity.port) {
+                        this.nodePortData.push({
+                            portName: key,
+                            direction: this.entity.port[key].direction,
+                            defaultValue: this.entity.port[key].defaultValue,
+                            description: this.entity.port[key].description,
+                            value: this.entity.port[key].value,
+                        })
+                    }
+                    // console.log('nodePortData', this.nodePortData)
                     this.isOk = true
                 }
             },
@@ -202,6 +214,8 @@ export function attributePopVm() {
                 let eventEntityMap = g.gContext.eventEntityMap
                 if (attrID == '1') {//编辑节点信息
                     if (this.entityInfo.aliasName == '') this.entityInfo.aliasName = this.entityInfo.name
+                    const tableObj = this.handleTableData(this.nodePortData);
+                    this.entityInfo.port = tableObj
                     Vue.set(eventEntityMap, this.entity.id, {
                         ...this.entity,
                         ...this.entityInfo
@@ -214,14 +228,14 @@ export function attributePopVm() {
                     nodesOPController.handleNodeSurface(eventEntityMap[this.entity.id], aliasFlag, orgFlag, orgDesIsNull)
                 }
                 else if (attrID == '2') {//新增节点模型
-                    const tableObj = this.handleTableData();
+                    const tableObj = this.handleTableData(this.tableData);
                     this.modelList[this.newModel.typeIndex].children.push({
                         ID: this.newModel.name,
                         isUser: true,
                         port: tableObj
                     })
                 } else if (attrID == '3') {//编辑自定义的节点模型
-                    const tableObj = this.handleTableData();
+                    const tableObj = this.handleTableData(this.tableData);
 
                     const index = this.modelList[this.newModel.typeIndex].children.findIndex(item => item.ID === this.model.ID);
 
@@ -243,8 +257,8 @@ export function attributePopVm() {
                 this.handleClose()
             },
             // 将节点模型的端口数组转成对象
-            handleTableData() {
-                const result = this.tableData.reduce((acc, item) => {
+            handleTableData(tableData) {
+                const result = tableData.reduce((acc, item) => {
                     const { portName, ...rest } = item;
                     acc[portName] = rest;
                     return acc;
@@ -277,7 +291,10 @@ export function attributePopVm() {
                         _onFailure: '',
                         _onHalted: '',
                         _post: '',
+
+                        port: ''
                     }
+                    this.nodePortData.length = 0;
                     // attrData.entity = null;
                 }
                 // 新增节点

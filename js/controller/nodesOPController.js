@@ -917,7 +917,7 @@ function addTreeNode(entity, treeNode) {
         cpyList.sort(eSort);
         for (let i = 0, len = cpyList.length; i < len; ++i) {
             let child = gContextDao.findEntity(cpyList[i]);
-            if (child.dom.classList.contains("node-render")) continue;
+            if (child && child.dom.classList.contains("node-render")) continue;
             let cTreeNode = new TreeNode(child.id, child.size);
             treeNode.children.push(cTreeNode);
             addTreeNode(child, cTreeNode);

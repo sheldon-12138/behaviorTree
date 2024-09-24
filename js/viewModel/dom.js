@@ -82,44 +82,30 @@ function splitByLine(str, max, fontsize) {
 };
 
 // 在 SVG 中创建多行文本元素
-function appendMultiText(strList, posX, posY, fontsize, entity, fontFamily) {
-    // console.log(entity, statusData.isShowImg, entity.imgSrc, (statusData.isShowImg && entity.imgSrc))
+function appendMultiText(strList, posX, posY, entity) {
 
-    if (!fontsize) {
-        fontsize = 14;
-    }
-    if (!fontFamily) {
-        // fontFamily = "simsun";
-        fontFamily = "Microsoft YaHei";
-    }
     let mulText = createSVGElement(
         "text",
         {
             x: posX,
-            y: posY - 6,//提高一点，不和红三角提示图标重叠
-            "font-size": fontsize,
-            "font-family": fontFamily,
-            // "stroke": "black",
-            // "stroke-width": "0.5px",
-            // "font-weight": "bold",
-            // "fill": "white",
-            "fill": (statusData.isShowImg && entity.imgSrc) ? 'white' : 'black',
-            "font-weight": (statusData.isShowImg && entity.imgSrc) ? 'bold' : 'null',
-            "stroke": (statusData.isShowImg && entity.imgSrc) ? 'black' : 'null',
-            "stroke-width": (statusData.isShowImg && entity.imgSrc) ? '0.5px' : 'null',
+            y: posY,
+            "font-size": 12,
+            "font-family": 'Consolas',
+            "stroke": "black",
+            "stroke-width": "0.5px",
+            "fill": "black",
         },
         ["entity-name", "none-pointer"]
     );
 
     let len = strList.length;
     for (let i = 0; i < len; ++i) {
-
         let span = createSVGElement(
             "tspan",
             {
                 x: posX,
                 dy: "1em",
-                "text-anchor": "middle",
+                // "text-anchor": "middle",
             },
             []
         );
@@ -381,10 +367,12 @@ function createNode(entity) {
         entityFragment.appendChild(img);
     }
 
-    // 添加描述信息图标
+    // 添加描述信息图标+描述悬浮框
     if (entity._description) {
         let desIcon = createDesIcon(entity.size.width)
         entityFragment.appendChild(desIcon);
+
+        entityFragment.appendChild(createDes(entity));
     }
 
     // 添加端口
@@ -519,6 +507,23 @@ function createDesIcon(width) {
     return img
 }
 
+
+// 创建描述信息悬浮框
+function createDes(entity) {
+    let desG = createSVGElement("g", {}, ['desG', 'hide']);
+    let strList = splitByLine(entity._description, (entity.size.width * 2 / 3.0), 10);
+    // console.log(strList)
+
+    // let posY = entity.size.height / 2.0 - (strList.length * 10 / 2.0) < entity.size.height / 3 ? entity.size.height / 3 : entity.size.height / 2.0 - (strList.length * 10 / 2.0);
+    if (strList.length > 4) {
+        strList = strList.splice(0, 4);
+        strList.push("...");
+    }
+    let eName = appendMultiText(strList, entity.size.width + 20, entity.size.height / 3.0, entity);
+    desG.appendChild(eName);
+    return desG
+}
+
 // 创建子树的icon和折叠按钮
 function createSubTreeLine(entity) {
     let subTreeG = createSVGElement("g", {}, ['subTreeG']);
@@ -633,10 +638,17 @@ function updateNodeElements(entity, aliasFlag, orgFlag, orgDesIsNull = true) {
 
     // 更新描述信息图标[修改、增加、移除]
     if (_description) {
-        if (!orgDesIsNull) removeDomsByClass(dom, ".desIcon");
+        if (!orgDesIsNull) {//修改
+            removeDomsByClass(dom, ".desIcon");
+            removeDomsByClass(dom, ".desG");
+        }
         dom.appendChild(createDesIcon(size.width));
+        dom.appendChild(createDes(entity));//描述悬浮框
     } else {
-        if (!orgDesIsNull) removeDomsByClass(dom, ".desIcon");
+        if (!orgDesIsNull) {//移除
+            removeDomsByClass(dom, ".desIcon");
+            removeDomsByClass(dom, ".desG");
+        }
     }
 
     // 更新端口位置 （加名后， 高度宽度）

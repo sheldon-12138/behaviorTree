@@ -27,18 +27,53 @@ function renderByContext(treeId) {
     // for(let key in doors){
     //     _renderElement(doors[key], nodeFragment, lineFragment);
     // }
+    // for (let key in events) {
+    //     if (events[key].treeId == treeId) {
+    //         if (events[key].type == "SubTree") {
+    //             // console.log(events[key]);
+    //             const downId = findSubTree(events[key].name);
+    //             if (downId) {
+    //                 events[key].downEntity.push(downId);
+    //                 let downEntity = gContextDao.findEntity(downId)
+    //                 downEntity.upEntity.splice(0, downEntity.upEntity.length, events[key].id);
+    //             }
+    //             console.log(events[key].name, downId)
+    //             // 
+    //         }
+    //         // console.log(events[key]);
+    //     }
+    // }
+
     for (let key in events) {
         if (events[key].treeId == treeId)
-            // console.log(events[key],treeId);
             _renderElement(events[key], nodeFragment, lineFragment, treeId);
 
-
+        // console.log(events[key],treeId);
     }
 
     let mainSVG = dom.query("#mainSVG");
     mainSVG.appendChild(lineFragment);
     mainSVG.appendChild(nodeFragment);
 
+}
+
+// 通过树名找到树ID
+function findTreeId(treeName) {
+    const treeMap = gContextDao.getGContextProp("treeMap");
+    for (const [key, value] of Object.entries(treeMap)) {
+        if (value.ID === treeName) {
+            return key;
+        }
+    }
+    return undefined; // 显式地返回 undefined，以确保函数始终有返回值
+}
+
+function findSubTree(name) {
+    let events = gContextDao.getGContextProp("eventEntityMap");
+    for (let key in events) {
+        if (events[key].type == 'Top' && events[key].modelType == name)
+            return events[key].downEntity[0]
+    }
 }
 
 export default {

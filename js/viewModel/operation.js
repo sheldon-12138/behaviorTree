@@ -242,7 +242,7 @@ function mainMouseMove(e) {
     let dom_key = moveDom.getAttribute("data-key");
     let dom_class = moveDom.getAttribute("data-class");
     if (dom_class === "door" || dom_class === "event") {
-        // nodesOPController.hoverNode(dom_key);  鼠标经过悬浮
+        nodesOPController.hoverNode(dom_key); // 鼠标经过悬浮
         let mainSVG = dom.query("#mainSVG");
         mainSVG.removeEventListener("mousemove", mainMove);
         moveDom.addEventListener("mouseout", nodeMouseMoveout);

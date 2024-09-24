@@ -345,7 +345,7 @@ function xmlParser(content, xmlName) {
 
     if (xmlName) {//通过项目遍历读文件
         let projStruct = []
-
+        // 
         let modelList = gContextDao.getGContextProp("modelList");
         BehaviorTree.forEach(item => {
             const treeId = loadXml(item)
@@ -390,6 +390,7 @@ function loadXml(BehaviorTree) {
 
         let type = findParentTypeById(modelName)
 
+        // if (!type) console.log('未找到父节点', modelName)
         if (modelName == 'SubTree') {
             modelName = ID
         }
@@ -431,7 +432,7 @@ function loadXml(BehaviorTree) {
             hasDownNodes: model.hasDownNodes,
             collapse: null,
             category: model.category,
-            modelType: model.type,
+            modelType: (modelName == undefined) ? ID : model.type,//将root节点的ID作为modelName
             aliasName: name || modelName || model.name,
             name: modelName || model.name,
             textColor: model.textColor,

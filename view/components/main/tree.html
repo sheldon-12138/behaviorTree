@@ -13,11 +13,13 @@
                 <i class="el-icon-delete"></i>
             </div>
         </div>
-        <el-tree :data="project" :props="defaultProps" @node-click="handleTreeClick" default-expand-all>
-            <!-- <template #default="{ node, data }">
+        <div style="overflow: auto;height: calc(100% - 11px)">
+            <el-tree :data="project" :props="defaultProps" @node-click="handleTreeClick" default-expand-all>
+                <!-- <template #default="{ node, data }">
                 <span :data-name="node.parent.data.lable">{{ data.ID}}</span>
             </template> -->
-        </el-tree>
+            </el-tree>
+        </div>
     </div>
     <div class="divider" @mousedown="startDrag"></div>
     <div class="pane bottomPane" ref="bottomPane">
@@ -28,15 +30,17 @@
                 <i @click="importNode" class="el-icon-download"></i>
             </div>
         </div>
-        <el-tree id="modelTree" :data="model" default-expand-all>
-            <template #default="{ node, data }">
-                <span :data-type="node.parent.data.type" :data-isLeaf="node.isLeaf"
-                    :style="{ color: data.isUser ? '#0000ff' : 'inherit' ,width:'100%'}">
-                    <i v-if="data.isUser" class="el-icon-edit"></i>
-                    {{ data.ID }}
-                </span>
-                <!--  -->
-            </template>
-        </el-tree>
+        <div style="overflow: auto;height: calc(100% - 11px)">
+            <el-tree id="modelTree" :data="model" default-expand-all>
+                <template #default="{ node, data }">
+                    <span :data-type="node.parent.data.type" :data-isLeaf="node.isLeaf"
+                        :style="{ color: data.isUser ? '#0000ff' : 'inherit' ,width:'100%'}">
+                        <i v-if="data.isUser" class="el-icon-edit"></i>
+                        {{ data.ID }}
+                    </span>
+                    <!--  -->
+                </template>
+            </el-tree>
+        </div>
     </div>
 </div>

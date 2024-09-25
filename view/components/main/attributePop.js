@@ -116,7 +116,6 @@ export function attributePopVm() {
                 }
             },
             model() {
-            
                 // console.log('attr的model', this.model)
                 if (this.model) {
                     this.newModel = {
@@ -125,6 +124,7 @@ export function attributePopVm() {
                         type: this.model.type
                     }
                     // console.log('model', this.model)
+                    this.tableData = [];
                     for (let key in this.model.port) {
                         this.tableData.push({
                             portName: key,

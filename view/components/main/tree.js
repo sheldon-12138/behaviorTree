@@ -161,6 +161,7 @@ export function treeVm() {
             addNode() {
                 this.statusData.isShowProperty = true
                 this.statusData.attrID = 2;
+                this.attrData.model = null;
             },
             importNode() { },
             // 保存项目

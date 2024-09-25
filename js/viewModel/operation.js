@@ -392,7 +392,8 @@ function mouseUp(e) {
                     x: (clientPosition.x - mainSVGOffset.x) / zoom + scrollOffset.x,
                     y: (clientPosition.y - mainSVGOffset.y) / zoom + scrollOffset.y
                 },
-                newSVGNode.name);
+                newSVGNode.name,
+            );
             nodesOPController.updateLayer();
             nodesOPController.updateTreeData();
 

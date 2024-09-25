@@ -116,6 +116,7 @@ export function attributePopVm() {
                 }
             },
             model() {
+            
                 // console.log('attr的model', this.model)
                 if (this.model) {
                     this.newModel = {
@@ -244,6 +245,8 @@ export function attributePopVm() {
                         isUser: true,
                         port: tableObj
                     })
+                    // console.log(tableObj, this.model.port)
+                    nodesOPController.handleModelChange(this.newModel.name, tableObj)
                     // this.modelList[this.newModel.typeIndex].children[index] = {
                     //     ID: this.newModel.name,
                     //     isUser: true,
@@ -251,9 +254,6 @@ export function attributePopVm() {
                     // };
                     // console.log('modelList', this.modelList)
                 }
-                // console.log('map', gContextDao.findEntity(this.entity.id))
-
-                // console.log('modelList', this.modelList)
                 this.handleClose()
             },
             // 将节点模型的端口数组转成对象

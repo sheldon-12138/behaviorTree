@@ -568,8 +568,7 @@ function createSubTreeLine(entity) {
 // 更新实体尺寸
 function updateEntitySize(entity, hasAlias = false) {
     const { type, name, aliasName, _description, port } = entity;
-    let portLength = 0
-    if (port) portLength = Object.keys(port).length
+
 
 
     const len = name.length;
@@ -578,12 +577,18 @@ function updateEntitySize(entity, hasAlias = false) {
 
     const baseWidth = 20 + (iconName ? 30 : 0) + len * 11 + (_description ? 30 : 0);
     const aliasWidth = nameLength * 11 + 20;
-    const width = hasAlias ? Math.max(baseWidth, aliasWidth) : baseWidth;
+    let width = hasAlias ? Math.max(baseWidth, aliasWidth) : baseWidth;
+
+    let portLength = 0
+    if (port) {
+        portLength = Object.keys(port).length
+        const maxLength = Object.keys(port).reduce((max, key) => Math.max(max, key.length), 0);
+        width = Math.max(width, 80 + maxLength * 11)
+    }
+
     // const height = (hasAlias ? 90 : 60);
     const height = 60 + (hasAlias ? 30 : 0) + portLength * 53 + (type == 'SubTree' ? 15 : 0)
 
-
-    // + portLength * 53
 
     const widthFlag = entity.size.width == width
     entity.size.width = width;

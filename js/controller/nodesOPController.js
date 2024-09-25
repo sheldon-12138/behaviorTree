@@ -113,6 +113,25 @@ function handleNodeSurface(entity, aliasFlag, orgFlag, orgDesIsNull) {
     // }
 }
 
+// 模型改变后
+function handleModelChange(ID, port) {
+    let eventEntityMap = gContextDao.getGContextProp("eventEntityMap");
+    let statusData = gContextDao.getGContextProp("statusData");
+
+    for (let key in eventEntityMap) {
+        let entity = eventEntityMap[key];
+
+        if (entity.name === ID && entity.treeId === statusData.currentTreeID) {
+            // console.log('jin', entity)
+
+            entity.port = port;
+            handleNodeSurface(entity,
+                entity.aliasName !== entity.name, entity.aliasName !== entity.name, !entity._description)
+            // console.log(entity)
+        }
+    }
+}
+
 function _copy() {
 
 
@@ -1585,6 +1604,7 @@ function bottomUserCode(id) {
 
 
 export default {
+    handleModelChange,
     clearTreeDom,
     selectedTree,
     handleNodeSurface,

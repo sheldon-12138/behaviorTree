@@ -9,7 +9,7 @@ import Line from "../structure/line.js"
 import Utils from "../utils/utils.js";
 import nodesOPController from "./nodesOPController.js";
 import viewOPController from "./viewOPController.js";
-
+import fileParser from "../parser/fileParser.js";
 
 function updateTest() {
     // 
@@ -270,8 +270,10 @@ function getFocus() {
 
 //生成节点
 function createNode(type, pos, name) {
+    // console.log(type, pos, name)
     let model = gContextDao.getModelByType(type);
-    // console.log('model', model)
+    let statusData = gContextDao.getGContextProp("statusData");
+
     if (type.includes("top")) {
         let root = gContextDao.findRoot();
         if (root) {
@@ -282,13 +284,23 @@ function createNode(type, pos, name) {
 
     let len = name ? name.length : 4
     const iconName = dom.imgName({ type, name })
-    const width = 20 + (iconName ? 30 : 0) + len * 11;
+
+    let width = 20 + (iconName ? 30 : 0) + len * 11;
+
+    const port = fileParser.findNodePort(name)
+    let portLength = 0
+    if (port) {
+        portLength = Object.keys(port).length
+        const maxLength = Object.keys(port).reduce((max, key) => Math.max(max, key.length), 0);
+        width = Math.max(width, 80 + maxLength * 11)
+    }
+    const height = 60 + portLength * 53 + (type == 'SubTree' ? 15 : 0)
 
     let entityProp = {
         type: model.type,
         size: {
             width: width || model.sizeList[1].width,
-            height: model.sizeList[1].height
+            height: height || model.sizeList[1].height
         },
         pos: { x: pos.x, y: pos.y },
         hasUpNodes: model.hasUpNodes,
@@ -300,10 +312,13 @@ function createNode(type, pos, name) {
 
         name: name || model.name,
         textColor: model.textColor,
+
+        port: port || {},
+        treeId: statusData.currentTreeID || 'newTree',
+        // port: port,
     };
     let entity = gContextDao.addEntity(entityProp);
-    // console.log('新建的entity', entity)
-
+    // console.log('新建的entity', entityProp, entity) 
     if (entity) {
         let eDom = dom.createNode(entity);
         entity.dom = eDom;

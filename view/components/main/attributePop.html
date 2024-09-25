@@ -51,7 +51,7 @@
                                 <tr v-for="(item,index) in nodePortData" :key="item.portName"
                                     @click="selectNodePortIndex = index"
                                     :style="{ backgroundColor:selectNodePortIndex==index ? '#bceae1' : 'inherit'}">
-                                    <td><input type="text" v-model="item.portName"></td>
+                                    <td><input type="text" v-model="item.portName" disabled></td>
                                     <td><input type="text" v-model="item.value"></td>
                                 </tr>
                                 <!--  -->

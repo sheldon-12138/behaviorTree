@@ -91,9 +91,8 @@ function appendMultiText(strList, posX, posY, entity) {
             y: posY,
             "font-size": 12,
             "font-family": 'Consolas',
-            "stroke": "black",
             "stroke-width": "0.5px",
-            "fill": "black",
+            "fill": "white",
         },
         ["entity-name", "none-pointer"]
     );
@@ -513,7 +512,6 @@ function createDes(entity) {
     let desG = createSVGElement("g", {}, ['desG', 'hide']);
     let strList = splitByLine(entity._description, (entity.size.width * 2 / 3.0), 10);
     // console.log(strList)
-
     // let posY = entity.size.height / 2.0 - (strList.length * 10 / 2.0) < entity.size.height / 3 ? entity.size.height / 3 : entity.size.height / 2.0 - (strList.length * 10 / 2.0);
     if (strList.length > 4) {
         strList = strList.splice(0, 4);
@@ -773,18 +771,18 @@ function createCanvas(size) {
         [],
     );
 
-    // let backgroundRect = createSVGElement(
-    //     "rect",
-    //     {
-    //         "width": "100%",
-    //         "height": "100%",
-    //         "fill": "#333344" // 设置背景颜色，例如浅灰色
-    //     },
-    //     []
-    // );
+    let backgroundRect = createSVGElement(
+        "rect",
+        {
+            "width": "100%",
+            "height": "100%",
+            "fill": "#333344"
+        },
+        ["none-pointer"]
+    );
 
-    // // 将背景矩形添加到 SVG 的最底层
-    // canvas.appendChild(backgroundRect);
+    // 将背景矩形添加到 SVG 的最底层
+    canvas.appendChild(backgroundRect);
     canvas.appendChild(createDefs());
     // canvas.appendChild(createTips());
     canvas.appendChild(createLinearGradientDefs());//插入节点渐变背景
@@ -987,6 +985,26 @@ function createGrid(grid) {
 
     fragment.appendChild(smallGrid);
     fragment.appendChild(unitGrid);
+    fragment.appendChild(rect);
+
+    return fragment;
+}
+
+// 创建背景色
+function createBackground(grid) {
+    let fragment = doc.createDocumentFragment();
+    let rect = createSVGElement(
+        "rect",
+        {
+            "x": 0,
+            "y": 0,
+            "width": grid.size.width,
+            "height": grid.size.height,
+            "fill": "#333344",
+            "id": "RectGrid",
+        },
+        ["none-pointer"]
+    );
     fragment.appendChild(rect);
 
     return fragment;
@@ -1320,6 +1338,7 @@ export default {
     removeClassByDOM,
     addClassByDOM,
     createGrid,
+    createBackground,
     // updateCriterionColorNode,
     appendMultiText,
     updateNameNode,

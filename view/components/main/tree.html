@@ -13,7 +13,7 @@
                 <i class="el-icon-delete"></i>
             </div>
         </div>
-        <div style="overflow: auto;height: calc(100% - 11px)">
+        <div class="treeBody">
             <el-tree :data="project" :props="defaultProps" @node-click="handleTreeClick" default-expand-all>
                 <!-- <template #default="{ node, data }">
                 <span :data-name="node.parent.data.lable">{{ data.ID}}</span>
@@ -30,7 +30,7 @@
                 <i @click="importNode" class="el-icon-download"></i>
             </div>
         </div>
-        <div style="overflow: auto;height: calc(100% - 11px)">
+        <div class="treeBody">
             <el-tree id="modelTree" :data="model" default-expand-all>
                 <template #default="{ node, data }">
                     <span :data-type="node.parent.data.type" :data-isLeaf="node.isLeaf"

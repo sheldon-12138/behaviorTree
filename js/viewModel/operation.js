@@ -77,7 +77,7 @@ function mainMouseDown(e) {
         gContextController.clearActived();
         gContextController.cancelHeightLine();
         // gContextController.selectCanvas();
-        gContextController.showMarquee(opContext.mouseDownPosition);//显示多选框
+        // gContextController.showMarquee(opContext.mouseDownPosition);//显示多选框
 
         // 单击空白处时关闭弹窗
         // let statusData = gContextDao.getGContextProp("statusData");
@@ -198,7 +198,6 @@ function modelTreeMouseDown(e) {
     if (!isLeaf) return
 
     if (dom_type) {
-
         gContextController.selectModel(dom_type, name)
 
         if (singleClickTimer) {
@@ -448,10 +447,9 @@ function mouseUp(e) {
         }
     }
     else if (opContext.controlType === DomType.CANVAS) {//空白处
-
         //拖拽框
-        gContextController.setActivedEntity(opContext.initialPosition);
-        gContextController.hideMarquee();
+        // gContextController.setActivedEntity(opContext.initialPosition);
+        // gContextController.hideMarquee();
     }
     else if (opContext.controlType === DomType.LINE) {
         nodesOPController.updateTreeData();

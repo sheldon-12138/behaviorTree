@@ -48,16 +48,15 @@ export function treeVm() {
             // 打开本地项目
             handleFileChange(event) {
                 const files = event.target.files;
-                this.project[0].children = [];
                 // console.log(files);
                 if (files.length == 1) {//xml单文件
                     const file = files[0];
                     const fileName = Utils.splitFileName(file.name)[0];
                     const reader = new FileReader();
                     reader.onload = (e) => {
+                        this.project[0].children = [];
                         fileController.analysisXml({ xml: e.target.result }).then((result) => {
-                            // console.log(result)
-
+                            // console.log(result) 
                             if (result.flag) {
                                 // const treeName = JSON.parse(result.content).root.BehaviorTree[0].$.ID;
                                 // console.log(this.treeMap)

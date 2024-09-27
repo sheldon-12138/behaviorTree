@@ -82,6 +82,7 @@ export function attributePopVm() {
         watch: {
             entity() {
                 if (this.entity) {
+                    // console.log(this.entity.name)
                     // console.log('attr的entity', this.entity)
                     this.entityInfo = {
                         ...this.entity
@@ -295,7 +296,7 @@ export function attributePopVm() {
                         port: ''
                     }
                     this.nodePortData.length = 0;
-                    // attrData.entity = null;
+                    attrData.entity = null;
                 }
                 // 新增节点
                 else if (attrID == 2 || attrID == 3 || attrID == 4) {

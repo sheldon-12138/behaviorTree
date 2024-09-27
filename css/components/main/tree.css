@@ -27,6 +27,15 @@
   color: #606266;
 }
 
+.treeBody {
+  overflow: auto;
+  height: calc(100% - 11px)
+}
+
+.treeBody::-webkit-scrollbar {
+  width: 8px;
+}
+
 #tree {
   width: 100%;
   height: 100%;

@@ -218,8 +218,12 @@ function createCanvas() {
     // dom.addElement(canvas, dom.query("#content"));
 
     //网格
-    let grid = dom.createGrid({ size: svgCanvas.size });
-    canvas.appendChild(grid);
+    // let grid = dom.createGrid({ size: svgCanvas.size });
+    // canvas.appendChild(grid);
+
+    //背景色
+    let background = dom.createBackground({ size: svgCanvas.size });
+    canvas.appendChild(background);
 
     // let filter = dom.createHeightLightFilter();
     // canvas.appendChild(filter);
@@ -437,7 +441,7 @@ function setActivedEntity(initialPosition) {
             entity.pos.y + entity.size.height <= marquee.pos.y + marquee.size.height
         ) {
             activedMap[key] = entity;
-            entity.dom.querySelector(".border").classList.remove("hide");
+            // entity.dom.querySelector(".border").classList.remove("hide");
             initialPosition ? initialPosition[key] = { x: entity.pos.x, y: entity.pos.y } : null;
             if (entity.collapse) {
                 let queue = [];
@@ -579,7 +583,7 @@ function createNewLine(type, beginPoint) {
         y: entity.pos.y + entity[point].y + entity.lineOffset[t]
     };
     if (!newLine) {
-        newLine = new Line("newTreeLine", "newLine",
+        newLine = new Line("newTree", "newLine",
             { entityID: beginPoint.id, posX: pos.x, posY: pos.y, type: t },
             { posX: pos.x, posY: pos.y, type: et }, true);
         console.log("newLine", newLine)
@@ -769,7 +773,7 @@ function createLine(line) {
 
 
     if (!lineMap[id] && !lineMap[id2]) {//检查没有重复的线
-        let newLine = new Line('newTreeLine', id, line.begin, line.end, true);
+        let newLine = new Line('newTree', id, line.begin, line.end, true);
         let begin = gContextDao.findEntity(line.begin.entityID);
         let end = gContextDao.findEntity(line.end.entityID);
         if (newLine) {
@@ -815,7 +819,7 @@ function selectModel(type, name) {
 
     const model = modelList[index].children.find(item => item.ID === name);
     model.type = type;
-    // console.log('model', model)
+    console.log('选中的model', model)
     attrData.model = model;
 
     statusData.attrID = model.isUser ? 3 : 4;

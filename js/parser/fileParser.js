@@ -397,7 +397,7 @@ function loadXml(BehaviorTree) {
 
         // 添加自定义节点的端口信息
         const port = findNodePort(modelName)
-        
+
 
         let model = gContextDao.getModelByType(type || 'Top');
 
@@ -408,7 +408,7 @@ function loadXml(BehaviorTree) {
 
         const iconName = dom.imgName({ type: type || 'Top', name: modelName })
         let width = Math.max(20 + (iconName ? 30 : 0) + len * 11 + (_description ? 30 : 0), nameLength * 11 + 20);
-        
+
         let portLength = 0
         if (port) {
             Object.keys(port).forEach(key => {
@@ -417,11 +417,11 @@ function loadXml(BehaviorTree) {
                 }
             });
             portLength = Object.keys(port).length
-            
+
             const maxLength = Object.keys(port).reduce((max, key) => Math.max(max, key.length), 0);
             width = Math.max(width, 80 + maxLength * 11)
         }
-        
+
         const height = 60 + (haveAlias ? 30 : 0) + portLength * 53 + (type == 'SubTree' ? 15 : 0)
 
         let entityProp = {
@@ -598,6 +598,7 @@ function btLine(parentBtID, children, tempData) {
 // 处理自定义节点
 function handeTreeNodesModel(TreeNodesModel) {
     let modelList = gContextDao.getGContextProp("modelList");
+    // console.log('TreeNodesModel', modelList, TreeNodesModel)
     for (let key in TreeNodesModel) {
         for (let item of modelList) {
             if (key == item.type) {

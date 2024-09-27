@@ -259,6 +259,8 @@ function getModelByType(type) {
 function getModelByName(name) {
     return getModel("name", name);
 };
+
+
 // 清空context
 function clearContext() {
     gContext.doorEntityMap = {};
@@ -271,10 +273,10 @@ function clearContext() {
         delete gContext.treeMap[key];
     });
     gContext.tabsArr.splice(0, gContext.tabsArr.length);
-    // console.log(gContext.tabsArr)
-    //  modelList初始化
-    gContext.modelList.splice(0, gContext.modelList.length, ...gContext.modelList1);
-    // console.log(gContext.modelList)
+    gContext.modelList.splice(0, gContext.modelList.length, ...JSON.parse(JSON.stringify(gContext.modelList1)));
+
+    // console.log('gContext.modelList', gContext.modelList)
+
 
     // gContext.userLineMap = {};
     //gContext.attrData.entity = {criterions:null};

@@ -29,12 +29,9 @@ import dom from "../viewModel/dom.js";
 
 // };
 
-
 function func(x) {
     return 1 - Math.pow(Math.E, 2.0 * (x - 2.6));
 }
-
-
 
 function getSumY(data1, t, o) {
     let sum = 0

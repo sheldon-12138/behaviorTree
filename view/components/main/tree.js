@@ -24,6 +24,7 @@ export function treeVm() {
                     label: 'label'
                 },
 
+                
                 statusData: g.gContext.statusData,
                 attrData: g.gContext.attrData,
 

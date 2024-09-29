@@ -266,9 +266,9 @@ export function attributePopVm() {
                 }, {});
                 return result;
             },
-            handleCancel() {
-                this.handleClose()
-            },
+            // handleCancel() {
+            //     this.handleClose()
+            // },
             // 关闭弹窗
             handleClose() {
                 // console.log('')

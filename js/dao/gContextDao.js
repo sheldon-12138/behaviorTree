@@ -7,7 +7,6 @@ import TreeNode from "../structure/newTreeNode.js";
 
 var gContext = g.gContext;
 
-
 // 检查dc数据是否有效
 function checkCriterion(userCode, dcType) {
     // userCode = userCode.replace(/\s/g, '')
@@ -276,7 +275,6 @@ function clearContext() {
     gContext.modelList.splice(0, gContext.modelList.length, ...JSON.parse(JSON.stringify(gContext.modelList1)));
 
     // console.log('gContext.modelList', gContext.modelList)
-
 
     // gContext.userLineMap = {};
     //gContext.attrData.entity = {criterions:null};

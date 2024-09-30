@@ -84,7 +84,6 @@ function parseIntNum(x, n) {
 }
 
 
-
 // fileInfoPreview  INFO_PREVIEW
 function infoParser2(content) {
     if (content === "") {
@@ -407,6 +406,7 @@ function loadXml(BehaviorTree) {
         let width = Math.max(20 + (iconName ? 30 : 0) + len * 11 + (_description ? 30 : 0), nameLength * 11 + 20);
 
         let portLength = 0
+
         if (port) {
             Object.keys(port).forEach(key => {
                 if (entityArr[i][key]) {
@@ -415,8 +415,13 @@ function loadXml(BehaviorTree) {
             });
             portLength = Object.keys(port).length
 
-            const maxLength = Object.keys(port).reduce((max, key) => Math.max(max, key.length), 0);
-            width = Math.max(width, 80 + maxLength * 11)
+            // const maxLength = Object.keys(port).reduce((max, key) => Math.max(max, key.length), 0);
+            // width = Math.max(width, 80 + maxLength * 11)
+
+            const maxLength = Object.entries(port).reduce((max, [key, item]) => {
+                return Math.max(max, key.length + 8, (item.value?.length || 0) - 3);
+            }, 0);
+            width = Math.max(width, maxLength * 11)
         }
 
         const height = 60 + (haveAlias ? 30 : 0) + portLength * 53 + (type == 'SubTree' ? 15 : 0)

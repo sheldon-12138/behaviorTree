@@ -71,7 +71,7 @@ function handleNodeSurface(entity, aliasFlag, orgFlag, orgDesIsNull) {
     // 更新节点元素
     dom.updateNodeElements(entity, aliasFlag, orgFlag, orgDesIsNull);
     // 更新连线
-    gContextController.updateLine({ [`${entity.id}`]: entity })
+    // gContextController.updateLine({ [`${entity.id}`]: entity })
     // 
     // if (aliasFlag) {
     //     if (orgFlag) {//修改别名

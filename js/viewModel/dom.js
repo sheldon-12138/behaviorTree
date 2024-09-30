@@ -219,7 +219,6 @@ const portNameObj = {
 // 创建节点端口
 function createPortDefs(port, width, haveAlias) {
     let portG = createSVGElement("g", {}, ['portG']);
-
     let num = 0
     for (let key in port) {
         let portType = null
@@ -567,8 +566,6 @@ function createSubTreeLine(entity) {
 function updateEntitySize(entity, hasAlias = false) {
     const { type, name, aliasName, _description, port } = entity;
 
-
-
     const len = name.length;
     const nameLength = aliasName?.length || 0;
     const iconName = imgName({ type, name });
@@ -576,12 +573,14 @@ function updateEntitySize(entity, hasAlias = false) {
     const baseWidth = 20 + (iconName ? 30 : 0) + len * 11 + (_description ? 30 : 0);
     const aliasWidth = nameLength * 11 + 20;
     let width = hasAlias ? Math.max(baseWidth, aliasWidth) : baseWidth;
-
     let portLength = 0
     if (port) {
         portLength = Object.keys(port).length
-        const maxLength = Object.keys(port).reduce((max, key) => Math.max(max, key.length), 0);
-        width = Math.max(width, 80 + maxLength * 11)
+        // const maxLength = Object.keys(port).reduce((max, key) => Math.max(max, key.length), 0);
+        const maxLength = Object.entries(port).reduce((max, [key, item]) => {
+            return Math.max(max, key.length + 8, (item.value?.length || 0) - 3);
+        }, 0);
+        width = Math.max(width, maxLength * 11)
     }
 
     // const height = (hasAlias ? 90 : 60);

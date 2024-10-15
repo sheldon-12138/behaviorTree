@@ -388,60 +388,41 @@
         <img src="assets/header/setting.png" @click="getOSAndBrowser()" draggable="false">
     </el-tooltip>
 </div>
-<!-- 设置 -->
-<el-dialog class="editDialog" title="设置" :visible.sync="softInfoID" width="380px">
+<!-- 设置 380-->
+<el-dialog class="editDialog" title="设置" :visible.sync="softInfoID" width="670px">
     <div class="formBody">
-        <h4>判据编辑与显示</h4>
-        <!-- <hr size="0.5" style="margin: 7px 0px 24px;" /> -->
+        <h4>General</h4>
         <div class="border-line"></div>
-        <!-- 判据显示方式： -->
+        <!-- 显示端口： -->
         <div class="sysItem">
-            窗口布局：
-            <el-radio-group style="margin-left: 15px;" v-model="statusData.isPop" @input="changeShowWay">
-                <el-radio :label="true">弹出</el-radio>
-                <el-radio :label="false">排列</el-radio>
-                <!-- <el-radio :label="9">备选项</el-radio> -->
-            </el-radio-group>
-
+            <el-checkbox v-model="statusData.showPort">Show Port</el-checkbox>
         </div>
-        <!-- 判据曲线显示方式 -->
+        <!-- 显示前置/后置条件： -->
         <div class="sysItem">
-            曲线显示：
-            <template>
-                <el-radio-group style="margin-left: 15px;" v-model="statusData.lineShowWay">
-                    <el-radio :label="true">独立</el-radio>
-                    <el-radio :label="false">累积</el-radio>
-                </el-radio-group>
-            </template>
+            <el-checkbox v-model="statusData.showPrePost">Show Pre/Post conditions</el-checkbox>
         </div>
-        <!-- 判据是否可修改 -->
+        <!-- 在两行中切割端口和条件名称和值 ：-->
         <div class="sysItem">
-            数据编辑：
-            <!-- <el-switch v-model="statusData.isEdit" active-text="编辑模式" inactive-text="仅读模式">
-        </el-switch> -->
-            <template>
-                <el-radio-group style="margin-left: 15px;" v-model="statusData.isEdit">
-                    <el-radio :label="true">读写</el-radio>
-                    <el-radio :label="false">仅读</el-radio>
-                    <!-- <el-radio :label="9">备选项</el-radio> -->
-                </el-radio-group>
-            </template>
+            <el-checkbox v-model="statusData.splitTwoLines">Split Port & Condition names and value on two lines</el-checkbox>
         </div>
-        <br />
-        <h4>计算与分析</h4>
-        <!-- <hr style="margin: 7px 0px 24px;" /> -->
+        <!-- 自适应分割条件 -->
+        <div class="sysItem">
+            <el-checkbox v-model="statusData.splitCondition">Split Condition Adaptively</el-checkbox>
+        </div>
+        <!-- yingyingw -->
+        <h4>Editor</h4>
         <div class="border-line"></div>
+        <!-- Automatically load<include> files  `自动加载/\<include>\文件` -->
         <div class="sysItem">
-            分析阶数：
+            Automatically load&lt;include&gt;files
             <template>
-                <el-radio-group style="margin-left: 15px;" v-model="statusData.analysisOrder">
-                    <el-radio :label="1">一阶</el-radio>
-                    <el-radio :label="2">二阶</el-radio>
-                    <el-radio :label="3">三阶</el-radio>
+                <el-radio-group style="margin-left: 15px;" v-model="statusData.loadInclude">
+                    <el-radio :label="1">Ask</el-radio>
+                    <el-radio :label="2">Always</el-radio>
+                    <el-radio :label="3">Never</el-radio>
                 </el-radio-group>
             </template>
         </div>
-        <br />
         <h4>软件信息</h4>
         <!-- <hr style="margin: 7px 0px 24px;" /> -->
         <div class="border-line"></div>

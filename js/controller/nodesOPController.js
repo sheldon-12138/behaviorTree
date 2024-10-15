@@ -17,16 +17,16 @@ function selectedTree(treeId, name) {
     let statusData = gContextDao.getGContextProp("statusData");
     if (treeId === statusData.currentTreeID) return
 
-    //清空画布树
+    //清空画布树 + 删除复制的子树
     clearTreeDom()
-
-    //加载子树
-    loadSubTree(treeId);
+    deleteSubTree()
 
     // 根据数据渲染dom
-    renderFTree.renderByContext(treeId);
+    let subArr = renderFTree.renderByContext(treeId);
+    // console.log(subArr)
 
     // 添加tab页
+    let nodeLayoutFlag = false
     if (name) {
         let tabsArr = gContextDao.getGContextProp("tabsArr");
         const exists = tabsArr.some(element => element.id === treeId);
@@ -34,16 +34,70 @@ function selectedTree(treeId, name) {
         } else {
             tabsArr.push({ id: treeId, name });
             // 自动布局(新开tab页时才自动布局)
-            _nodeLayout(treeId);
+            // _nodeLayout(treeId);
+            nodeLayoutFlag = true
         }
     }
     statusData.currentTreeID = treeId;
+
+    //加载子树
+    if (subArr.length > 0) {
+        subArr.forEach(obj => {
+            loadSubTree(treeId, obj.subNodeId)
+        })
+    }
+    // if (obj.subTreeId) { loadSubTree(treeId, obj.subNodeId); }
+
+    if (nodeLayoutFlag)
+        _nodeLayout(treeId);
+
     // 调整画布大小
     gContextController.updateMainSVGSizeUp();
 }
 
 // 加载子树
-function loadSubTree(treeId) {
+function loadSubTree(treeId, subNodeId) {
+
+    // 复制子树
+    copy();
+    paste();
+
+    // 跟主树连接
+    let subNode = gContextDao.findEntity(subNodeId);
+    // console.log('subNode', subNode)
+
+    let subTreeRoot = findSubTreeRoot(treeId)
+    // console.log('subTreeRoot', subTreeRoot)
+    if (subTreeRoot) {
+        subNode.downEntity.push(subTreeRoot.id);
+        subTreeRoot.upEntity.push(subNode.id);
+
+
+        let newLine = gContextDao.addLine({ entityID: subNode.id, posX: subNode.pos.x + subNode.downNodeOffset.x, posY: subNode.pos.y + subNode.downNodeOffset.y + subNode.lineOffset["down"], type: "down" },
+            { entityID: subTreeRoot.id, posX: subTreeRoot.pos.x + subTreeRoot.upNodeOffset.x, posY: subTreeRoot.pos.y + subTreeRoot.upNodeOffset.y + subNode.lineOffset["up"], type: "up" },
+            treeId);
+        let line = dom.createLine(newLine);
+        newLine.dom = line;
+        dom.query("#mainSVG").appendChild(line);
+    }
+
+    // 折叠子树节点
+    gContextController.foldNodeById(subNode.id)
+
+    gContextDao.setGContextProp("activedEntityMap", {});
+}
+
+
+function findSubTreeRoot(treeId) {
+    const eventEntityMap = gContextDao.getGContextProp("eventEntityMap");
+    for (let key in eventEntityMap) {
+        const entity = eventEntityMap[key];
+        if (entity.treeId === treeId && entity.upEntity.length === 0 && entity.type !== 'Top') {
+            // console.log('entity', entity);
+            return entity;
+        }
+    }
+    return null; // 明确返回null
 }
 
 // 清空画布树
@@ -59,6 +113,55 @@ function clearTreeDom() {
         mainSVG.removeChild(lines[i]);
     }
 }
+
+// 移除主树的子树
+function deleteSubTree() {
+    let eventEntityMap = gContextDao.getGContextProp("eventEntityMap");
+    let lineMap = gContextDao.getGContextProp("lineMap");
+    let subMap = {}
+    for (let key in eventEntityMap) {
+        if (eventEntityMap[key].isCopySubTree) {
+            subMap[key] = eventEntityMap[key]
+        }
+    }
+
+    let deleteIdMap = {};
+    //删除节点
+    for (let key in subMap) {
+        let entity = subMap[key];
+        if (entity.type === "Top") continue;//顶事件不可删
+
+        let len = entity.upEntity.length;
+        for (let upIndex = 0; upIndex < len; ++upIndex) {
+            let upEntity = gContextDao.findEntity(entity.upEntity[upIndex]);
+            upEntity.downEntity = Utils.removeElement(upEntity.downEntity, entity.id);
+        }
+        len = entity.downEntity.length;
+        for (let downIndex = 0; downIndex < len; ++downIndex) {
+            let downEntity = gContextDao.findEntity(entity.downEntity[downIndex]);
+            downEntity.upEntity = Utils.removeElement(downEntity.upEntity, entity.id);
+        }
+
+        delete (eventEntityMap[key]);
+        deleteIdMap[key] = key;
+
+    }
+    //删除相关线
+    let deleteLineIdMap = {};
+    for (let key in deleteIdMap) {
+        delete (subMap[key]);
+        for (let lineKey in lineMap) {
+            if (lineKey.indexOf(key) >= 0) {
+                deleteLineIdMap[lineKey] = lineKey;
+            }
+        }
+    }
+
+    for (let key in deleteLineIdMap) {
+        delete (lineMap[key]);
+    }
+}
+
 // 节点别名改动后的处理
 function handleNodeSurface(entity, aliasFlag, orgFlag, orgDesIsNull) {
     // console.log('aliasFlag', aliasFlag, 'orgFlag', orgFlag, 'orgDesIsNull', orgDesIsNull)
@@ -134,25 +237,30 @@ function handleModelChange(ID, port) {
 
 function _copy() {
 
-
     let copyList = {};
     let copyLineList = {};
     let activedMap = gContextDao.getGContextProp("activedEntityMap");
+    let statusData = gContextDao.getGContextProp("statusData");
+    const treeId = statusData.currentTreeID;
+
     for (let key in activedMap) {
         let entity = Utils.jsonClone(activedMap[key]);
-        if (entity.modelType === "top_event") continue;//顶事件不可复制
-        copyList[key] = entity;
+        entity.treeId = treeId
+        if (entity.type === "Top") continue;//顶事件不可复制
+
+        copyList[key] = entity
+
         let len = entity.upEntity.length;
         for (let upIndex = 0; upIndex < len; ++upIndex) {
             if (activedMap[entity.upEntity[upIndex]]) {
                 let endEntity = activedMap[entity.upEntity[upIndex]];
 
-                if (entity.modelType === "top_event" || endEntity.modelType === "top_event") {
+                if (entity.type === "Top" || endEntity.type === "Top") {
                     continue;
                 }
 
                 let id = entity.id + "-" + entity.upEntity[upIndex];
-                copyLineList[id] = new Line(id,
+                copyLineList[id] = new Line(treeId, id,
                     {
                         entityID: entity.id,
                         posX: entity.pos.x + entity.upNodeOffset.x,
@@ -174,6 +282,7 @@ function _copy() {
     clipBoard.pasteOffset.x = 10;
     clipBoard.pasteOffset.y = 10;
     // console.log(copyList);
+    // console.log(copyLineList);
 };
 
 function copy() {
@@ -198,6 +307,7 @@ function paste(pasteOffset) {
 }
 
 function _paste(pasteOffset) {
+    let statusData = gContextDao.getGContextProp("statusData");
 
     let clipBoard = gContextDao.getGContextProp("clipBoard");
     pasteOffset = clipBoard.pasteOffset;
@@ -240,6 +350,7 @@ function _paste(pasteOffset) {
             newEntity.downEntity = [];
             newEntity.btID = getBtID() + "";
 
+            newEntity.isCopySubTree = Object.keys(copyList).length > 1 ? true : false;
 
             // newEntity = eventEntityMap[id] = new EventEntity(id, null, entity.type, entity.layer, entity.name, entity.aliasName,
             //     {width:entity.size.width, height:entity.size.height},
@@ -271,7 +382,7 @@ function _paste(pasteOffset) {
         eEntity.downEntity.push(ids[0]);
         let newId = ids.join("-");
         // let newLine = lineMap[newId] = Utils.jsonClone(line);
-        let newLine = lineMap[newId] = new Line(newId, { entityID: ids[0], posX: bEntity.pos.x + bEntity.upNodeOffset.x, posY: bEntity.pos.y + bEntity.upNodeOffset.y + bEntity.lineOffset[line.begin.type], type: line.begin.type },
+        let newLine = lineMap[newId] = new Line(statusData.currentTreeID, newId, { entityID: ids[0], posX: bEntity.pos.x + bEntity.upNodeOffset.x, posY: bEntity.pos.y + bEntity.upNodeOffset.y + bEntity.lineOffset[line.begin.type], type: line.begin.type },
             { entityID: ids[1], posX: eEntity.pos.x + eEntity.downNodeOffset.x, posY: eEntity.pos.y + eEntity.downNodeOffset.y + eEntity.lineOffset[line.end.type], type: line.end.type });
         if (newLine) {
             newLine.update();
@@ -280,6 +391,8 @@ function _paste(pasteOffset) {
             dom.query("#mainSVG").appendChild(lDom);
         }
     }
+
+    // console.log(copyLineList);
     clipBoard.pasteOffset.x += 10;
     clipBoard.pasteOffset.y += 10;
 
@@ -359,30 +472,11 @@ function __delete() {
     let doorEntityMap = gContextDao.getGContextProp("doorEntityMap");
     let lineMap = gContextDao.getGContextProp("lineMap");
 
-    let userLineMap = gContextDao.getGContextProp("userLineMap");
-    let criterionPopList = gContextDao.getGContextProp("criterionPopList");
-
     let deleteIdMap = {};
     //删除节点
     for (let key in activedEntityMap) {
         let entity = activedEntityMap[key];
-        if (entity.modelType === "top_event") continue;//顶事件不可删
-        if (entity.modelType === "bottom_event") {//删除底事件的判据
-            for (let i = 0; i < 17; i++) {
-                const drawerID = `${entity.id}${i.toString().padStart(2, '0')}`
-                if (userLineMap[drawerID]) {
-                    dom.query("#mainSVG").removeChild(userLineMap[drawerID].dom);
-                    delete (userLineMap[drawerID]);
-
-                    let indexToDelete = criterionPopList.findIndex(item => {
-                        return item.drawerID == drawerID;
-                    });
-                    if (indexToDelete != -1) {// 如已存在则删除
-                        criterionPopList.splice(indexToDelete, 1);
-                    }
-                }
-            }
-        };
+        if (entity.type === "Top") continue;//顶事件不可删
 
         let len = entity.upEntity.length;
         for (let upIndex = 0; upIndex < len; ++upIndex) {
@@ -951,14 +1045,15 @@ function openAutoLayoutMode() {
     gContextDao.setGContextProp("statusData", statusData);
 }
 function nodeLayout(currentTreeID) {
-    _nodeLayout(currentTreeID);
+    const statusData = gContextDao.getGContextProp("statusData");
+    _nodeLayout(currentTreeID ? currentTreeID : statusData.currentTreeID);
     // console.log(g.gContext.eventEntityMap)
     // updateEffectPos();
     // updateHSStandardPos();
 }
 //自动布局
 function _nodeLayout(treeId) {
-    // console.log('自动布局了')
+    // console.log('自动布局了', treeId)
     let roots = new TreeNode(null);
     let traver = gContextDao.traverseNode(treeId);
 

@@ -338,6 +338,8 @@ function xmlParser(content, xmlName) {
     if (content === "") { return; }
     let { BehaviorTree, TreeNodesModel } = content.root
     let treeMap = gContextDao.getGContextProp("treeMap");
+    let events = gContextDao.getGContextProp("eventEntityMap");
+
 
     if (xmlName) {//通过项目遍历读文件
         let projStruct = []
@@ -345,7 +347,10 @@ function xmlParser(content, xmlName) {
         let modelList = gContextDao.getGContextProp("modelList");
         BehaviorTree.forEach(item => {
             const treeId = loadXml(item)
-            treeMap[treeId] = { ID: item.$.ID }
+            treeMap[treeId] = {
+                ID: item.$.ID,
+                entityMap: {}
+            }
 
             projStruct.push({ label: item.$.ID, treeId })
             // console.log(index, parseEntityArr(item))
@@ -360,7 +365,13 @@ function xmlParser(content, xmlName) {
         handeTreeNodesModel(TreeNodesModel[0])
         BehaviorTree.forEach(item => {
             const treeId = loadXml(item)
-            treeMap[treeId] = { ID: item.$.ID }
+            treeMap[treeId] = { ID: item.$.ID, entityMap: {} }
+
+            for (let key in events) {
+                if (events[key].treeId == treeId) {
+                    treeMap[treeId].entityMap[key] = events[key]
+                }
+            }
         })
     }
 }
@@ -438,7 +449,7 @@ function loadXml(BehaviorTree) {
             pos: { x: 100 * (i + 1), y: 100 * (i + 1) },
             hasUpNodes: model.hasUpNodes,
             hasDownNodes: model.hasDownNodes,
-            collapse: null,
+            collapse: type == 'SubTree' ? false : null,
             category: model.category,
             modelType: (modelName == undefined) ? ID : model.type,//将root节点的ID作为modelName
             aliasName: name || modelName || model.name,
@@ -458,7 +469,6 @@ function loadXml(BehaviorTree) {
             _post: _post || '',
 
             port: port || null,
-
         }
         const entity = gContextDao.addEntity(entityProp);
         // console.log('entity', entity)

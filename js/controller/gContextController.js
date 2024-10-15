@@ -476,7 +476,8 @@ function clearActived() {
     let activedMap = gContextDao.getGContextProp("activedEntityMap");
     for (let key in activedMap) {
         let entity = activedMap[key];
-        entity.dom.querySelector("rect").setAttribute("stroke", "#fff");
+        // 考虑复制子树的情况
+        if (entity.dom) entity.dom.querySelector("rect").setAttribute("stroke", "#fff");
     }
     gContextDao.setGContextProp("activedEntityMap", {});
 };
@@ -571,7 +572,9 @@ function addActivedChildEntityByID(id, initialPosition) {
 }
 //连接线拖拽创建时的增删改操作
 function createNewLine(type, beginPoint) {
-    console.log("createNewLine", type, beginPoint)
+
+    const statusData = gContextDao.getGContextProp("statusData");
+    // console.log("createNewLine", type, beginPoint)
     //let lines = gContextDao.getGContextProp("lineMap");
     let newLine = gContextDao.getGContextProp("newLine");
     let entity = gContextDao.findEntity(beginPoint.id);
@@ -583,7 +586,7 @@ function createNewLine(type, beginPoint) {
         y: entity.pos.y + entity[point].y + entity.lineOffset[t]
     };
     if (!newLine) {
-        newLine = new Line("newTree", "newLine",
+        newLine = new Line(statusData.currentTreeID || "newTree", "newLine",
             { entityID: beginPoint.id, posX: pos.x, posY: pos.y, type: t },
             { posX: pos.x, posY: pos.y, type: et }, true);
         console.log("newLine", newLine)
@@ -759,7 +762,7 @@ function changeNodeParent(childID, parentID) {
 //连接线拖拽创建结束，生成连接线
 function createLine(line) {
 
-    // let statusData = gContextDao.getGContextProp("statusData");
+    let statusData = gContextDao.getGContextProp("statusData");
     // if (statusData.isCompute) {
     //     console.warn("计算中无法添加线");
     //     return;
@@ -773,7 +776,7 @@ function createLine(line) {
 
 
     if (!lineMap[id] && !lineMap[id2]) {//检查没有重复的线
-        let newLine = new Line('newTree', id, line.begin, line.end, true);
+        let newLine = new Line(statusData.currentTreeID || 'newTree', id, line.begin, line.end, true);
         let begin = gContextDao.findEntity(line.begin.entityID);
         let end = gContextDao.findEntity(line.end.entityID);
         if (newLine) {
@@ -803,6 +806,7 @@ function selectEntity(key) {
     let attrData = gContextDao.getGContextProp("attrData");
     let entity = gContextDao.findEntity(key);
 
+    if (entity.isCopySubTree) return
     console.log('选中的entity', entity)
     statusData.attrID = 1;
     attrData.entity = entity;
@@ -1116,24 +1120,25 @@ function unfoldNodeById(id) {
 
     updateFoldNode(entity);
 
-    // // 自动布局 【展开后不要自动布局】
-    // nodesOPController.nodeLayout();
-    // updateMainSVGSizeUp();
+    // 自动布局 【展开后不要自动布局】
+    nodesOPController.nodeLayout();
+    updateMainSVGSizeUp();
     // nodesOPController.openAutoLayoutMode();
 };
 //折叠一个节点
 function foldNode(entity) {
     entity.collapse = true;
     updateFoldNode(entity);
+    nodesOPController.nodeLayout();
 };
 //展开一个节点
 function unfoldNode(entity) {
     entity.collapse = false;
     updateFoldNode(entity);
 
-    // 自动布局 【展开后不要自动布局】
-    // nodesOPController.nodeLayout();
-    // updateMainSVGSizeUp();
+    // 自动布局 【展开后自动布局】
+    nodesOPController.nodeLayout();
+    updateMainSVGSizeUp();
     // nodesOPController.openAutoLayoutMode();
 };
 //没有子节点
@@ -1144,14 +1149,8 @@ function noFoldNode(entity) {
 //根据节点的coll更新开折叠与展节点
 function updateFoldNode(entity) {
     dom.updateCollapse(entity);
-    // let lineMap = gContextDao.getGContextProp("lineMap");
-    let userLineMap = gContextDao.getGContextProp("userLineMap");
-    let criterionPopList = gContextDao.getGContextProp("criterionPopList");
-    const viewPortWidth = g.gContext.viewPort.width
-    const viewPortHeight = g.gContext.viewPort.height
 
     if (entity.collapse === null) {
-
     }
     else if (entity.collapse === false) {//展开
         let queue = [];
@@ -1166,17 +1165,6 @@ function updateFoldNode(entity) {
             let currentE = gContextDao.findEntity(queue.shift());
             dom.removeClassByDOM(currentE.dom, "node-fold");
 
-            if (currentE.modelType == "bottom_event") {
-                for (let i = 0; i < 17; i++) {
-                    const lineId = `${currentE.id}${i.toString().padStart(2, '0')}`
-                    if (userLineMap[lineId]) {
-                        dom.removeClassByDOM(userLineMap[lineId].dom, "node-fold");
-                        criterionPopList.forEach((item, index) => {
-                            if (item.drawerID == lineId) criterionPopList[index].show = true
-                        });
-                    }
-                }
-            }
             if (currentE.collapse !== true) {
                 for (let i = 0, len = currentE.downEntity.length; i < len; ++i) {
                     let id1 = currentE.id + "-" + currentE.downEntity[i];
@@ -1200,22 +1188,6 @@ function updateFoldNode(entity) {
         while (queue.length > 0) {
             let currentE = gContextDao.findEntity(queue.shift());
             dom.addClassByDOM(currentE.dom, "node-fold");
-
-            if (currentE.modelType == "bottom_event") {
-                for (let i = 0; i < 17; i++) {
-                    const lineId = `${currentE.id}${i.toString().padStart(2, '0')}`
-                    if (userLineMap[lineId]) {
-                        dom.addClassByDOM(userLineMap[lineId].dom, "node-fold");
-                    }
-                    criterionPopList.forEach((item, index) => {
-                        if (item.drawerID == lineId) criterionPopList[index].show = false
-                    });
-                    // if(criterionPopList.findIndex(item => {
-                    //     return item.drawerID == drawerID;
-                    // });)
-                }
-
-            }
             if (currentE.collapse !== true) {
                 for (let i = 0, len = currentE.downEntity.length; i < len; ++i) {
                     let id1 = currentE.id + "-" + currentE.downEntity[i];
@@ -1228,39 +1200,6 @@ function updateFoldNode(entity) {
         }
     }
 
-    // 折叠展开判据连线更新
-    let zoom = viewOPController.getZoom();
-    const length = criterionPopList.filter(obj => obj.show === true).length
-    const left = viewPortWidth / 2 - Math.min(length * 517, viewPortWidth - 30) / 2
-    let content = dom.query("#content");
-    const cardList = dom.query('#criterionPopList')
-    let t = 0
-
-    setTimeout(() => {//等200ms拿到新展开的排列卡片的高度
-        criterionPopList.forEach((item) => {
-            // console.log(item)
-            if (!item.show) return
-            const cardDom = dom.query(`#card-${item.drawerID}`)
-            let line = userLineMap[item.drawerID]
-            line.orginX = left + t * 517 + 248
-            line.end.posX = content.scrollLeft + (line.orginX - cardList.scrollLeft) / zoom
-            line.end.posY = (viewPortHeight - cardDom.offsetHeight) / zoom + content.scrollTop
-            // console.log(viewPortHeight, cardDom.offsetHeight, content.scrollTop)
-
-            line.update()
-            dom.setAttributeByDom(line.dom, {
-                "x": line.pos.x,
-                "y": line.pos.y,
-            });
-            dom.setAttributeByDom(line.dom.querySelector(".polyline"), {
-                "d": line.path,
-            });
-            t++
-            // dom.setAttributeByDom(line.dom.querySelector(".pitch"), {
-            //     "d": line.path,
-            // })
-        })
-    }, 200);
 };
 //初始化节点的判据
 function initNodeCriterion(id) {

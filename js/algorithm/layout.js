@@ -1,13 +1,13 @@
 
 // currentPosX = 100,
-export default function Layout(nextPosX = 50, currentPosY = 60, spacingX = 25, spacingY = 150) {
+export default function Layout(nextPosX = 50, currentPosY = 60, spacingX = 25, spacingY = 70) {
     this.nextPosX = nextPosX;
     this.currentPosY = currentPosY;
     this.spacingX = spacingX;
     this.spacingY = spacingY;
 };
 //使用递归后续遍历
-Layout.prototype.init = function (nextPosX = 50, currentPosY = 60, spacingX = 25, spacingY = 150) {
+Layout.prototype.init = function (nextPosX = 50, currentPosY = 60, spacingX = 25, spacingY = 70) {
     this.nextPosX = nextPosX;
     this.currentPosY = currentPosY;
     this.spacingX = spacingX;
@@ -23,7 +23,9 @@ Layout.prototype.autoSequence = function (roots, posY, preWidth = 0, onlyOne = f
     //递归
     let len = roots.children.length;
     for (let i = 0; i < len; ++i) {
-        this.autoSequence(roots.children[i], roots.id ? posY + this.spacingY : posY, roots.size ? roots.size.width : 0, len == 1);
+        // 这里将 Y 坐标计算改为父节点高度加上 spacingY
+        let nextPosY = roots.id ? posY + roots.size.height + this.spacingY : posY;
+        this.autoSequence(roots.children[i], nextPosY, roots.size ? roots.size.width : 0, len == 1);
     }
 
     if (roots.id) {

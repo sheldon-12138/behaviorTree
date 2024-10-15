@@ -458,7 +458,7 @@ export function headerVm() {
             },
             //复制
             copy() {
-                nodesOPController.copy();
+                nodesOPController.copy(this.statusData.currentTreeID);
             },
             //删除
             delete_() {

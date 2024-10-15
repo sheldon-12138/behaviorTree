@@ -1,5 +1,7 @@
 import gContextDao from "../dao/gContextDao.js";
 import dom from "../viewModel/dom.js";
+import nodesOPController from "../controller/nodesOPController.js";
+
 
 function _renderElement(entity, nodeFragment, lineFragment, treeId) {
     if (entity) {
@@ -23,10 +25,11 @@ function renderByContext(treeId) {
     let lineFragment = dom.doc.createDocumentFragment();
     // let doors = gContextDao.getGContextProp("doorEntityMap");
     let events = gContextDao.getGContextProp("eventEntityMap");
-    let lineMap = gContextDao.getGContextProp("lineMap");
+    let treeMap = gContextDao.getGContextProp("treeMap");
     // for(let key in doors){
     //     _renderElement(doors[key], nodeFragment, lineFragment);
     // }
+
     // for (let key in events) {
     //     if (events[key].treeId == treeId) {
     //         if (events[key].type == "SubTree") {
@@ -43,18 +46,48 @@ function renderByContext(treeId) {
     //         // console.log(events[key]);
     //     }
     // }
-
+    const treeEvents = treeMap[treeId].entityMap;
+    // console.log(treeEvents);
+    let subArr = []
+    // let subTreeId = null;
+    // let subNodeId = null
     for (let key in events) {
-        if (events[key].treeId == treeId)
+        if (events[key].treeId == treeId) {
+            if (events[key].type == "SubTree") {
+                // console.log(treeEvents[key].name, findSubTree(treeEvents[key].name));
+                subArr.push({
+                    subTreeId: findTreeId(events[key].name),
+                    subNodeId: key
+                })
+            }
             _renderElement(events[key], nodeFragment, lineFragment, treeId);
-
-        // console.log(events[key],treeId);
+        }
     }
+    // for (let key in treeEvents) {
+    //     if (treeEvents[key].type == "SubTree") {
+    //         // console.log(treeEvents[key].name, findSubTree(treeEvents[key].name));
+    //         subTreeId = findTreeId(treeEvents[key].name);
+    //         subNodeId = key
+    //     }
+    //     _renderElement(treeEvents[key], nodeFragment, lineFragment, treeId);
+    // }
+
+    let subtreeEvents = {};
+    subArr.forEach(item => {
+        for (let key in events) {
+            if (events[key].treeId == item.subTreeId) {
+                subtreeEvents[key] = events[key]
+            }
+        }
+    })
+    gContextDao.setGContextProp("activedEntityMap", subtreeEvents);
 
     let mainSVG = dom.query("#mainSVG");
     mainSVG.appendChild(lineFragment);
     mainSVG.appendChild(nodeFragment);
 
+
+    return subArr
 }
 
 // 通过树名找到树ID

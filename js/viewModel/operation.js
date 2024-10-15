@@ -103,6 +103,11 @@ function mainMouseDown(e) {
         // closeAnimate()
     }
     else if (dom_class === "event") {
+
+        let entity = gContextDao.findEntity(dom_key);
+        // console.log('entity.isCopySubTree', entity.isCopySubTree)
+        // if (entity.isCopySubTree) return
+
         gContextController.cancelHeightLine();
 
 
@@ -143,8 +148,10 @@ function mainMouseDown(e) {
         // }
     }
     else if (dom_class === "collapse") {//折叠
+        // console.log('折叠')
+
         gContextController.tagCollapse(dom_key);
-        gContextController.addActivedChildEntityByID(dom_key, opContext.initialPosition);
+        // gContextController.addActivedChildEntityByID(dom_key, opContext.initialPosition);
         return;
     }
     else if (dom_class === "line") {

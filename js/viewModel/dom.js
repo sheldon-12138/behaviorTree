@@ -196,7 +196,7 @@ function createRect(entity) {
         {
             "width": entity.size.width,
             "height": entity.size.height,
-            "fill": "url(#grad1)",
+            "fill": entity.isCopySubTree ? "#131a33" : "url(#grad1)",
             "stroke": "#fff",
             "stroke-width": 2,
             "rx": 5,
@@ -531,9 +531,9 @@ function createSubTreeLine(entity) {
             "x": 15,
             "y": entity.size.height - 27,
             "data-key": entity.id,
-            "data-class": "collapse",
+            "data-class": "unchecked",
         },
-        ["collapse"]
+        ["unchecked"]
     );
     subTreeG.appendChild(checked);
 

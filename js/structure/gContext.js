@@ -287,6 +287,12 @@ export const g = {
         statusData: {
             currentTreeID: 'newTree',//当前树id
 
+            showPort: true,
+            showPrePost: true,
+            splitTwoLines: false,
+            splitCondition: false,
+            loadInclude: 1,
+
             modeID: 1, //视图模式：1-编辑视图， 2-统计视图
             attrID: 1, //属性栏状态： 1-整体属性， 2-模型属性
             isShowFloat: false,//是否收缩浮窗信息框

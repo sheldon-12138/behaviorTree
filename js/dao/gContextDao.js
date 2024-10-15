@@ -104,6 +104,7 @@ function addEventEntity(entity) {
     event.textColor = entity.textColor;
 
     event.port = entity.port;
+    event.isCopySubTree = false;
 
     // event.desc = entity.desc || "";
     // console.log('event',event)
@@ -306,9 +307,9 @@ function* traverseNode(treeId) {
         if (treeId == g.gContext.eventEntityMap[key].treeId)
             yield g.gContext.eventEntityMap[key];
     }
-    for (let key in g.gContext.doorEntityMap) {
-        yield g.gContext.doorEntityMap[key];
-    }
+    // for (let key in g.gContext.doorEntityMap) {
+    //     yield g.gContext.doorEntityMap[key];
+    // }
 };
 function findCriterion(type) {
     for (let i = 0, len = g.gContext.criterionList.length; i < len; ++i) {

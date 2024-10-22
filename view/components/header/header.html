@@ -358,21 +358,20 @@
     </el-tooltip>
 </div>
 <!-- 文字展示 -->
-<div style="width: 64px;" class="header-item" :class="{'header-item-hover':!statusData.isCompute,
+<!-- <div style="width: 64px;" class="header-item" :class="{'header-item-hover':!statusData.isCompute,
 'header-item-operation':statusData.isCompute,
     'header-item-selected':!isShowFtId}">
     <el-tooltip effect="light" content="文字" placement="top">
         <img src="assets/header/info1.png" @click="showFtId()" draggable="false">
     </el-tooltip>
-</div>
+</div> -->
 <!-- 图片展示 -->
-<div style="width: 64px;" class="header-item"
+<!-- <div style="width: 64px;" class="header-item"
     :class="{'header-item-hover':!statusData.isCompute,'header-item-operation':statusData.isCompute}">
     <el-tooltip effect="light" content="图片" placement="top">
         <img src="assets/header/tupianzhanshi.png" @click="showImg()" draggable="false">
-        <!--    <img src="assets/header/info1.png" @click="checkDoorCode()" draggable="false"> -->
     </el-tooltip>
-</div>
+</div> -->
 <div class="bar" style="margin-left: 13px;margin-right: 20px;"></div>
 
 <!-- <div class="header-item"
@@ -386,6 +385,12 @@
     :class="{'header-item-hover':!statusData.isCompute,'header-item-operation':statusData.isCompute}">
     <el-tooltip effect="light" content="设置" placement="top">
         <img src="assets/header/setting.png" @click="getOSAndBrowser()" draggable="false">
+    </el-tooltip>
+</div>
+<div class="header-item"
+    :class="{'header-item-hover':!statusData.isCompute,'header-item-operation':statusData.isCompute}">
+    <el-tooltip effect="light" content="生成代码" placement="top">
+        <img src="assets/header/cpp.png" @click="openPDF()" draggable="false">
     </el-tooltip>
 </div>
 <!-- 设置 380-->

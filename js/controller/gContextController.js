@@ -790,12 +790,48 @@ function createLine(line) {
 
             // let upNode = (line.begin.type === "up") ? end : begin;
             // unfoldNode(upNode);
+            // if (line.begin, line.begin)
 
+            let beginE = gContextDao.findEntity(line.begin.entityID);
+            let endE = gContextDao.findEntity(line.end.entityID);
+            if (beginE.modelType == "SubTree" || endE.modelType == 'SubTree') {
+                // 添加子树
+                addSubTree(beginE.modelType == "SubTree" ? beginE : endE);
+            }
             return true;
         }
     }
     return false;
 };
+
+// 拖动生成子树
+function addSubTree(subNode) {
+    let events = gContextDao.getGContextProp("eventEntityMap");
+    let statusData = gContextDao.getGContextProp("statusData");
+    const subTreeId = findTreeId(subNode.name)
+
+    let subtreeEvents = {}
+    for (let key in events) {
+        if (events[key].treeId == subTreeId) {
+            subtreeEvents[key] = events[key]
+        }
+    }
+    gContextDao.setGContextProp("activedEntityMap", subtreeEvents);
+
+    nodesOPController.loadSubTree(statusData.currentTreeID, subNode.id)
+}
+
+// 通过树名找到树ID
+function findTreeId(treeName) {
+    const treeMap = gContextDao.getGContextProp("treeMap");
+    for (const [key, value] of Object.entries(treeMap)) {
+        if (value.ID === treeName) {
+            return key;
+        }
+    }
+    return undefined; // 显式地返回 undefined，以确保函数始终有返回值
+}
+
 //获取线dom节点
 function getNewLine() {
     return gContextDao.getGContextProp("newLine");
@@ -1225,6 +1261,7 @@ function createCriterionDefs(criterionImgList) {
 }
 
 export default {
+    findTreeId,
     updateLine,
     isAttrData,
     updateUserLine,

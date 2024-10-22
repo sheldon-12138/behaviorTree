@@ -1,6 +1,7 @@
 import gContextDao from "../dao/gContextDao.js";
 import dom from "../viewModel/dom.js";
 import nodesOPController from "../controller/nodesOPController.js";
+import gContextController from "../controller/gContextController.js";
 
 
 function _renderElement(entity, nodeFragment, lineFragment, treeId) {
@@ -56,21 +57,13 @@ function renderByContext(treeId) {
             if (events[key].type == "SubTree") {
                 // console.log(treeEvents[key].name, findSubTree(treeEvents[key].name));
                 subArr.push({
-                    subTreeId: findTreeId(events[key].name),
+                    subTreeId: gContextController.findTreeId(events[key].name),
                     subNodeId: key
                 })
             }
             _renderElement(events[key], nodeFragment, lineFragment, treeId);
         }
     }
-    // for (let key in treeEvents) {
-    //     if (treeEvents[key].type == "SubTree") {
-    //         // console.log(treeEvents[key].name, findSubTree(treeEvents[key].name));
-    //         subTreeId = findTreeId(treeEvents[key].name);
-    //         subNodeId = key
-    //     }
-    //     _renderElement(treeEvents[key], nodeFragment, lineFragment, treeId);
-    // }
 
     let subtreeEvents = {};
     subArr.forEach(item => {
@@ -88,17 +81,6 @@ function renderByContext(treeId) {
 
 
     return subArr
-}
-
-// 通过树名找到树ID
-function findTreeId(treeName) {
-    const treeMap = gContextDao.getGContextProp("treeMap");
-    for (const [key, value] of Object.entries(treeMap)) {
-        if (value.ID === treeName) {
-            return key;
-        }
-    }
-    return undefined; // 显式地返回 undefined，以确保函数始终有返回值
 }
 
 function findSubTree(name) {

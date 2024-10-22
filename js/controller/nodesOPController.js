@@ -57,7 +57,6 @@ function selectedTree(treeId, name) {
 
 // 加载子树
 function loadSubTree(treeId, subNodeId) {
-
     // 复制子树
     copy();
     paste();
@@ -1699,6 +1698,7 @@ function bottomUserCode(id) {
 
 
 export default {
+    loadSubTree,
     handleModelChange,
     clearTreeDom,
     selectedTree,

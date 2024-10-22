@@ -118,13 +118,16 @@ function appendMultiText(strList, posX, posY, entity) {
 function updateCollapse(entity) {
     if (entity.category !== "event") return;//门没有折叠图标了
     let coll = entity.dom.querySelector(".collapse");
+    let rect = entity.dom.querySelector(".rect");//节点颜色改为黑色
     if (entity.collapse === null) {
         coll.classList.add("hide");
     } else if (entity.collapse === false) {
         setAttributeByDom(coll, { "href": "#fold" });
+        setAttributeByDom(rect, { "fill": "#131a33" });
         coll.classList.remove("hide");
     } else if (entity.collapse) {
         setAttributeByDom(coll, { "href": "#unfold" });
+        setAttributeByDom(rect, { "fill": "url(#grad1)" });
         coll.classList.remove("hide");
     }
 }

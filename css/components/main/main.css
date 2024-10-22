@@ -154,6 +154,8 @@ input::-webkit-inner-spin-button {
   flex: 1;
   overflow: hidden;
   position: relative;
+  width: 1642px;
+  height: 862px;
 }
 
 .main .drawingBoard #content {
@@ -161,10 +163,8 @@ input::-webkit-inner-spin-button {
 }
 
 .main .drawingBoard .content {
-  width: 1642px;
-  height: 862px;
-  /* width: 100%;
-  height: 100%; */
+  width: 100%;
+  height: 100%;
   overflow: auto;
   position: relative;
   outline: none;

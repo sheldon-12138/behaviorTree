@@ -24,7 +24,7 @@ export function treeVm() {
                     label: 'label'
                 },
 
-                
+
                 statusData: g.gContext.statusData,
                 attrData: g.gContext.attrData,
 
@@ -83,6 +83,10 @@ export function treeVm() {
                     }
                     reader.readAsText(file);
                 } else if (files.length > 1) {
+
+                    //清空画布树 + 删除复制的子树
+                    nodesOPController.clearTreeDom()
+                    // deleteSubTree()
                     this.fileContents = []; // 清空上次的文件内容
 
                     for (let file of files) {

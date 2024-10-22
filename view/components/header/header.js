@@ -723,7 +723,11 @@ export function headerVm() {
             },
             // 打开PDF文件
             openPDF() {
-                window.open('assets/test.pdf', '_blank');
+                this.$message({
+                    message: '代码生成成功！',
+                    type: 'success'
+                });
+                // window.open('assets/test.pdf', '_blank');
             }
         }
     });

@@ -530,6 +530,10 @@ export function headerVm() {
             openOptionSettings() {
                 this.optionSettings = true
             },
+            // 显隐节点端口
+            changeShowPort(value) {
+                dom.setPortShow(value)
+            },
             // 改变判据显示方式
             changeCriterionWay() {
 

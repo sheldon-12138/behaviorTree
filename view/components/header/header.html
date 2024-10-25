@@ -400,7 +400,7 @@
         <div class="border-line"></div>
         <!-- 显示端口： -->
         <div class="sysItem">
-            <el-checkbox v-model="statusData.showPort">Show Port</el-checkbox>
+            <el-checkbox v-model="statusData.showPort" @change="changeShowPort">Show Port</el-checkbox>
         </div>
         <!-- 显示前置/后置条件： -->
         <div class="sysItem">

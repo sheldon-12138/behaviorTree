@@ -58,7 +58,8 @@ function renderByContext(treeId) {
                 // console.log(treeEvents[key].name, findSubTree(treeEvents[key].name));
                 subArr.push({
                     subTreeId: gContextController.findTreeId(events[key].name),
-                    subNodeId: key
+                    subNodeId: key,
+                    subtreeEvents: {}
                 })
             }
             _renderElement(events[key], nodeFragment, lineFragment, treeId);
@@ -69,11 +70,13 @@ function renderByContext(treeId) {
     subArr.forEach(item => {
         for (let key in events) {
             if (events[key].treeId == item.subTreeId) {
+                item.subtreeEvents[key] = events[key]
                 subtreeEvents[key] = events[key]
             }
         }
     })
-    gContextDao.setGContextProp("activedEntityMap", subtreeEvents);
+
+    // gContextDao.setGContextProp("activedEntityMap", subtreeEvents);
 
     let mainSVG = dom.query("#mainSVG");
     mainSVG.appendChild(lineFragment);

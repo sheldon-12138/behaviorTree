@@ -32,7 +32,7 @@
                 <!-- portRemapping 端口重映射 -->
                 <template v-if="avtiveTab==0">
                     <div class="iconLine" style="margin-top: 0px;">
-                        <div style="margin-left: 4px;font-size: 20px;">
+                        <div v-if="entity.modelType=='SubTree'" style=" margin-left: 4px;font-size: 20px;">
                             <i class="el-icon-plus" @click="addPort(false)" style="margin-right: 2px;"></i>
                             <i class="el-icon-delete" @click="deletePort(false)"
                                 :style="{ backgroundColor:selectNodePortIndex==-1 ? '#dddde0' : 'inherit',padding: '3px',borderRadius: '5px' }"></i>

@@ -43,7 +43,7 @@ function selectedTree(treeId, name) {
     //加载子树
     if (subArr.length > 0) {
         subArr.forEach(obj => {
-            loadSubTree(treeId, obj.subNodeId)
+            loadSubTree(treeId, obj.subNodeId, obj.subtreeEvents)
         })
     }
     // if (obj.subTreeId) { loadSubTree(treeId, obj.subNodeId); }
@@ -56,10 +56,12 @@ function selectedTree(treeId, name) {
 }
 
 // 加载子树
-function loadSubTree(treeId, subNodeId) {
+function loadSubTree(treeId, subNodeId, subtreeEvents) {
+
+    gContextDao.setGContextProp("activedEntityMap", subtreeEvents);
     // 复制子树
     copy();
-    paste();
+    paste(true);
 
     // 跟主树连接
     let subNode = gContextDao.findEntity(subNodeId);
@@ -294,10 +296,10 @@ function copy() {
 }
 
 // 粘贴
-function paste(pasteOffset) {
+function paste(flag) {
     let statusData = gContextDao.getGContextProp("statusData");
     if (statusData.isCompute) return;
-    _paste();
+    _paste(null, flag);
     // if (statusData.autoLayoutMode) {
     //     nodeLayout();
     //     gContextController.updateMainSVGSizeUp();
@@ -305,7 +307,7 @@ function paste(pasteOffset) {
     viewOPController.updateOperationStatus();
 }
 
-function _paste(pasteOffset) {
+function _paste(pasteOffset, flag) {
     let statusData = gContextDao.getGContextProp("statusData");
 
     let clipBoard = gContextDao.getGContextProp("clipBoard");
@@ -348,8 +350,9 @@ function _paste(pasteOffset) {
             newEntity.upEntity = [];
             newEntity.downEntity = [];
             newEntity.btID = getBtID() + "";
-
-            newEntity.isCopySubTree = Object.keys(copyList).length > 1 ? true : false;
+            newEntity.isCopySubTree = flag
+            // console.log(Object.keys(copyList))
+            // newEntity.isCopySubTree = Object.keys(copyList).length > 1 ? true : false;
 
             // newEntity = eventEntityMap[id] = new EventEntity(id, null, entity.type, entity.layer, entity.name, entity.aliasName,
             //     {width:entity.size.width, height:entity.size.height},

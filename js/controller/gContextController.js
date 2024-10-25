@@ -9,7 +9,7 @@ import Line from "../structure/line.js"
 import Utils from "../utils/utils.js";
 import nodesOPController from "./nodesOPController.js";
 import viewOPController from "./viewOPController.js";
-import fileParser from "../parser/fileParser.js";
+import fileParser from "../parser/fileParser.js"
 
 function updateTest() {
     // 
@@ -537,7 +537,7 @@ function setActivedEntityByID(downDom, type, id, initialPosition) {
             while (queue.length > 0) {
                 let e = gContextDao.findEntity(queue.shift());
                 activedMap[e.id] = e;
-                e.dom.querySelector(".border").classList.remove("hide");
+                // e.dom.querySelector(".border").classList.remove("hide");
                 initialPosition ? initialPosition[e.id] = { x: e.pos.x, y: e.pos.y } : null;
                 for (let i = 0, len = e.downEntity.length; i < len; ++i) {
                     queue.push(e.downEntity[i]);

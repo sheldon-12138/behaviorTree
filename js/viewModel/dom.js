@@ -220,8 +220,12 @@ const portNameObj = {
 }
 
 // 创建节点端口
-function createPortDefs(port, width, haveAlias) {
-    let portG = createSVGElement("g", {}, ['portG']);
+function createPortDefs(entity, haveAlias) {
+    let statusData = gContextDao.getGContextProp("statusData")
+    let port = entity.port, width = entity.size.width;
+    let portG = createSVGElement("g", {
+        "data-key": entity.id,
+    }, ['portG', statusData.showPort ? '' : 'hide']);
     let num = 0
     for (let key in port) {
         let portType = null
@@ -379,7 +383,7 @@ function createNode(entity) {
     // 添加端口
     if (entity.port) {
         // console.log(entity.port)
-        let portDefs = createPortDefs(entity.port, entity.size.width, haveAlias)
+        let portDefs = createPortDefs(entity, haveAlias)
         entityFragment.appendChild(portDefs);
     }
 
@@ -410,7 +414,7 @@ function createSVGElement(tagName, attr, classList) {
     }
     let len = classList ? classList.length : 0;
     for (let i = 0; i < len; ++i) {
-        element.classList.add(classList[i]);
+        if (classList[i]) element.classList.add(classList[i]);
     }
     return element;
 };
@@ -661,9 +665,8 @@ function updateNodeElements(entity, aliasFlag, orgFlag, orgDesIsNull = true) {
     if (port) {
         // console.log(port)
         removeDomsByClass(dom, ".portG");
-        let portDefs = createPortDefs(port, size.width, aliasFlag)
+        let portDefs = createPortDefs(entity, aliasFlag)
         dom.appendChild(portDefs);
-
     }
 
     //  子树折叠
@@ -1259,6 +1262,30 @@ function deleteNodeImg(entity) {
     });
 }
 
+// 切换全局端口显示
+function setPortShow(show) {
+    // console.log('进入setFill', show)
+    let domList = doc.getElementsByClassName("portG");
+    for (let i = 0; i < domList.length; i++) {
+        const dom_key = domList[i].getAttribute("data-key")
+        const entity = gContextDao.findEntity(dom_key);
+        // console.log(entity, entity.dom)
+
+        let rect = entity.dom.querySelector(".rect");
+        let bbox = domList[i].getBBox(); // 获取边界框信息
+        const hasHideClass = domList[i].classList.contains("hide");
+
+        if (!show && !hasHideClass) {
+            domList[i].classList.add("hide");
+            // 更新节点大小
+            setAttributeByDom(rect, { "height": entity.size.height - bbox.height - 10 });
+        } else if (show && hasHideClass) {
+            domList[i].classList.remove("hide");
+            setAttributeByDom(rect, { "height": entity.size.height });
+        }
+    }
+}
+
 // 切换全局实体图片显示
 function setFill(show) {
     // console.log('进入setFill', show)
@@ -1317,6 +1344,7 @@ function deleteUserLine() {
 
 
 export default {
+    setPortShow,
     updateEntitySize,
     updateConnectionPoints,
     updateNodeElements,

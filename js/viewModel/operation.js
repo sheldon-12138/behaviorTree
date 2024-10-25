@@ -106,7 +106,7 @@ function mainMouseDown(e) {
 
         let entity = gContextDao.findEntity(dom_key);
         // console.log('entity.isCopySubTree', entity.isCopySubTree)
-        // if (entity.isCopySubTree) return
+        if (entity.isCopySubTree || entity.collapse == false) return
 
         gContextController.cancelHeightLine();
 

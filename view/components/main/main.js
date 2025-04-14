@@ -5,7 +5,7 @@ import { treeVm } from "./tree.js"
 import { tabVm } from "./tab.js"
 // import { treeTableVm } from "./treeTable.js";
 import { attributePopVm } from "./attributePop.js"
-
+import { floatMsgVm } from "./floatMsg.js"
 
 import { timelineVm } from "./timeline.js";
 import { hiddenPopoverVm } from "./hiddenPopover.js"
@@ -33,6 +33,9 @@ export function mainVm() {
 
     jQuery('#attributePop').load('view/components/main/attributePop.html', function () {
         attributePopVm();
+    });
+    jQuery('#floatMsg').load('view/components/main/floatMsg.html', function () {
+        floatMsgVm();
     });
 
     jQuery('#timeline').load('view/components/main/timeline.html', function () {

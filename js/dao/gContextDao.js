@@ -302,7 +302,7 @@ function clearContext() {
     gContext.hsStandard.currentIndex = -1;
 };
 //遍历节点列表迭代器
-function* traverseNode(treeId) {
+function* traverseNode(treeId) {//要加树ID返回迭代器
     for (let key in g.gContext.eventEntityMap) {
         if (treeId == g.gContext.eventEntityMap[key].treeId)
             yield g.gContext.eventEntityMap[key];

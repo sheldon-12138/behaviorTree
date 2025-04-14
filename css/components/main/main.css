@@ -242,7 +242,7 @@ input::-webkit-inner-spin-button {
 
 .main .float {
   position: absolute;
-  top: 79px;
+  top: 110px;
   right: 20px;
   /* display: flex;
   align-items: center; */
@@ -283,6 +283,7 @@ input::-webkit-inner-spin-button {
 }
 
 .floatList .floatItem {
+  color: #fff;
   display: flex;
   align-items: center;
   height: 18px;

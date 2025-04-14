@@ -58,14 +58,13 @@ app.all("*", function (req, res, next) {
 });
 
 app.get('/', function (req, resp) {
-	resp.redirect('/login');
-	// fs.readFile('./public/page/login.html', function (err, data) {
-	// 	if (err) {
-	// 		resp.send(err);
-	// 	} else {
-	// 		resp.send(data.toString());
-	// 	}
-	// });
+	fs.readFile('./public/page/login.html', function (err, data) {
+		if (err) {
+			resp.send(err);
+		} else {
+			resp.send(data.toString());
+		}
+	});
 });
 app.get('/login', function (req, resp) {
 	fs.readFile('./public/page/login.html', function (err, data) {

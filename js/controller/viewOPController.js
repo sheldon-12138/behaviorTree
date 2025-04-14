@@ -29,18 +29,19 @@ function zoom(val) {
 
 function updateAmount(props) {
     let amount = gContextDao.getGContextProp("bottomAmount");
+    const statusData = gContextDao.getGContextProp("statusData");
+    // _nodeLayout(currentTreeID ? currentTreeID : statusData.currentTreeID);
+    
     let temp = {};
     for (let i = 0; i < props.length; ++i) {
         temp[props[i]] = 0;
     }
     let doorType = {};
     let criterionType = {};
-    let traver = gContextDao.traverseNode();
+    let traver = gContextDao.traverseNode(statusData.currentTreeID);
     let node = traver.next();
     while (!node.done) {
-
         let value = node.value;
-        // console.log(value)
         if (temp.hasOwnProperty("nodeNum")) {
             ++temp["nodeNum"];
         }

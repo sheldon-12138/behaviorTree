@@ -414,9 +414,10 @@ function mouseUp(e) {
 
         gContextController.updateMainSVGSizeUp();
 
-        viewOPController.updateAmount(["nodeNum", "maxLayer", "topNodeNum", "midNodeNum",
-            "bottomNodeNum", "doorType", "doorNum", "maxDamageLevel", "criterionNum", "criterionTypeNum",
-            "criterionRelevanceNum"]);
+        viewOPController.updateAmount(["nodeNum"]);
+        // viewOPController.updateAmount(["nodeNum", "maxLayer", "topNodeNum", "midNodeNum",
+        //     "bottomNodeNum", "doorType", "doorNum", "maxDamageLevel", "criterionNum", "criterionTypeNum",
+        //     "criterionRelevanceNum"]);
     }
     else if (opContext.controlType === DomType.ENTITY) {//实体
         nodesOPController.updateTreeData();

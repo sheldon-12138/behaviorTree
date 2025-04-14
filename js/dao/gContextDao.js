@@ -401,11 +401,22 @@ function findRoot() {
 // 查找根节点id
 function findTopNodeId() {
     for (const [id, entity] of Object.entries(g.gContext.eventEntityMap)) {
-        if (entity.modelType === 'Top') {
+        if (entity.type === 'Top') {
             return id;
         }
     }
     return null;
+}
+
+// 查找所有根节点id数组
+function findTopNodeIds() {
+    const topNodeIds = [];
+    for (const [id, entity] of Object.entries(g.gContext.eventEntityMap)) {
+        if (entity.type === 'Top') {
+            topNodeIds.push(id); // 将符合条件的 ID 添加到数组中
+        }
+    }
+    return topNodeIds;
 }
 
 // 返回树结构
@@ -416,8 +427,24 @@ function returnTree() {
     return tree;
 }
 
+// 返回多棵树结构数组
+function returnTreeArr() {
+    let arr = []
+    const { eventEntityMap } = g.gContext;
+    const rootIds = findTopNodeIds()
+    // console.log('rootIds', rootIds)
+    rootIds.forEach(rootId => {
+        let tree = buildTree(rootId, eventEntityMap)
+        arr.push(tree)
+    })
+    return arr;
+}
+
+// 保存时建造树结构
 function buildTree(nodeId, eventEntityMap) {
     const nodeData = eventEntityMap[nodeId];
+    // console.log('nodeData', nodeData)
+
     if (!nodeData) { return null }
     const children = nodeData.downEntity ? nodeData.downEntity.map(childId => buildTree(childId, eventEntityMap)) : [];
     let attrObj = {}
@@ -431,7 +458,23 @@ function buildTree(nodeId, eventEntityMap) {
         }
     });
 
-    return new TreeNode(nodeData.id, nodeData.name, attrObj, children);
+    // 添加端口信息
+    let { port } = nodeData
+    if (port) {
+        for (let key in port) {
+            attrObj[key] = port[key].value || ''
+        }
+        // console.log(port, attrObj)
+    }
+
+
+    let tagName = (nodeData.name == 'Root') ? (nodeData.modelType == 'Top' ? nodeData.name : nodeData.modelType) : nodeData.name
+    //    console.log('nodeData',nodeData)
+
+    // let tagName = (nodeData.name == 'Root' && nodeData.modelType == 'Top') ? nodeData.name : nodeData.modelType || nodeData.name;
+    // console.log('tagName', tagName)
+
+    return new TreeNode(nodeData.id, tagName, attrObj, children, nodeData.type);
 }
 
 //计算总层数包括门
@@ -543,6 +586,7 @@ let effectProxy = (function () {
 
 export default {
     generateID,
+    returnTreeArr,
     returnTree,
     findTopNodeId,
     checkCriterion,

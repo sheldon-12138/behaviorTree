@@ -10,10 +10,9 @@ function serializeAll(param) {
         userModelList: [],
         user: gContextDao.getGContextProp("user").username,
         projectName: info.name,
-        // config
     };
 
-    result.treeContent = JSON.stringify(gContextDao.returnTree());
+    result.treeContent = JSON.stringify(gContextDao.returnTreeArr());
     result.userModelList = serializeUserModel()
 
     return result;
@@ -22,30 +21,56 @@ function serializeAll(param) {
 function serializeUserModel() {
     let modelList = gContextDao.getGContextProp("modelList");
     let userModelList = [];
-    modelList.forEach(item => {
-        item.children.forEach(child => {
+    for (let i = 0; i < 4; i++) {
+        modelList[i].children.forEach(child => {
             let { isUser, port, ...attr } = child
             if (isUser) {
                 let model = {
-                    ...attr, port: { 'input_port': [], 'output_port': [], 'inout_port': [] }, tagName: item.type
+                    ...attr, port: { 'input_port': [], 'output_port': [], 'inout_port': [] }, tagName: modelList[i].type
                 }
-
-                for (let [key, value] of Object.entries(port)) {
-                    let portType = `${value.direction}`;
-                    if (portType in model.port) {
-                        model.port[portType].push({
-                            name: key,
-                            default: value.defaultValue,
-                            _: value.description
-                        });
+                // console.log('port', port)
+                if (port && Object.keys(port).length > 0) {
+                    for (let [key, value] of Object.entries(port)) {
+                        let portType = `${value.direction}`;
+                        if (portType in model.port) {
+                            model.port[portType].push({
+                                name: key,
+                                default: value.defaultValue,
+                                _: value.description
+                            });
+                        }
                     }
                 }
                 userModelList.push(model)
 
             }
         })
+    }
+    // modelList.forEach(item => {
+    //     item.children.forEach(child => {
+    //         let { isUser, port, ...attr } = child
+    //         if (isUser) {
+    //             let model = {
+    //                 ...attr, port: { 'input_port': [], 'output_port': [], 'inout_port': [] }, tagName: item.type
+    //             }
+    //             // console.log('port', port)
+    //             if (port && Object.keys(port).length > 0) {
+    //                 for (let [key, value] of Object.entries(port)) {
+    //                     let portType = `${value.direction}`;
+    //                     if (portType in model.port) {
+    //                         model.port[portType].push({
+    //                             name: key,
+    //                             default: value.defaultValue,
+    //                             _: value.description
+    //                         });
+    //                     }
+    //                 }
+    //             }
+    //             userModelList.push(model)
 
-    });
+    //         }
+    //     })
+    // });
     return userModelList
     // console.log('userModelList', userModelList)
 }

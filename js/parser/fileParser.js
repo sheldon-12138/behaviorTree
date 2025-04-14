@@ -398,13 +398,14 @@ function loadXml(BehaviorTree) {
         let type = findParentTypeById(modelName)
 
         // if (!type) console.log('未找到父节点', modelName)
+        let subtreeFlag = false
         if (modelName == 'SubTree') {
             modelName = ID
+            subtreeFlag = true
         }
 
         // 添加自定义节点的端口信息
         const port = findNodePort(modelName)
-
 
         let model = gContextDao.getModelByType(type || 'Top');
 
@@ -414,7 +415,8 @@ function loadXml(BehaviorTree) {
         if (haveAlias) nameLength = name.length
 
         const iconName = dom.imgName({ type: type || 'Top', name: modelName })
-        let width = Math.max(20 + (iconName ? 30 : 0) + len * 11 + (_description ? 30 : 0), nameLength * 11 + 20);
+        // console.log('subtreeFlag', subtreeFlag)
+        let width = Math.max(20 + (iconName ? 30 : 0) + len * 11 + (_description ? 30 : 0), nameLength * 11 + 20, subtreeFlag ? 160 : 0);
 
         let portLength = 0
 
@@ -430,7 +432,8 @@ function loadXml(BehaviorTree) {
             // width = Math.max(width, 80 + maxLength * 11)
 
             const maxLength = Object.entries(port).reduce((max, [key, item]) => {
-                return Math.max(max, key.length + 8, (item.value?.length || 0) - 3);
+                return Math.max(max, key.length + 8, (item.value?.length || 0));
+                //          return Math.max(max, key.length + 8, (item.value?.length || 0) - 3);
             }, 0);
             width = Math.max(width, maxLength * 11)
         }

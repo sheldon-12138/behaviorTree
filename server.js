@@ -58,13 +58,14 @@ app.all("*", function (req, res, next) {
 });
 
 app.get('/', function (req, resp) {
-	fs.readFile('./public/page/login.html', function (err, data) {
-		if (err) {
-			resp.send(err);
-		} else {
-			resp.send(data.toString());
-		}
-	});
+	resp.redirect('/login');
+	// fs.readFile('./public/page/login.html', function (err, data) {
+	// 	if (err) {
+	// 		resp.send(err);
+	// 	} else {
+	// 		resp.send(data.toString());
+	// 	}
+	// });
 });
 app.get('/login', function (req, resp) {
 	fs.readFile('./public/page/login.html', function (err, data) {
@@ -693,7 +694,6 @@ var conSort = function (a, b) {
 }
 
 
-
 // 运行
 app.get('/running/:user/:pro/:maxId/:isUse/:time', function (req, resp) {
 
@@ -944,7 +944,6 @@ app.get('/api/getSystemConfig', function (req, resp) {
 	});
 });
 
-
 // 进度条
 app.get('/progress/running/:user/:pro', function (req, resp) {
 	// let array = ['30', '50', '80', '100'];
@@ -980,7 +979,6 @@ app.get('/progress/running2/:user/:pro', function (req, resp) {
 	}
 });
 
-
 var running2Exe = function (str) {
 	return new Promise(function (resolve) {
 		exec(str, function (err, stdout, stderr) {
@@ -993,9 +991,6 @@ var running2Exe = function (str) {
 		})
 	});
 }
-
-
-
 
 app.get('/running2/:user/:pro/:time', function (req, resp) {
 
@@ -1215,10 +1210,6 @@ function showObj(obj) {//遍历obj（即网络接口信息），查找符合条�
 	//	return '192.168.11.199';
 	return 'localhost';
 }
-
-
-
-
 
 console.log(ip);
 app.listen(9800, ip);

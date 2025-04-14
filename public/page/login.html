@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <title>登录页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-container {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            box-sizing: border-box;
+            width: 100%;
+            padding: 0.6rem;
+            margin: 0.5rem 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 0.6rem;
+            background: #007bff;
+            border: none;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .msg {
+            margin-top: 1rem;
+            text-align: center;
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-container">
+        <h2>用户登录</h2>
+        <input type="text" id="username" placeholder="用户名">
+        <input type="password" id="password" placeholder="密码">
+        <button onclick="login()">登录</button>
+        <div class="msg" id="msg"></div>
+    </div>
+
+    <script>
+        function login() {
+            const user = document.getElementById('username').value.trim();
+            const pwd = document.getElementById('password').value.trim();
+            const msg = document.getElementById('msg');
+
+            if (!user || !pwd) {
+                msg.textContent = '请输入用户名和密码';
+                return;
+            }
+
+            fetch(`/login/${encodeURIComponent(user)}/${encodeURIComponent(pwd)}`)
+                .then(res => res.text())
+                .then(code => {
+                    console.log('code', code);
+                    // switch (code) {
+                    //     case '1':
+                    //         msg.style.color = 'green';
+                    //         msg.textContent = '登录成功，跳转中...';
+                    //         // setTimeout(() => window.location.href = '/index', 1000);
+                    //         break;
+                    //     case '2':
+                    //         msg.style.color = 'orange';
+                    //         msg.textContent = '用户不存在，已自动注册并登录';
+                    //         // setTimeout(() => window.location.href = '/index', 1000);
+                    //         break;
+                    //     case '-1':
+                    //         msg.textContent = '密码错误';
+                    //         break;
+                    //     case '-2':
+                    //         msg.textContent = '读取用户信息失败';
+                    //         break;
+                    //     default:
+                    //         msg.textContent = '未知错误';
+                    // }
+               
+                })
+                .catch(err => {
+                    msg.textContent = '网络错误';
+                    console.error(err);
+                });
+        }
+    </script>
+
+</body>
+
+</html>

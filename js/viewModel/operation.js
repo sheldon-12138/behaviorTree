@@ -103,7 +103,6 @@ function mainMouseDown(e) {
         // closeAnimate()
     }
     else if (dom_class === "event") {
-
         let entity = gContextDao.findEntity(dom_key);
         // console.log('entity.isCopySubTree', entity.isCopySubTree)
         if (entity.isCopySubTree || entity.collapse == false) return

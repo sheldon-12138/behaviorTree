@@ -60,11 +60,12 @@ export function attributePopVm() {
                 },
                 typeList: ['Action', 'Condition', 'Control', 'Decorator'],
                 tipText: '模型名不可为空',
-                tipTextList: ['模型名不能为空', '模型名已存在', '模型名无效:仅允许使用字母、数字和下划线', '端口名无效:仅允许使用字母、数字和下划线'],
+                tipTextList: ['模型名不可为空', '模型名已存在', '模型名无效:仅允许使用字母、数字和下划线',
+                    '端口名不可为空', '端口名重复', '端口名无效:仅允许使用字母、数字和下划线,且不允许以数字开头'],
                 tableData: [],
                 nodePortData: [],
                 nodePortItem: { portName: 'port_name', value: '{tree_port_name}' },
-                tableItem: { portName: 'key_name', direction: 'input_port', defaultValue: '', description: '' },
+                tableItem: { id: 'newId', portName: 'key_name', direction: 'input_port', defaultValue: '', description: '' },
                 selectPortIndex: -1,//选中的端口索引
                 selectNodePortIndex: -1,//选中的端口索引
                 tabsArr: ['Port Remapping', 'Pre Conditions', 'Post Conditions', 'Description'],
@@ -82,6 +83,7 @@ export function attributePopVm() {
         watch: {
             entity() {
                 if (this.entity) {
+                    this.nodePortData.length = 0;
                     // console.log(this.entity.name)
                     // console.log('attr的entity', this.entity)
                     this.entityInfo = {
@@ -101,7 +103,6 @@ export function attributePopVm() {
                         // _onHalted: this.entity._onHalted,
                         // _post: this.entity._post,
                     }
-
                     // 节点端口
                     for (let key in this.entity.port) {
                         this.nodePortData.push({
@@ -117,6 +118,7 @@ export function attributePopVm() {
                 }
             },
             model() {
+                this.tableData.length = 0;
                 // console.log('attr的model', this.model)
                 if (this.model) {
                     this.newModel = {
@@ -124,10 +126,9 @@ export function attributePopVm() {
                         name: this.model.ID,
                         type: this.model.type
                     }
-                    // console.log('model', this.model)
-                    this.tableData = [];
                     for (let key in this.model.port) {
                         this.tableData.push({
+                            id: Math.random().toString(36).slice(2, 11),
                             portName: key,
                             direction: this.model.port[key].direction,
                             defaultValue: this.model.port[key].defaultValue,
@@ -138,6 +139,7 @@ export function attributePopVm() {
                     this.isOk = true;
                     // console.log('model', this.model)
                 } else {
+                    // console.log('新增 model is null')
                     this.newModel = {
                         typeIndex: 0,
                         name: '',
@@ -154,27 +156,71 @@ export function attributePopVm() {
         // },
         methods: {
             //-----------------函数-----------------------
+            // 检查输入 给出提示文字
+            // 检查输入并给出提示文字
+            selectTipTxt() {
+                const value = this.newModel.name;
+                const nameResult = this.checkNameValue(value);
+                const portResult = this.checkPortNameValue();
 
-            // 新增模型名
-            modelNameChange(e) {
-                const { value } = e.target;
+                if (nameResult === -1 && portResult === -1) {
+                    // 没有错误时清空提示
+                    this.tipText = '';
+                    this.isOk = true;
+                    return;
+                }
+
+                this.isOk = false;
+
+                // 检查模型名结果
+                if (nameResult !== -1) {
+                    switch (nameResult) {
+                        case 0:
+                            this.tipText = this.tipTextList[0]; // 提示不能为空
+                            break;
+                        case 1:
+                            this.tipText = this.tipTextList[1]; // 提示模型名已存在
+                            break;
+                        case 2:
+                            this.tipText = this.tipTextList[2]; // 提示模型名不合法
+                            break;
+                    }
+                    return;
+                }
+
+                // 如果模型名没问题，检查端口名结果
+                switch (portResult) {
+                    case 3:
+                        this.tipText = this.tipTextList[3]; // 提示端口名不能为空
+                        break;
+                    case 4:
+                        this.tipText = this.tipTextList[4]; // 提示端口名重复
+                        break;
+                    case 5:
+                        this.tipText = this.tipTextList[5]; // 提示端口名不合法
+                        break;
+                }
+
+                // console.log('nameResult', nameResult, 'portResult', portResult);
+            },
+
+            // 检查模型名是否合法
+            checkNameValue() {
+                const value = this.newModel.name;
                 if (value.length > 0) {
                     if (this.checkInput(value)) {
                         if (this.checkExists(value, this.statusData.attrID == '3' ? this.model.ID : null)) {
-                            this.tipText = this.tipTextList[1];
+                            return 1
                         } else {
-                            this.tipText = ''
-                            this.isOk = true;
+                            return -1;
                         }
                     }
                     else {//提示输入不合法
-                        this.tipText = this.tipTextList[2];
+                        return 2
                     }
                 } else {
-                    this.tipText = this.tipTextList[0]; //提示不能为空
+                    return 0
                 }
-
-                // console.log('modelNameChange', e.target.value)
             },
             // 检查模型名是否存在
             checkExists(name, currentName = null) {
@@ -185,14 +231,61 @@ export function attributePopVm() {
                 return found;
             },
             // 检查输入
-            checkInput(str) {
-                const regex = /^[a-zA-Z0-9_]+$/;
+            checkInput(str, flag = false) {
+                let regex = /^[a-zA-Z0-9_]+$/;
+                if (flag) regex = /^(?![0-9])[a-zA-Z0-9_]+$/;
                 return regex.test(str);
             },
+            // 检查端口名是否合法
+            checkPortNameValue() {
+                for (const item of this.tableData) {
+                    const value = item.portName;
+                    if (value.length === 0) { // 代号 3: 端口名为空
+                        return 3;
+                    }
+                    if (!this.checkInput(value, true)) { // 代号 5: 端口名不合法
+                        return 5;
+                    }
+                }
+                if (this.checkPortNameRepeat()) { // 代号 4: 端口名重复               
+                    return 4;
+                }
+                return -1;// 代号 -1: 所有检查通过
+            },
+            // checkPortNameValue() {
+            //     let flag = true
+            //     for (const item of this.tableData) {
+            //         const value = item.portName;
+            //         if (value.length > 0) {//检查端口名是否为空
+            //             if (this.checkInput(value, true)) {//检查是否合法
+            //             } else {
+            //                 flag = false
+            //                 return 5
+            //             }
+            //         } else {
+            //             flag = false
+            //             return 3
+            //         }
+            //     }
+
+            //     // 检查端口重复
+            //     let repeatFlag = this.checkPortNameRepeat()
+            //     if (repeatFlag) {
+            //         flag = false
+            //         return 4
+            //     }
+            //     if (flag) return -1
+            //     console.log('flag', flag)
+            // },
+
             // 增加端口
             addPort(flag) {
                 if (flag) {
-                    this.tableData.push(JSON.parse(JSON.stringify(this.tableItem)));//深拷贝,避免改变tableItem
+                    this.tableData.push(JSON.parse(JSON.stringify({
+                        ...this.tableItem, id: Math.random().toString(36).slice(2, 11)
+                    })));//深拷贝,避免改变tableItem
+
+                    this.selectTipTxt()
                 }
                 else {//子树新增端口
                     this.nodePortData.push(JSON.parse(JSON.stringify(this.nodePortItem)));
@@ -204,12 +297,35 @@ export function attributePopVm() {
                     if (this.selectPortIndex == -1) return
                     this.tableData.splice(this.selectPortIndex, 1)
                     if (this.tableData.length == 0) this.selectPortIndex = -1
+                    this.selectTipTxt()
                 }
                 else {//子树删除端口
                     if (this.selectNodePortIndex == -1) return
                     this.nodePortData.splice(this.selectNodePortIndex, 1)
                     if (this.nodePortData.length == 0) this.selectNodePortIndex = -1
                 }
+            },
+            // checkPortName() {
+            //     let repeatFlag = this.checkPortNameRepeat()
+            //     if (repeatFlag) {
+            //         this.tipText = this.tipTextList[4];
+            //         this.isOk = false
+            //     } else {
+            //         this.tipText = this.tipTextList[4];
+            //         this.isOk = false
+            //     }
+            // },
+            // 检查端口重复
+            checkPortNameRepeat() {
+                const portNames = new Set();
+                for (const item of this.tableData) {
+                    if (portNames.has(item.portName)) {
+                        return true; // 找到重复的 portName
+                    }
+                    portNames.add(item.portName);
+                }
+
+                return false; // 没有重复的 portName
             },
             // 保存
             handleSave(attrID) {
@@ -231,6 +347,7 @@ export function attributePopVm() {
                 }
                 else if (attrID == '2') {//新增节点模型
                     const tableObj = this.handleTableData(this.tableData);
+                    // console.log('tableObj', tableObj)
                     this.modelList[this.newModel.typeIndex].children.push({
                         ID: this.newModel.name,
                         isUser: true,
@@ -260,15 +377,13 @@ export function attributePopVm() {
             // 将节点模型的端口数组转成对象
             handleTableData(tableData) {
                 const result = tableData.reduce((acc, item) => {
-                    const { portName, ...rest } = item;
-                    acc[portName] = rest;
+                    const { portName, value, defaultValue, id, ...rest } = item;
+                    acc[portName] = { ...rest, value: value || defaultValue };
                     return acc;
                 }, {});
                 return result;
             },
-            // handleCancel() {
-            //     this.handleClose()
-            // },
+
             // 关闭弹窗
             handleClose() {
                 // console.log('')
@@ -313,6 +428,7 @@ export function attributePopVm() {
                 this.statusData.isShowProperty = false
                 attrID = -1
                 gContextDao.setGContextProp("statusData", this.statusData);
+                this.tipText = this.tipTextList[0];
             },
             //-----------------弹出框本身的拖拽函数--------------------------------------
             startDrag(e) {

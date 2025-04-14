@@ -289,7 +289,7 @@ function createNode(type, pos, name) {
     let len = name ? name.length : 4
     const iconName = dom.imgName({ type, name })
 
-    let width = 20 + (iconName ? 30 : 0) + len * 11;
+    let width = Math.max(20 + (iconName ? 30 : 0) + len * 11, type == 'SubTree' ? 160 : 0)
 
     const port = fileParser.findNodePort(name)
     let portLength = 0
@@ -816,9 +816,9 @@ function addSubTree(subNode) {
             subtreeEvents[key] = events[key]
         }
     }
-    gContextDao.setGContextProp("activedEntityMap", subtreeEvents);
+    // gContextDao.setGContextProp("activedEntityMap", subtreeEvents);
 
-    nodesOPController.loadSubTree(statusData.currentTreeID, subNode.id)
+    nodesOPController.loadSubTree(statusData.currentTreeID, subNode.id, subtreeEvents)
 }
 
 // 通过树名找到树ID
@@ -1110,11 +1110,14 @@ function updateMainSVGSizeUp() {
     // (statusData.isShowCriterionPop ? 300 : 200)
     // console.log(newSize.height)
 
-    //  newSize.width = Math.max(1872 /
-    // newSize.height = Math.max(892 /
+    //  newSize.width = Math.max(1872 / 1632
+    // newSize.height = Math.max(892 / 860
 
-    newSize.width = Math.max(1632 / (svgCanvas.zoom < 1 ? svgCanvas.zoom : 1), newSize.width)// 基于最大位置坐标调整新尺寸
-    newSize.height = Math.max(860 / (svgCanvas.zoom < 1 ? svgCanvas.zoom : 1), newSize.height) + (statusData.isShowCriterionPop ? 100 : 0)// 当尺寸大于原来尺寸时再扩大
+    const viewPortWidth = g.gContext.viewPort.width
+    const viewPortHeight = g.gContext.viewPort.height
+
+    newSize.width = Math.max(viewPortWidth / (svgCanvas.zoom < 1 ? svgCanvas.zoom : 1), newSize.width)// 基于最大位置坐标调整新尺寸
+    newSize.height = Math.max(viewPortHeight / (svgCanvas.zoom < 1 ? svgCanvas.zoom : 1), newSize.height) + (statusData.isShowCriterionPop ? 100 : 0)// 当尺寸大于原来尺寸时再扩大
     // newSize.height = newSize.height 
     // console.log(newSize.height)
     // console.log('maxX', maxPosition.x, '画布宽', newSize.width)

@@ -26,7 +26,7 @@
 
 
     <!-- 画板 -->
-    <div class="drawingBoard" id="drawingBoard">
+    <div class="drawingBoard" id="drawingBoard" style="width: calc(100vw - 272px);height: calc(100vh - 100px);">
         <div class="content" id="content" tabindex="0">
             <div class="hiddenPopover" id="hiddenPopover" v-show="hiddenPopoverData.show" :style="{'top': hiddenPopoverData.show?hiddenPopoverData.data.pos.y + 'px':'0',
          'left':hiddenPopoverData.show?hiddenPopoverData.data.pos.x + 'px':'0'}">
@@ -47,10 +47,6 @@
         <div id="renderMode" v-if="statusData.computeStatus!=0"></div>
     </div>
 </div>
-
-
-
-
 
 <div class="attributePop" id="attributePopList" v-if="statusData.isShowProperty">
     <div id="attributePop"></div>

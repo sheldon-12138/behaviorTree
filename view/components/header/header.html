@@ -1,7 +1,7 @@
 <!-- 保存文件 -->
 <el-dialog title="保存文件" :visible.sync="fileSaveDialogVisible" width="800px">
     <el-form v-if="fileSaveDialogVisible" ref="saveForm" :rules="saveFormRules" :model="info" label-width="80px">
-        <el-form-item label="树名称" prop="name">
+        <el-form-item label="文件名称" prop="name">
             <el-input v-model="info.name"></el-input>
         </el-form-item>
     </el-form>
@@ -408,7 +408,8 @@
         </div>
         <!-- 在两行中切割端口和条件名称和值 ：-->
         <div class="sysItem">
-            <el-checkbox v-model="statusData.splitTwoLines">Split Port & Condition names and value on two lines</el-checkbox>
+            <el-checkbox v-model="statusData.splitTwoLines">Split Port & Condition names and value on two
+                lines</el-checkbox>
         </div>
         <!-- 自适应分割条件 -->
         <div class="sysItem">
@@ -433,11 +434,11 @@
         <div class="border-line"></div>
         <!-- 浏览器版本： -->
         <div class="sysItem">
-            <div class="infoName">操作系统</div>： {{ softInfo.browserInfo }}
+            <div class="infoName">操作系统</div>： {{ softInfo.sysInfo }}
         </div>
         <div class="sysItem">
             <div class="infoName">浏览器</div>：
-            {{ softInfo.sysInfo }}
+            {{ softInfo.browserInfo }}
         </div>
         <div class="sysItem">
             <div class="infoName">发布版本</div>：

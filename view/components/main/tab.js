@@ -25,9 +25,14 @@ export function tabVm() {
             closeTab(index) {
                 const currentTreeID = this.tabsArr[index].id
                 this.tabsArr.splice(index, 1)
-                if (currentTreeID == this.statusData.currentTreeID) {
-                    const item = this.tabsArr[this.tabsArr.length - 1]
-                    nodesOPController.selectedTree(item.id)
+                if ((currentTreeID == this.statusData.currentTreeID)) {
+                    if (this.tabsArr.length > 0) {
+                        const item = this.tabsArr[this.tabsArr.length - 1]
+                        nodesOPController.selectedTree(item.id)
+                    } else {//关闭最后一个tab
+                        // console.log("close all tabs")
+                        nodesOPController.closeTab()
+                    }
                 }
             }
         }

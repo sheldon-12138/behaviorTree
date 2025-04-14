@@ -90,7 +90,7 @@
                 <select v-else :disabled="statusData.attrID == '4'" v-model="newModel.typeIndex">
                     <option v-for="(item,index) in typeList" :key="item" :value="index">{{item}}</option>
                 </select>
-                <input :disabled="statusData.attrID == '4'" @input="modelNameChange" type="text" v-model="newModel.name"
+                <input :disabled="statusData.attrID == '4'" @input="selectTipTxt" type="text" v-model="newModel.name"
                     placeholder="Name">
             </div>
             <div v-if="statusData.attrID != '4'" class="iconLine">
@@ -112,9 +112,9 @@
                 </table>
                 <div class="table-container">
                     <table class="table">
-                        <tr v-for="(item,index) in tableData" :key="item.portName" @click="selectPortIndex = index"
+                        <tr v-for="(item,index) in tableData" :key="item.id" @click="selectPortIndex = index"
                             :style="{ backgroundColor:selectPortIndex==index ? '#bceae1' : 'inherit'}">
-                            <td><input :disabled="statusData.attrID == '4'" type="text" v-model="item.portName"></td>
+                            <td><input :disabled="statusData.attrID == '4'" type="text" v-model="item.portName" @blur="selectTipTxt"></td>
                             <td>
                                 <select :disabled="statusData.attrID == '4'" v-model="item.direction">
                                     <option value="input_port">Input</option>

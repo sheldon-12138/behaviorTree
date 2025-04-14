@@ -34,17 +34,24 @@ export const g = {
                 }, {
                     ID: 'AlwaysSuccess'
                 }, {
-                    ID: 'Script'
+                    ID: 'Script',
+                    port: { code: { direction: 'input_port', defaultValue: '', value: '', description: '' } }
                 }, {
-                    ID: 'SetBlackboard'
+                    ID: 'SetBlackboard',
+                    port: {
+                        value: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        output_key: { direction: 'output_port', defaultValue: '', value: '', description: '' }
+                    }
                 }, {
-                    ID: 'Sleep'
+                    ID: 'Sleep',
+                    port: { msec: { direction: 'input_port', defaultValue: '', value: '', description: '' } }
                 }]
             }, {
                 ID: '条件节点',
                 type: 'Condition',
                 children: [{
-                    ID: 'ScriptCondition'
+                    ID: 'ScriptCondition',
+                    port: { code: { direction: 'input_port', defaultValue: '', value: '', description: '' } }
                 }]
             }, {
                 ID: '控制节点',
@@ -58,9 +65,14 @@ export const g = {
                 }, {
                     ID: 'IfThenElse'
                 }, {
-                    ID: 'Parallel'
+                    ID: 'Parallel',
+                    port: {
+                        failure_count: { direction: 'input_port', defaultValue: '1', value: '1', description: '' },
+                        success_count: { direction: 'input_port', defaultValue: '-1', value: '-1', description: '' }
+                    }
                 }, {
-                    ID: 'ParallelAll'
+                    ID: 'ParallelAll',
+                    port: { max_failures: { direction: 'input_port', defaultValue: '1', value: '1', description: '' }, }
                 }, {
                     ID: 'ReactiveFallback'
                 }, {
@@ -70,15 +82,50 @@ export const g = {
                 }, {
                     ID: 'SequenceWithMemory'
                 }, {
-                    ID: 'Switch2'
+                    ID: 'Switch2',
+                    port: {
+                        case_1: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        case_2: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        variable: { direction: 'input_port', defaultValue: '', value: '', description: '' }
+                    }
                 }, {
-                    ID: 'Switch3'
+                    ID: 'Switch3',
+                    port: {
+                        case_1: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        case_2: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        case_3: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        variable: { direction: 'input_port', defaultValue: '', value: '', description: '' }
+                    }
                 }, {
-                    ID: 'Switch4'
+                    ID: 'Switch4',
+                    port: {
+                        case_1: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        case_2: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        case_3: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        case_4: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        variable: { direction: 'input_port', defaultValue: '', value: '', description: '' }
+                    }
                 }, {
-                    ID: 'Switch5'
+                    ID: 'Switch5',
+                    port: {
+                        case_1: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        case_2: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        case_3: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        case_4: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        case_5: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        variable: { direction: 'input_port', defaultValue: '', value: '', description: '' }
+                    }
                 }, {
-                    ID: 'Switch6'
+                    ID: 'Switch6',
+                    port: {
+                        case_1: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        case_2: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        case_3: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        case_4: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        case_5: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        case_6: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        variable: { direction: 'input_port', defaultValue: '', value: '', description: '' }
+                    }
                 }, {
                     ID: 'WhileDoElse'
                 },]
@@ -87,6 +134,7 @@ export const g = {
                 type: 'Decorator',
                 children: [{
                     ID: 'Delay',
+                    port: { delay_msec: { direction: 'input_port', defaultValue: '', value: '', description: '' }, }
                 }, {
                     ID: 'ForceFailure',
                 }, {
@@ -97,18 +145,38 @@ export const g = {
                     ID: 'KeepRunningUntilFailure',
                 }, {
                     ID: 'LoopDouble',
+                    port: {
+                        if_empty: { direction: 'input_port', defaultValue: 'SUCCESS', value: 'SUCCESS', description: '' },
+                        value: { direction: 'output_port', defaultValue: '', value: '', description: '' },
+                        queue: { direction: 'inout_port', defaultValue: '', value: '', description: '' },
+                    }
                 }, {
                     ID: 'LoopString',
+                    port: {
+                        if_empty: { direction: 'input_port', defaultValue: 'SUCCESS', value: 'SUCCESS', description: '' },
+                        value: { direction: 'output_port', defaultValue: '', value: '', description: '' },
+                        queue: { direction: 'inout_port', defaultValue: '', value: '', description: '' },
+                    }
                 }, {
                     ID: 'Precondition',
+                    port: {
+                        else: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        if: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                    }
                 }, {
                     ID: 'Repeat',
+                    port: {
+                        num_cycles: { direction: 'input_port', defaultValue: '', value: '', description: '' }
+                    }
                 }, {
                     ID: 'RetryUntilSuccessful',
+                    port: { num_attempts: { direction: 'input_port', defaultValue: '', value: '', description: '' } }
                 }, {
                     ID: 'RunOnce',
+                    port: { then_skip: { direction: 'input_port', defaultValue: 'true', value: 'true', description: '' } }
                 }, {
                     ID: 'Timeout',
+                    port: { msec: { direction: 'input_port', defaultValue: '', value: '', description: '' } }
                 }]
             }, {
                 ID: '子树',
@@ -124,17 +192,24 @@ export const g = {
                 }, {
                     ID: 'AlwaysSuccess'
                 }, {
-                    ID: 'Script'
+                    ID: 'Script',
+                    port: { code: { direction: 'input_port', defaultValue: '', value: '', description: '' } }
                 }, {
-                    ID: 'SetBlackboard'
+                    ID: 'SetBlackboard',
+                    port: {
+                        value: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        output_key: { direction: 'output_port', defaultValue: '', value: '', description: '' }
+                    }
                 }, {
-                    ID: 'Sleep'
+                    ID: 'Sleep',
+                    port: { msec: { direction: 'input_port', defaultValue: '', value: '', description: '' } }
                 }]
             }, {
                 ID: '条件节点',
                 type: 'Condition',
                 children: [{
-                    ID: 'ScriptCondition'
+                    ID: 'ScriptCondition',
+                    port: { code: { direction: 'input_port', defaultValue: '', value: '', description: '' } }
                 }]
             }, {
                 ID: '控制节点',
@@ -148,9 +223,14 @@ export const g = {
                 }, {
                     ID: 'IfThenElse'
                 }, {
-                    ID: 'Parallel'
+                    ID: 'Parallel',
+                    port: {
+                        failure_count: { direction: 'input_port', defaultValue: '1', value: '1', description: '' },
+                        success_count: { direction: 'input_port', defaultValue: '-1', value: '-1', description: '' }
+                    }
                 }, {
-                    ID: 'ParallelAll'
+                    ID: 'ParallelAll',
+                    port: { max_failures: { direction: 'input_port', defaultValue: '1', value: '1', description: '' }, }
                 }, {
                     ID: 'ReactiveFallback'
                 }, {
@@ -160,15 +240,50 @@ export const g = {
                 }, {
                     ID: 'SequenceWithMemory'
                 }, {
-                    ID: 'Switch2'
+                    ID: 'Switch2',
+                    port: {
+                        case_1: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        case_2: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        variable: { direction: 'input_port', defaultValue: '', value: '', description: '' }
+                    }
                 }, {
-                    ID: 'Switch3'
+                    ID: 'Switch3',
+                    port: {
+                        case_1: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        case_2: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        case_3: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        variable: { direction: 'input_port', defaultValue: '', value: '', description: '' }
+                    }
                 }, {
-                    ID: 'Switch4'
+                    ID: 'Switch4',
+                    port: {
+                        case_1: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        case_2: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        case_3: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        case_4: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        variable: { direction: 'input_port', defaultValue: '', value: '', description: '' }
+                    }
                 }, {
-                    ID: 'Switch5'
+                    ID: 'Switch5',
+                    port: {
+                        case_1: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        case_2: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        case_3: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        case_4: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        case_5: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        variable: { direction: 'input_port', defaultValue: '', value: '', description: '' }
+                    }
                 }, {
-                    ID: 'Switch6'
+                    ID: 'Switch6',
+                    port: {
+                        case_1: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        case_2: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        case_3: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        case_4: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        case_5: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        case_6: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        variable: { direction: 'input_port', defaultValue: '', value: '', description: '' }
+                    }
                 }, {
                     ID: 'WhileDoElse'
                 },]
@@ -177,6 +292,7 @@ export const g = {
                 type: 'Decorator',
                 children: [{
                     ID: 'Delay',
+                    port: { delay_msec: { direction: 'input_port', defaultValue: '', value: '', description: '' }, }
                 }, {
                     ID: 'ForceFailure',
                 }, {
@@ -187,18 +303,38 @@ export const g = {
                     ID: 'KeepRunningUntilFailure',
                 }, {
                     ID: 'LoopDouble',
+                    port: {
+                        if_empty: { direction: 'input_port', defaultValue: 'SUCCESS', value: 'SUCCESS', description: '' },
+                        value: { direction: 'output_port', defaultValue: '', value: '', description: '' },
+                        queue: { direction: 'inout_port', defaultValue: '', value: '', description: '' },
+                    }
                 }, {
                     ID: 'LoopString',
+                    port: {
+                        if_empty: { direction: 'input_port', defaultValue: 'SUCCESS', value: 'SUCCESS', description: '' },
+                        value: { direction: 'output_port', defaultValue: '', value: '', description: '' },
+                        queue: { direction: 'inout_port', defaultValue: '', value: '', description: '' },
+                    }
                 }, {
                     ID: 'Precondition',
+                    port: {
+                        else: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                        if: { direction: 'input_port', defaultValue: '', value: '', description: '' },
+                    }
                 }, {
                     ID: 'Repeat',
+                    port: {
+                        num_cycles: { direction: 'input_port', defaultValue: '', value: '', description: '' }
+                    }
                 }, {
                     ID: 'RetryUntilSuccessful',
+                    port: { num_attempts: { direction: 'input_port', defaultValue: '', value: '', description: '' } }
                 }, {
                     ID: 'RunOnce',
+                    port: { then_skip: { direction: 'input_port', defaultValue: 'true', value: 'true', description: '' } }
                 }, {
                     ID: 'Timeout',
+                    port: { msec: { direction: 'input_port', defaultValue: '', value: '', description: '' } }
                 }]
             }, {
                 ID: '子树',

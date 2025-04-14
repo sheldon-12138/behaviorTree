@@ -12,14 +12,23 @@ import renderFTree from "../render/renderFTree.js";
 import { g } from "../structure/gContext.js";
 import fileParser from "../parser/fileParser.js";
 
+// 清空
+function closeTab() {
+    //清空画布树 + 删除复制的子树
+    clearTreeDom()
+    deleteSubTree()
+
+    let statusData = gContextDao.getGContextProp("statusData");
+    statusData.currentTreeID = null
+}
+
 // 选中打开树
 function selectedTree(treeId, name) {
     let statusData = gContextDao.getGContextProp("statusData");
     if (treeId === statusData.currentTreeID) return
 
     //清空画布树 + 删除复制的子树
-    clearTreeDom()
-    deleteSubTree()
+    closeTab()
 
     // 根据数据渲染dom
     let subArr = renderFTree.renderByContext(treeId);
@@ -57,7 +66,7 @@ function selectedTree(treeId, name) {
 
 // 加载子树
 function loadSubTree(treeId, subNodeId, subtreeEvents) {
-
+    // console.log('loadSubTree', treeId, subNodeId, subtreeEvents)
     gContextDao.setGContextProp("activedEntityMap", subtreeEvents);
     // 复制子树
     copy();
@@ -1158,7 +1167,7 @@ function returnTree() {
         let entity = gContextDao.findEntity(roots.children[i].id);
         roots.children[i] = addTreeNode(entity, roots.children[i]);
     }
-    console.log('tree', roots);
+    // console.log('tree', roots);
     return roots
 }
 
@@ -1701,6 +1710,7 @@ function bottomUserCode(id) {
 
 
 export default {
+    closeTab,
     loadSubTree,
     handleModelChange,
     clearTreeDom,

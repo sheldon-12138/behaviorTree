@@ -6,13 +6,18 @@ function capitalize(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 function buildTree(node, xmlDoc, projectName) {
-    // console.log('node', node);
+    // console.log('node', node.attrObj);
     if (node && typeof node === 'object') {
         // 创建当前节点并设置其属性
         let tagName = capitalize(node.tagName || 'node')
-        if (node.tagName === 'Root') {
+        if (node.type == 'Top') {
             tagName = 'BehaviorTree'
-            node.attrObj.ID = capitalize(projectName)
+            let id = (node.tagName == 'Root') ? projectName : node.tagName
+            node.attrObj.ID = capitalize(id)
+        } else if (node.type == 'SubTree') {
+            tagName = 'SubTree'
+            node.attrObj.ID = capitalize(node.tagName)
+            node.children = []//子树去除子标签
         }
         let currentElement = xmlDoc.ele(tagName, node.attrObj || {});
 
@@ -40,12 +45,16 @@ function buildModel(userModelList, xmlDoc) {
             })
         }
     })
+    xmlDoc.txt('\n')
 }
 
-function returnXml(tree, projectName, userModelList) {
-    const xmlDoc = create({ version: '1.0', encoding: 'UTF-8' }).ele('root');
-    buildTree(tree, xmlDoc, projectName);  // 直接传递 tree 而不是 tree.root
+function returnXml(treeArr, projectName, userModelList) {
+    const xmlDoc = create({ version: '1.0', encoding: 'UTF-8' }).ele('root', { "BTCPP_format": "4" });
 
+    treeArr.forEach(tree => {
+        buildTree(tree, xmlDoc, projectName);// 直接传递 tree 而不是 tree.root
+        xmlDoc.txt('\n')
+    })
     xmlDoc.com('Description of Node Models (used by Groot)');
     buildModel(userModelList, xmlDoc);
 

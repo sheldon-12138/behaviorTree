@@ -387,6 +387,7 @@
         <img src="assets/header/setting.png" @click="getOSAndBrowser()" draggable="false">
     </el-tooltip>
 </div>
+<!-- 生成cpp -->
 <div class="header-item"
     :class="{'header-item-hover':!statusData.isCompute,'header-item-operation':statusData.isCompute}">
     <el-tooltip effect="light" content="生成代码" placement="top">
@@ -465,3 +466,17 @@
     :close-on-press-escape="false">
     <el-progress :percentage="progressData.openProgress"></el-progress>
 </el-dialog>
+<!-- 用户管理 -->
+<div class="header-item"
+    :class="{'header-item-hover':!statusData.isCompute,'header-item-operation':statusData.isCompute}">
+    <el-tooltip effect="light" content="用户管理" placement="top">
+        <img src="assets/header/user.png" @click="userManagement()" draggable="false">
+    </el-tooltip>
+</div>
+<!-- 登出 -->
+<div class="header-item"
+    :class="{'header-item-hover':!statusData.isCompute,'header-item-operation':statusData.isCompute}">
+    <el-tooltip effect="light" content="登出" placement="top">
+        <img src="assets/header/logOut.png" @click="logOut()" draggable="false">
+    </el-tooltip>
+</div>

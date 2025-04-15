@@ -190,12 +190,55 @@ router.post('/api/user/analysisXml', jp, function (req, resp) {
     // logger.info(`${req.params.user}/${req.params.project} 文件读取成功`);
 });
 
+// 获取用户列表
 router.get('/api/user/getUserList', function (req, resp) {
-    let files = fs.readdirSync('./user');
-    let newFiles = files.filter(function (file) {
-        return fs.lstatSync('./user/' + file).isDirectory();
-    });
-    resp.send(JSON.stringify(newFiles));
+    // let files = fs.readdirSync('./user');
+    // let newFiles = files.filter(function (file) {
+    //     return fs.lstatSync('./user/' + file).isDirectory();
+    // });
+    // resp.send(JSON.stringify(newFiles));
+    const userDir = './user';
+
+    try {
+        const users = fs.readdirSync(userDir);
+        const result = [];
+
+        users.forEach(user => {
+            const infoPath = `${userDir}/${user}/${user}.info`;
+            if (fs.existsSync(infoPath)) {
+                const data = fs.readFileSync(infoPath, 'utf-8');
+                const parsed = JSON.parse(data);
+                result.push({
+                    username: user,
+                    ...parsed // 比如包含 password 字段
+                });
+            }
+        });
+
+        resp.json(result);
+    } catch (err) {
+        resp.status(500).json({ error: '读取用户信息失败', details: err.message });
+    }
 });
+
+// router.get('/api/user/getUserInfo/:user', function (req, resp) {
+//     const infoPath = `./user/${user}/${user}.info`;
+
+//     try {
+//         const result = [];
+
+//         if (fs.existsSync(infoPath)) {
+//             const data = fs.readFileSync(infoPath, 'utf-8');
+//             const parsed = JSON.parse(data);
+//             result.push({
+//                 username: user,
+//                 ...parsed // 比如包含 password 字段
+//             });
+//         }
+//         resp.json(result);
+//     } catch (err) {
+//         resp.status(500).json({ error: '读取用户信息失败', details: err.message });
+//     }
+// });
 
 module.exports = router;

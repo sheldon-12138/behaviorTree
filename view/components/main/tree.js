@@ -37,7 +37,12 @@ export function treeVm() {
             handleTreeClick(node, selected, event) {
                 // console.log(node, selected, event)
                 if (node.treeId) {
-                    nodesOPController.selectedTree(node.treeId, node.label)
+                    const startTimeStamp = new Date().getTime();  // 设置计算开始时间戳为当前时间
+                    nodesOPController.selectedTree(node.treeId, node.label);
+                    const endTimeStamp = new Date().getTime();  // 获取结束时间
+                    const totalDuration = (endTimeStamp - startTimeStamp) / 1000 + 's';  // 计算总耗时 乘以7
+
+                    this.$message.success(`打开成功,用时${totalDuration}`);
                 }
             },
             triggerFileInput() {
@@ -48,6 +53,7 @@ export function treeVm() {
             },
             // 打开本地项目
             handleFileChange(event) {
+                const startTimeStamp = new Date().getTime();  // 设置计算开始时间戳为当前时间
                 const files = event.target.files;
                 // console.log(files);
                 if (files.length == 1) {//xml单文件

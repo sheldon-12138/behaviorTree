@@ -561,7 +561,7 @@ export const g = {
         },
         //底部信息栏数据
         bottomAmount: {
-            nodeNum: 0,
+            nodeNum: 1,
             maxLayer: 0,
             topNodeNum: 0,
             midNodeNum: 0,

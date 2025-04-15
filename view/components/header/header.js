@@ -320,6 +320,8 @@ export function headerVm() {
             //保存文件
             fileSave(type) {
                 if (type == 'save') {
+                    const startTimeStamp = new Date().getTime();  // 设置计算开始时间戳为当前时间
+
                     this.$refs['saveForm'].validate((valid) => {
                         if (valid) {
                             Utils._debounce(fileController.findUserProjectByName({
@@ -332,7 +334,12 @@ export function headerVm() {
                                         if (!result.err) {
                                             // fileController.uploadNodePicture({ info: this.info }).then(() => {
                                             this.fileSaveDialogVisible = false;
-                                            this.$message.success('保存成功');
+
+
+                                            const endTimeStamp = new Date().getTime();  // 获取结束时间
+                                            const totalDuration = (endTimeStamp - startTimeStamp) / 1000 + 's';  // 计算总耗时 乘以7
+
+                                            this.$message.success(`保存成功,用时${totalDuration}`);
                                             this.statusData.canvasChanged = false;
                                             // });
                                         } else {
@@ -732,6 +739,23 @@ export function headerVm() {
                     type: 'success'
                 });
                 // window.open('assets/test.pdf', '_blank');
+            },
+            // 登出
+            logOut() {
+                this.$confirm('确认退出登录？')
+                    .then(_ => {
+                        fetch('/logout', {
+                            method: 'GET',
+                            credentials: 'include'
+                        }).then(() => {
+                            window.location.href = '/'; // 登出后跳转登录
+                        });
+                    })
+                    .catch(_ => { });
+            },
+            // 用户管理
+            userManagement() {
+                window.open("/public/pages/manage/manage.html");
             }
         }
     });

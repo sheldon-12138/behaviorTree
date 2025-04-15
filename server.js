@@ -28,10 +28,8 @@ app.use(bodyParser.json());
 const user = require('./route/userRoute');
 const computer = require('./route/computeRoute');
 
-// 加载静态文件
 
-app.use(express.static('./'));
-//app.use('/', express.static('public'));
+// app.use('/', express.static('public'));
 app.use('/user', express.static('user'));
 app.use(cookieParser('sessiontest'));
 app.use(session({
@@ -57,17 +55,35 @@ app.all("*", function (req, res, next) {
 		next();
 });
 
+
 app.get('/', function (req, resp) {
-	fs.readFile('./public/page/login.html', function (err, data) {
-		if (err) {
-			resp.send(err);
-		} else {
-			resp.send(data.toString());
-		}
-	});
+	if (!req.session.user) {
+		resp.redirect('/login'); // 未登录，跳转登录页
+		return;
+	} else {
+		fs.readFile('index.html', function (err, data) {
+			if (err) {
+				resp.send(err);
+			} else {
+				resp.send(data.toString());
+			}
+		})
+	}
+	// fs.readFile('./public/pages/login/login.html', function (err, data) {
+	// 	if (err) {
+	// 		resp.send(err);
+	// 	} else {
+	// 		resp.send(data.toString());
+	// 	}
+	// });
 });
+
+// 加载静态文件  静态目录还是设为整个项目根 ./
+app.use(express.static('./'));
+
+
 app.get('/login', function (req, resp) {
-	fs.readFile('./public/page/login.html', function (err, data) {
+	fs.readFile('./public/pages/login/login.html', function (err, data) {
 		if (err) {
 			resp.send(err);
 		} else {
@@ -76,30 +92,48 @@ app.get('/login', function (req, resp) {
 	})
 });
 app.get('/login/:user/:pwd', function (req, resp) {
-	let user = req.params.user;
-	let pwd = req.params.pwd;
-	let corrent = false;
+	const user = req.params.user;
+	const pwd = req.params.pwd;
+	const userDir = `./user/${user}`;
+	const infoPath = `${userDir}/${user}.info`;
+	// 获取 IP 地址（支持代理情况）
+	const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').toString();
+
+	// let corrent = false;
 	let files = fs.readdirSync('./user');
-	if (files.indexOf(user) === -1) {
-		fs.mkdirSync('./user/' + user);
-		fs.writeFileSync('./user/' + user + '/' + user + '.info', JSON.stringify({
-			password: pwd
+
+	if (files.indexOf(user) === -1) {//若不存在则注册
+		fs.mkdirSync(userDir);
+		fs.writeFileSync(infoPath, JSON.stringify({
+			password: pwd,
+			registerTime: new Date().toISOString().replace('T', ' ').split('.')[0], // 格式化时间
+			enabled: true,
+			ip,
 		}), {
 			encoding: "utf-8"
 		});
 		// fetchRequest.session['user'] = {name:user, password:pwd};
-		resp.send('2');
+		resp.send('2');// 首次注册用户
 	} else {
-		fs.readFile('./user/' + user + '/' + user + '.info', function (err, data) {
+		fs.readFile(infoPath, function (err, data) {
 			if (err) {
 				resp.send('-2');
 			} else {
-				// console.log(data.toString());
-				if (JSON.parse(data.toString())['password'] === pwd) {
+				const userInfo = JSON.parse(data.toString());
+				if (userInfo.password === pwd) {
+					req.session.user = user; // 设置 session
 					// fetchRequest.sesstion['user'] = {name:user, password:pwd};
-					resp.send('1');
+					resp.json({
+						status: 1, // 登录成功
+						user: {
+							username: user,
+							...userInfo
+						}
+					});
+
+					// resp.send('1');// 登录成功
 				} else {
-					resp.send('-1');
+					resp.send('-1');// 密码错误
 				}
 			}
 		});
@@ -108,25 +142,43 @@ app.get('/login/:user/:pwd', function (req, resp) {
 	}
 
 });
+
+app.get('/logout', (req, res) => {
+	// 销毁 session
+	req.session.destroy(err => {
+		if (err) {
+			return res.status(500).send('Logout failed.');
+		}
+
+		// 清除 cookie（可选，但推荐）
+		// res.clearCookie('connect.sid'); // 这里的名字根据你的 session 配置可能不同
+
+		// 重定向到登录页或返回提示
+		res.redirect('/');
+	});
+});
+
 // 主页面
 app.get('/index', function (req, resp) {
-	fs.readFile('index.html', function (err, data) {
-		if (err) {
-			resp.send(err);
-		} else {
-			resp.send(data.toString());
-		}
-	})
+	// console.log(req.session.user)
+	if (!req.session.user) {
+		resp.redirect('/login'); // 未登录，跳转登录页
+		return;
+	} else {
+		fs.readFile('index.html', function (err, data) {
+			if (err) {
+				resp.send(err);
+			} else {
+				resp.send(data.toString());
+			}
+		})
+	}
+
+
 });
-app.get('/indexD3.html', function (req, resp) {
-	fs.readFile('indexD3.html', function (err, data) {
-		if (err) {
-			resp.send(err);
-		} else {
-			resp.send(data.toString());
-		}
-	})
-});
+
+
+
 
 var getUserFile = function (user, project, suffix) {
 	return './user/' + user + "/" + project + "/" + project + suffix;
@@ -314,7 +366,7 @@ app.get('/read/:user/:project', function (req, resp) {
 		console.log(content);
 		resp.send(JSON.stringify(content));
 	});
-	
+
 });
 
 // 文件另存为
@@ -853,7 +905,6 @@ function endWidth(target, endStr) {
 	let d = target.length - endStr.length;
 	return (d >= 0 && target.lastIndexOf(endStr) == d);
 }
-
 
 //获取用户所有的项目
 app.get('/api/getUserProjectList/:user', function (req, resp) {

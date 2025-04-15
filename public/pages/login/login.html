@@ -61,7 +61,6 @@
 </head>
 
 <body>
-
     <div class="login-container">
         <h2>用户登录</h2>
         <input type="text" id="username" placeholder="用户名">
@@ -69,7 +68,7 @@
         <button onclick="login()">登录</button>
         <div class="msg" id="msg"></div>
     </div>
-
+    <!-- <script src="../login.js"></script> -->
     <script>
         function login() {
             const user = document.getElementById('username').value.trim();
@@ -85,27 +84,27 @@
                 .then(res => res.text())
                 .then(code => {
                     console.log('code', code);
-                    // switch (code) {
-                    //     case '1':
-                    //         msg.style.color = 'green';
-                    //         msg.textContent = '登录成功，跳转中...';
-                    //         // setTimeout(() => window.location.href = '/index', 1000);
-                    //         break;
-                    //     case '2':
-                    //         msg.style.color = 'orange';
-                    //         msg.textContent = '用户不存在，已自动注册并登录';
-                    //         // setTimeout(() => window.location.href = '/index', 1000);
-                    //         break;
-                    //     case '-1':
-                    //         msg.textContent = '密码错误';
-                    //         break;
-                    //     case '-2':
-                    //         msg.textContent = '读取用户信息失败';
-                    //         break;
-                    //     default:
-                    //         msg.textContent = '未知错误';
-                    // }
-               
+                    switch (code) {
+                        case '1':
+                            msg.style.color = 'green';
+                            msg.textContent = '登录成功，跳转中...';
+                            setTimeout(() => window.location.href = '/index', 1000);
+                            break;
+                        case '2':
+                            msg.style.color = 'orange';
+                            msg.textContent = '用户不存在，已自动注册并登录';
+                            setTimeout(() => window.location.href = '/index', 1000);
+                            break;
+                        case '-1':
+                            msg.textContent = '密码错误';
+                            break;
+                        case '-2':
+                            msg.textContent = '读取用户信息失败';
+                            break;
+                        default:
+                            msg.textContent = '未知错误';
+                    }
+
                 })
                 .catch(err => {
                     msg.textContent = '网络错误';
@@ -113,7 +112,6 @@
                 });
         }
     </script>
-
 </body>
 
 </html>

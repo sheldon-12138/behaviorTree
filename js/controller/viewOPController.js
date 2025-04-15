@@ -31,7 +31,7 @@ function updateAmount(props) {
     let amount = gContextDao.getGContextProp("bottomAmount");
     const statusData = gContextDao.getGContextProp("statusData");
     // _nodeLayout(currentTreeID ? currentTreeID : statusData.currentTreeID);
-    
+
     let temp = {};
     for (let i = 0; i < props.length; ++i) {
         temp[props[i]] = 0;

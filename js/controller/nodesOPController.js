@@ -60,6 +60,7 @@ function selectedTree(treeId, name) {
     if (nodeLayoutFlag)
         _nodeLayout(treeId);
 
+    viewOPController.updateAmount(["nodeNum"]);
     // 调整画布大小
     gContextController.updateMainSVGSizeUp();
 }
@@ -122,6 +123,10 @@ function clearTreeDom() {
     for (let i = lines.length - 1; i >= 0; --i) {
         mainSVG.removeChild(lines[i]);
     }
+
+    // 节点数清零
+    let amount = gContextDao.getGContextProp("bottomAmount");
+    amount.nodeNum = 0;
 }
 
 // 移除主树的子树

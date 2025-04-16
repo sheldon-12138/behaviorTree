@@ -375,6 +375,7 @@ export const g = {
         user: {
             projectList: null,
             username: null,
+            role: ''
         },
 
         //当前页面ip

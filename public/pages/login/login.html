@@ -81,11 +81,18 @@
             }
 
             fetch(`/login/${encodeURIComponent(user)}/${encodeURIComponent(pwd)}`)
-                .then(res => res.text())
-                .then(code => {
-                    console.log('code', code);
+                .then(res => res.json())
+                .then(res => {
+                    console.log('res', res);
+                    const code = res.status;
+                    // console.log('code', code);
+
                     switch (code) {
                         case '1':
+                            // if (res.user) {
+                                
+                            //     sessionStorage.setItem('user', JSON.stringify(res.user));
+                            // }
                             msg.style.color = 'green';
                             msg.textContent = '登录成功，跳转中...';
                             setTimeout(() => window.location.href = '/index', 1000);

@@ -113,18 +113,19 @@ app.get('/login/:user/:pwd', function (req, resp) {
 			encoding: "utf-8"
 		});
 		// fetchRequest.session['user'] = {name:user, password:pwd};
-		resp.send('2');// 首次注册用户
+		resp.json({ status: '2' });// 首次注册用户
 	} else {
 		fs.readFile(infoPath, function (err, data) {
 			if (err) {
-				resp.send('-2');
+				// resp.send('-2');
+				resp.json({ status: '-2'})
 			} else {
 				const userInfo = JSON.parse(data.toString());
 				if (userInfo.password === pwd) {
 					req.session.user = user; // 设置 session
 					// fetchRequest.sesstion['user'] = {name:user, password:pwd};
 					resp.json({
-						status: 1, // 登录成功
+						status: '1', // 登录成功
 						user: {
 							username: user,
 							...userInfo
@@ -133,7 +134,7 @@ app.get('/login/:user/:pwd', function (req, resp) {
 
 					// resp.send('1');// 登录成功
 				} else {
-					resp.send('-1');// 密码错误
+					resp.json({ status: '-1' });// 密码错误
 				}
 			}
 		});
@@ -907,30 +908,30 @@ function endWidth(target, endStr) {
 }
 
 //获取用户所有的项目
-app.get('/api/getUserProjectList/:user', function (req, resp) {
-	let user = req.params.user;
-	let files = fs.readdirSync('./user/' + user);
-	let projectList = {};
-	// let newFiles = files.filter(function (file) {
-	// 	return fs.lstatSync('./user/' + user + '/' + file).isDirectory();
-	// });
+// app.get('/api/getUserProjectList/:user', function (req, resp) {
+// 	let user = req.params.user;
+// 	let files = fs.readdirSync('./user/' + user);
+// 	let projectList = {};
+// 	// let newFiles = files.filter(function (file) {
+// 	// 	return fs.lstatSync('./user/' + user + '/' + file).isDirectory();
+// 	// });
 
-	for (let i = 0; i < files.length; ++i) {
-		if (fs.lstatSync('./user/' + user + '/' + files[i]).isDirectory()) {
-			let proFiles = fs.readdirSync('./user/' + user + '/' + files[i]);
-			projectList[files[i]] = files[i];
-			for (let j = 0; j < proFiles.length; ++j) {
-				if (endWidth(proFiles[j], "infomation")) {
-					projectList[files[i]] = fs.readFileSync('./user/' + user + '/' + files[i] + '/' + proFiles[j], 'utf-8');
-				}
-			}
-		}
-	}
+// 	for (let i = 0; i < files.length; ++i) {
+// 		if (fs.lstatSync('./user/' + user + '/' + files[i]).isDirectory()) {
+// 			let proFiles = fs.readdirSync('./user/' + user + '/' + files[i]);
+// 			projectList[files[i]] = files[i];
+// 			for (let j = 0; j < proFiles.length; ++j) {
+// 				if (endWidth(proFiles[j], "infomation")) {
+// 					projectList[files[i]] = fs.readFileSync('./user/' + user + '/' + files[i] + '/' + proFiles[j], 'utf-8');
+// 				}
+// 			}
+// 		}
+// 	}
 
 
-	resp.send(JSON.stringify(projectList));
+// 	resp.send(JSON.stringify(projectList));
 
-});
+// });
 
 
 app.get('/new/:user', function (req, resp) {

@@ -19,6 +19,7 @@ export function headerVm() {
             draggable,
         },
         data: {
+            isAdmin: g.gContext.user.role,
             showDi: false,
             tableData: [{
                 date: '2024-05-07 10:56:20',

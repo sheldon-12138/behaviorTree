@@ -20,6 +20,7 @@ router.post('/kk', function () {
 
 //获取用户所有的项目
 router.get('/api/user/getUserProjectList/:user', function (req, resp) {
+    console.log(req.params)
     let user = req.params.user;
     let files = fs.readdirSync('./user/' + user);
     let projectList = {};

@@ -534,7 +534,7 @@ function createSubTreeLine(entity) {
     let checked = createSVGElement(
         "use",
         {
-            "href": "#unchecked",
+            "href": "#checked",
             "x": 15,
             "y": entity.size.height - 27,
             "data-key": entity.id,

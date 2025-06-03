@@ -55,17 +55,23 @@ router.post('/api/user/uploadUserProject', jp, function (req, resp) {
         firstCreate = true;
         fs.mkdirSync(dir);
     }
-
-    let tree = fileUtil.writeContent(`${dir}/${projectName}.xml`, treeContent);
-    let savePromiseList = [tree];
-    Promise.all(savePromiseList).then((message) => {
-        resp.send({ message });
-        // console.log(message);
-    }).catch((err) => {
-        console.log(err);
-        resp.send({ err: err });
-    });
-
+    resp.send({ message: "success", treeContent });
+    // let tree = fileUtil.writeContent(`${dir}/${projectName}.xml`, treeContent);
+    // let savePromiseList = [tree];
+    // Promise.all(savePromiseList).then((message) => {
+    //     resp.send({ message });
+    // }).catch((err) => {
+    //     console.log(err);
+    //     resp.send({ err: err });
+    // });
+    // fileUtil.writeContent(`${dir}/${projectName}.xml`, treeContent)
+    //     .then((message) => {
+    //         resp.send({ message });
+    //     })
+    //     .catch((err) => {
+    //         console.log(err);
+    //         resp.send({ err });
+    //     });
 });
 
 //图片上传

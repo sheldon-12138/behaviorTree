@@ -45,6 +45,23 @@ export function treeVm() {
                     this.$message.success(`打开成功,用时${totalDuration}`);
                 }
             },
+            // 右键子节点
+            rightClick(event, data, node) {
+                if (node.isLeaf) {
+                    this.clearIsMain(this.project); // 清除其他节点状态
+                    data.isMainTree = true;
+                }
+                // console.log('data', data, node);
+            },
+            // 清除其他节点是主树状态
+            clearIsMain(nodes) {
+                nodes.forEach(n => {
+                    n.isMainTree = false;
+                    if (n.children) {
+                        this.clearIsMain(n.children);
+                    }
+                });
+            },
             triggerFileInput() {
                 this.$refs.fileInput.click();
             },
@@ -62,30 +79,32 @@ export function treeVm() {
                     const reader = new FileReader();
                     reader.onload = (e) => {
                         this.project[0].children = [];
-                        fileController.analysisXml({ xml: e.target.result }).then((result) => {
-                            // console.log(result) 
-                            if (result.flag) {
-                                // const treeName = JSON.parse(result.content).root.BehaviorTree[0].$.ID;
-                                // console.log(this.treeMap)
+                        fileController.analysisXml({ xml: e.target.result })
+                            .then((result) => {
+                                // console.log(result) 
+                                if (result.flag) {
+                                    // const treeName = JSON.parse(result.content).root.BehaviorTree[0].$.ID;
+                                    // console.log(this.treeMap)
 
-                                this.$set(this.project[0], 'children', [{
-                                    label: fileName,
-                                    children: []
-                                }]);
-                                // console.log(this.treeMap)
-                                // this.project[0].children[0].children.length = 0
-                                for (let key in this.treeMap) {
-                                    this.project[0].children[0].children.push({
-                                        treeId: key,
-                                        label: this.treeMap[key].ID,
-                                    })
+                                    this.$set(this.project[0], 'children', [{
+                                        label: fileName,
+                                        children: []
+                                    }]);
+                                    // console.log(this.treeMap)
+                                    // this.project[0].children[0].children.length = 0
+                                    for (let key in this.treeMap) {
+                                        this.project[0].children[0].children.push({
+                                            treeId: key,
+                                            isMainTree: this.treeMap[key].isMainTree,
+                                            label: this.treeMap[key].ID,
+                                        })
+                                    }
+
                                 }
-
-                            }
-                        }).catch((err) => {
-                            console.log('解析失败', err);
-                            this.$message.error('解析失败');
-                        })
+                            }).catch((err) => {
+                                console.log('解析失败', err);
+                                this.$message.error('解析失败');
+                            })
                     }
                     reader.readAsText(file);
                 } else if (files.length > 1) {
@@ -135,6 +154,7 @@ export function treeVm() {
                     if (index != -1) {
                         const { xml, name } = this.fileContents[index];
                         fileController.analysisXml({ xml, status: 'forXml', name }).then((result) => {
+                            console.log(result.treeNameArr)
                             if (result.treeNameArr.length > 0) {
                                 this.project[0].children.push({
                                     label: name,

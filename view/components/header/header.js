@@ -332,9 +332,23 @@ export function headerVm() {
                                 // console.log('res', res)
                                 if (res) {
                                     fileController.uploadUserProject({ info: this.info }).then((result) => {
+                                        console.log(result, this.info)
                                         if (!result.err) {
                                             // fileController.uploadNodePicture({ info: this.info }).then(() => {
                                             this.fileSaveDialogVisible = false;
+
+                                            // 生成下载文件 application/xml
+                                            const blob = new Blob([result.treeContent], { type: 'text/xml' });
+                                            const url = URL.createObjectURL(blob);
+
+                                            const link = document.createElement('a');
+                                            link.href = url;
+                                            link.download = `${this.info.name}.xml`;
+                                            document.body.appendChild(link);
+                                            link.click();
+                                            document.body.removeChild(link);
+
+                                            URL.revokeObjectURL(url); // 释放资源
 
 
                                             const endTimeStamp = new Date().getTime();  // 获取结束时间

@@ -335,24 +335,26 @@ function ftParser(content) {
 
 // 解析xml文件
 function xmlParser(content, xmlName) {
+    console.log('content', content)
     if (content === "") { return; }
-    let { BehaviorTree, TreeNodesModel } = content.root
+    let { BehaviorTree, TreeNodesModel, $ } = content.root //新增$属性指定主树
+    let mainTreeName = ''
+    if ($.main_tree_to_execute) { mainTreeName = $.main_tree_to_execute }
     let treeMap = gContextDao.getGContextProp("treeMap");
     let events = gContextDao.getGContextProp("eventEntityMap");
 
-
+    // console.log('mainTreeName', mainTreeName)
     if (xmlName) {//通过项目遍历读文件
         let projStruct = []
-        // 
         let modelList = gContextDao.getGContextProp("modelList");
         BehaviorTree.forEach(item => {
             const treeId = loadXml(item)
             treeMap[treeId] = {
                 ID: item.$.ID,
-                entityMap: {}
+                entityMap: {}, isMainTree: mainTreeName == item.$.ID //补上isMainTree属性
             }
 
-            projStruct.push({ label: item.$.ID, treeId })
+            projStruct.push({ label: item.$.ID, treeId, isMainTree: mainTreeName == item.$.ID })
             // console.log(index, parseEntityArr(item))
 
             // 添加子树节点
@@ -365,7 +367,7 @@ function xmlParser(content, xmlName) {
         handeTreeNodesModel(TreeNodesModel[0])
         BehaviorTree.forEach(item => {
             const treeId = loadXml(item)
-            treeMap[treeId] = { ID: item.$.ID, entityMap: {} }
+            treeMap[treeId] = { ID: item.$.ID, entityMap: {}, isMainTree: mainTreeName == item.$.ID }
 
             for (let key in events) {
                 if (events[key].treeId == treeId) {
@@ -374,6 +376,7 @@ function xmlParser(content, xmlName) {
             }
         })
     }
+    console.log('treeMap', treeMap)
 }
 
 function loadXml(BehaviorTree) {

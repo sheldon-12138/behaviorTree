@@ -1,13 +1,13 @@
 
-// currentPosX = 100,
-export default function Layout(nextPosX = 50, currentPosY = 60, spacingX = 25, spacingY = 70) {
+// currentPosX = 100, nextPosX = 50
+export default function Layout(nextPosX = 300, currentPosY = 60, spacingX = 25, spacingY = 70) {
     this.nextPosX = nextPosX;
     this.currentPosY = currentPosY;
     this.spacingX = spacingX;
     this.spacingY = spacingY;
 };
 //使用递归后续遍历
-Layout.prototype.init = function (nextPosX = 50, currentPosY = 60, spacingX = 25, spacingY = 70) {
+Layout.prototype.init = function (nextPosX = 300, currentPosY = 60, spacingX = 25, spacingY = 70) {
     this.nextPosX = nextPosX;
     this.currentPosY = currentPosY;
     this.spacingX = spacingX;

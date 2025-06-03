@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4">
+  <BehaviorTree ID="MainTree">
+    <Sequence>
+      <Switch2 case_1="" case_2="" variable="">
+        <AlwaysFailure/>
+        <AlwaysSuccess/>
+        <Script code=""/>
+        <Sleep msec=""/>
+        <SetBlackboard value="" output_key=""/>
+      </Switch2>
+      <Switch2 case_1="" case_2="" variable="">
+        <AlwaysFailure/>
+        <AlwaysSuccess/>
+        <Script code=""/>
+        <Sleep msec=""/>
+        <SetBlackboard value="" output_key=""/>
+      </Switch2>
+      <Switch2 case_1="" case_2="" variable="">
+        <AlwaysFailure/>
+        <AlwaysSuccess/>
+        <Script code=""/>
+        <Sleep msec=""/>
+        <SetBlackboard value="" output_key=""/>
+      </Switch2>
+      <Switch2 case_1="" case_2="" variable="">
+        <AlwaysFailure/>
+        <AlwaysSuccess/>
+        <Script code=""/>
+        <Sleep msec=""/>
+        <SetBlackboard value="" output_key=""/>
+      </Switch2>
+      <Switch2 case_1="" case_2="" variable="">
+        <AlwaysFailure/>
+        <AlwaysSuccess/>
+        <Script code=""/>
+        <Sleep msec=""/>
+        <SetBlackboard value="" output_key=""/>
+      </Switch2>
+      <Switch2 case_1="" case_2="" variable="">
+        <AlwaysFailure/>
+        <AlwaysSuccess/>
+        <Script code=""/>
+        <Sleep msec=""/>
+        <SetBlackboard value="" output_key=""/>
+      </Switch2>
+      <Switch2 case_1="" case_2="" variable="">
+        <AlwaysFailure/>
+        <AlwaysSuccess/>
+        <Script code=""/>
+        <Sleep msec=""/>
+        <SetBlackboard value="" output_key=""/>
+      </Switch2>
+      <Switch2 case_1="" case_2="" variable="">
+        <AlwaysFailure/>
+        <AlwaysSuccess/>
+        <Script code=""/>
+        <Sleep msec=""/>
+        <SetBlackboard value="" output_key=""/>
+      </Switch2>
+      <Switch2 case_1="" case_2="" variable="">
+        <AlwaysFailure/>
+        <AlwaysSuccess/>
+        <Script code=""/>
+        <Sleep msec=""/>
+        <SetBlackboard value="" output_key=""/>
+      </Switch2>
+      <Switch2 case_1="" case_2="" variable="">
+        <AlwaysFailure/>
+        <AlwaysSuccess/>
+        <Script code=""/>
+        <Sleep msec=""/>
+        <SetBlackboard value="" output_key=""/>
+      </Switch2>
+      <Switch2 case_1="" case_2="" variable="">
+        <AlwaysFailure/>
+        <AlwaysSuccess/>
+        <Script code=""/>
+        <Sleep msec=""/>
+        <SetBlackboard value="" output_key=""/>
+      </Switch2>
+      <Switch2 case_1="" case_2="" variable="">
+        <AlwaysFailure/>
+        <AlwaysSuccess/>
+        <Script code=""/>
+        <Sleep msec=""/>
+        <SetBlackboard value="" output_key=""/>
+      </Switch2>
+      <Switch2 case_1="" case_2="" variable="">
+        <AlwaysFailure/>
+        <AlwaysSuccess/>
+        <Script code=""/>
+        <Sleep msec=""/>
+        <SetBlackboard value="" output_key=""/>
+      </Switch2>
+      <Switch2 case_1="" case_2="" variable="">
+        <AlwaysFailure/>
+        <AlwaysSuccess/>
+        <Script code=""/>
+        <Sleep msec=""/>
+        <SetBlackboard value="" output_key=""/>
+      </Switch2>
+      <Switch2 case_1="" case_2="" variable="">
+        <AlwaysFailure/>
+        <AlwaysSuccess/>
+        <Script code=""/>
+        <Sleep msec=""/>
+        <SetBlackboard value="" output_key=""/>
+      </Switch2>
+      <Switch2 case_1="" case_2="" variable="">
+        <AlwaysFailure/>
+        <AlwaysSuccess/>
+        <Script code=""/>
+        <Sleep msec=""/>
+        <SetBlackboard value="" output_key=""/>
+      </Switch2>
+      <Switch2 case_1="" case_2="" variable="">
+        <AlwaysFailure/>
+        <AlwaysSuccess/>
+        <Script code=""/>
+        <Sleep msec=""/>
+        <SetBlackboard value="" output_key=""/>
+      </Switch2>
+    </Sequence>
+  </BehaviorTree>
+  
+
+  <!--Description of Node Models (used by Groot)-->
+  <TreeNodesModel/>
+  
+
+</root>

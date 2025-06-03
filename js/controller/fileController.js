@@ -204,11 +204,13 @@ function uploadUserProject(param) {
     //保存项目的具体内容
     let content = serialize.serializeAll({ info: fileInfo });
     // console.log(content)
-    return fileRequest.uploadUserProject(content).then((data) => {
-        return Promise.resolve(content);
-    }).catch((err) => {
-        return Promise.resolve(false);
-    });
+    return fileRequest.uploadUserProject(content)
+        .then((data) => {
+            // console.log(data, content);
+            return Promise.resolve(data);
+        }).catch((err) => {
+            return Promise.resolve(false);
+        });
 };
 
 //保存节点图片

@@ -10,14 +10,18 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const multiparty = require("multiparty");
 
-
-
 const express = require('express');
-
 
 const app = express();
 const expressWs = require('express-ws');
 expressWs(app);
+
+// app.use((req, res, next) => {
+// 	const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+// 	// console.log(`[访问] ${new Date().toLocaleString()} - 来自 ${clientIp} - 请求路径: ${req.originalUrl}`);
+// 	next();
+// });
+
 
 app.use(bodyParser.json({ limit: '100mb' }));
 app.use(bodyParser.urlencoded({ limit: '100mb', extended: true }));
@@ -151,8 +155,8 @@ app.get('/logout', (req, res) => {
 			return res.status(500).send('Logout failed.');
 		}
 
-		// 清除 cookie（可选，但推荐）
-		// res.clearCookie('connect.sid'); // 这里的名字根据你的 session 配置可能不同
+		// 清除 cookie
+		// res.clearCookie('connect.sid'); //  session 配置可能不同
 
 		// 重定向到登录页或返回提示
 		res.redirect('/');
@@ -177,9 +181,6 @@ app.get('/index', function (req, resp) {
 
 
 });
-
-
-
 
 var getUserFile = function (user, project, suffix) {
 	return './user/' + user + "/" + project + "/" + project + suffix;
@@ -1258,9 +1259,31 @@ function showObj(obj) {//遍历obj（即网络接口信息），查找符合条�
 	//     }
 	// }
 
-	//	return '192.168.11.199';
+		// return '192.168.11.199';
 	return 'localhost';
 }
 
-console.log(ip);
+console.log(`Server running at http://${ip}:9800/`);
 app.listen(9800, ip);
+// const PORT = 9800;
+// const HOST = '0.0.0.0'; // 可被局域网访问
+// app.listen(PORT, HOST, () => {
+// 	const ip = getLocalIP();
+// 	console.log(`Server running at http://${ip}:${PORT}/`);
+// });
+
+// function getLocalIP() {
+// 	const interfaces = os.networkInterfaces();
+// 	for (let devName in interfaces) {
+// 		const iface = interfaces[devName];
+// 		for (let i = 0; i < iface.length; i++) {
+// 			const alias = iface[i];
+// 			if (alias.family === 'IPv4' && !alias.internal) {
+// 				return alias.address;
+// 			}
+// 		}
+// 	}
+// 	return '127.0.0.1';
+// }
+
+

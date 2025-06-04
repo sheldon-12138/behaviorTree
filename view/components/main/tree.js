@@ -45,20 +45,26 @@ export function treeVm() {
                     this.$message.success(`打开成功,用时${totalDuration}`);
                 }
             },
-            // 右键子节点
+            // 右键子节点 设置为主键
             rightClick(event, data, node) {
-                if (node.isLeaf) {
-                    this.clearIsMain(this.project); // 清除其他节点状态
+                // console.log('event', event,'data', data, 'node',node)
+                if (node.isLeaf && data.label != 'Project') {
+                    const parent = node.parent;
+                    const siblings = parent ? parent.data.children : this.project; // 如果是根节点
+                    this.clearIsMain(siblings); // 只清除同级节点状态
                     data.isMainTree = true;
+                    this.treeMap[data.treeId].isMainTree = true;
                 }
-                // console.log('data', data, node);
             },
-            // 清除其他节点是主树状态
-            clearIsMain(nodes) {
-                nodes.forEach(n => {
-                    n.isMainTree = false;
-                    if (n.children) {
-                        this.clearIsMain(n.children);
+            // 清除兄弟节点主树状态
+            clearIsMain(siblingNodes) {
+                siblingNodes.forEach(node => {
+                    if (node.isMainTree) {
+                        node.isMainTree = false;
+                    }
+                    // 同时更新 treeMap 中对应的节点
+                    if (this.treeMap[node.treeId]) {
+                        this.treeMap[node.treeId].isMainTree = false;
                     }
                 });
             },
@@ -154,7 +160,7 @@ export function treeVm() {
                     if (index != -1) {
                         const { xml, name } = this.fileContents[index];
                         fileController.analysisXml({ xml, status: 'forXml', name }).then((result) => {
-                            console.log(result.treeNameArr)
+                            // console.log(result.treeNameArr)
                             if (result.treeNameArr.length > 0) {
                                 this.project[0].children.push({
                                     label: name,

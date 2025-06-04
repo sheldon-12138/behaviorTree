@@ -43,18 +43,18 @@ router.get('/api/user/getUserProjectList/:user', function (req, resp) {
 router.post('/api/user/uploadUserProject', jp, function (req, resp) {
     // console.log(req.body);
 
-    let { user, projectName, userModelList } = req.body;
+    let { user, projectName, userModelList, mainTree } = req.body;
 
     // console.log(req.body);
-    let treeContent = formatUtil.returnXml(JSON.parse(req.body.treeContent), projectName, userModelList);
+    let treeContent = formatUtil.returnXml(JSON.parse(req.body.treeContent), projectName, userModelList, mainTree);
 
     //同步创建目录
     let firstCreate = false;
-    let dir = `./user/${user}/${projectName}`;
-    if (!fs.existsSync(dir)) {
-        firstCreate = true;
-        fs.mkdirSync(dir);
-    }
+    // let dir = `./user/${user}/${projectName}`;
+    // if (!fs.existsSync(dir)) {
+    //     firstCreate = true;
+    //     fs.mkdirSync(dir);
+    // }
     resp.send({ message: "success", treeContent });
     // let tree = fileUtil.writeContent(`${dir}/${projectName}.xml`, treeContent);
     // let savePromiseList = [tree];

@@ -48,8 +48,12 @@ function buildModel(userModelList, xmlDoc) {
     xmlDoc.txt('\n')
 }
 
-function returnXml(treeArr, projectName, userModelList) {
-    const xmlDoc = create({ version: '1.0', encoding: 'UTF-8' }).ele('root', { "BTCPP_format": "4" });
+function returnXml(treeArr, projectName, userModelList, mainTree) {
+    let obj = { "BTCPP_format": "4" };
+    if (mainTree) {//增加指定主树
+        obj["main_tree_to_execute"] = mainTree;
+    }
+    const xmlDoc = create({ version: '1.0', encoding: 'UTF-8' }).ele('root', obj);
 
     treeArr.forEach(tree => {
         buildTree(tree, xmlDoc, projectName);// 直接传递 tree 而不是 tree.root

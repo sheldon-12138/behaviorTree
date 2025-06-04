@@ -2,20 +2,28 @@ import gContextDao from "../dao/gContextDao.js";
 import codec from "../codec/codec.js";
 
 function serializeAll(param) {
-    let info = param.info;
-    // const config = serializeConfig()
+    let treeMap = gContextDao.getGContextProp("treeMap");
 
+    const mainIds =
+        Object.values(treeMap)
+            .filter(node => node.isMainTree)
+            .map(node => node.ID);
+    const { info } = param;
+    // const config = serializeConfig()
     let result = {
         treeContent: "",
         userModelList: [],
         user: gContextDao.getGContextProp("user").username,
         projectName: info.name,
+        mainTree: mainIds[0] || '',//主树的名字
     };
+    //批量保存时需要再补充文件与主树名对应的代码
 
     result.treeContent = JSON.stringify(gContextDao.returnTreeArr());
     result.userModelList = serializeUserModel()
 
     return result;
+    // return '';
 };
 
 function serializeUserModel() {

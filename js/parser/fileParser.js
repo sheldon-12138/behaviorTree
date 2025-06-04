@@ -335,7 +335,7 @@ function ftParser(content) {
 
 // 解析xml文件
 function xmlParser(content, xmlName) {
-    console.log('content', content)
+    // console.log('content', content)
     if (content === "") { return; }
     let { BehaviorTree, TreeNodesModel, $ } = content.root //新增$属性指定主树
     let mainTreeName = ''

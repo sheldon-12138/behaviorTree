@@ -14,6 +14,7 @@ import gContextController from "./gContextController.js";
 import computeController from "./computeController.js";
 
 import nodesOPController from "./nodesOPController.js";
+import cppCode from "../structure/cppCode.js";
 
 //加载系统配置项
 function loadSystemInfo() {
@@ -203,15 +204,59 @@ function uploadUserProject(param) {
     fileInfo = Object.assign(fileInfo, param.info);
     //保存项目的具体内容
     let content = serialize.serializeAll({ info: fileInfo });
-    // console.log(content)
+    // console.log('content', content);
+
     return fileRequest.uploadUserProject(content)
         .then((data) => {
-            // console.log(data, content);
-            return Promise.resolve(data);
+
+            let codeObj = generateCode(content);
+            Object.assign(codeObj, data);//codeObj中包含深层嵌套，后端返回的data只有message和treeContent两个简单属性，可以浅拷贝进去
+
+            // console.log('codeObj', codeObj);
+            return Promise.resolve(codeObj);
         }).catch((err) => {
+            console.log('err', err)
             return Promise.resolve(false);
         });
 };
+
+// 生成相关代码
+function generateCode(content) {
+    const className = content.projectName;
+    const portTypes = ['input_port', 'output_port', 'inout_port'];
+    const seenNames = new Set();
+    const blackboardVars = [], nodeNameList = [], dataTypeList = ['SVector3D'], nodeStrList = [];
+
+    // 处理所有端口生成 nodeNameList、blackboardVars
+    for (const node of content.userModelList) {
+        nodeNameList.push(node.ID); // 收集节点ID
+        for (const type of portTypes) {
+            for (const port of node.port[type]) {
+                if (!seenNames.has(port.name)) {
+                    seenNames.add(port.name);
+                    blackboardVars.push({
+                        type: port.type,
+                        name: port.name
+                    });
+                }
+            }
+        }
+
+        const nodeCpp = cppCode.nodeCppCode(node)
+        const nodeH = cppCode.nodeHeaderCode(node)
+        nodeStrList.push({ nodeName: node.ID, cpp: nodeCpp, h: nodeH })
+    }
+
+
+    let data = {
+        cppMainContent: cppCode.returnMainCode({ className }),
+        cppContent: cppCode.returnCppCode({ className, nodeNameList, blackboardVars }),
+        hContent: cppCode.returnHeaderCode({ className, blackboardVars }),
+        dataTypeH: cppCode.dataTypeH({ className, dataTypeList }),
+        nodeStrList,
+    }
+    return data
+}
 
 //保存节点图片
 function uploadNodePicture(param) {

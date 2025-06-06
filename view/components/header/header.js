@@ -11,6 +11,7 @@ import computeController from "../../../js/controller/computeController.js";
 import fileParser from "../../../js/parser/fileParser.js";
 import draggable from './draggable.js';
 import serialize from "../../../js/parser/serialize.js";
+import cppCode from "../../../js/structure/cppCode.js";
 
 export function headerVm() {
     new Vue({
@@ -318,8 +319,76 @@ export function headerVm() {
                 this.fileSaveDialogVisible = true;
 
             },
-            //保存文件
-            fileSave(type) {
+            //保存文件 [压缩包]
+            fileSave() {
+                const startTimeStamp = new Date().getTime();  // 设置计算开始时间戳为当前时间
+                fileController.uploadUserProject({ info: this.info }).then((result) => {
+                    console.log(result, this.info)
+                    // if (!result.err) {
+                    //     this.fileSaveDialogVisible = false;
+                    //     const fileNameBase = this.info.name
+
+                    //     const zip = new JSZip();
+                    //     // 添加文件到 zip 下载 XML 文件
+                    //     if (result.treeContent) {
+                    //         zip.file(`${fileNameBase}.xml`, result.treeContent);
+                    //     }
+                    //     // main.CPP 文件
+                    //     if (result.cppMainContent) {
+                    //         zip.file(`main.cpp`, result.cppMainContent);
+                    //     }
+                    //     // 同名.CPP 文件
+                    //     if (result.cppContent) {
+                    //         zip.file(`${fileNameBase}.cpp`, result.cppContent);
+                    //     }
+                    //     // 同名.h 文件
+                    //     if (result.hContent) {
+                    //         zip.file(`${fileNameBase}.h`, result.hContent);
+                    //     }
+                    //     // dataType.h 文件
+                    //     if (result.dataTypeH) {
+                    //         zip.file(`DataType.h`, result.dataTypeH);
+                    //     }
+                    //     // Node文件夹下所有Node.cpp、Node.h
+                    //     if (result.nodeStrList && result.nodeStrList.length > 0) {
+                    //         result.nodeStrList.forEach(nodeStr => {
+                    //             zip.file(`Node/${nodeStr.nodeName}.cpp`, nodeStr.cpp);
+                    //             zip.file(`Node/${nodeStr.nodeName}.h`, nodeStr.h);
+                    //         });
+                    //     }
+
+                    //     // 生成 zip 文件内容
+                    //     zip.generateAsync({ type: 'blob' }).then(blob => {
+                    //         // 创建下载链接
+                    //         const zipUrl = URL.createObjectURL(blob);
+                    //         const zipLink = document.createElement('a');
+                    //         zipLink.href = zipUrl;
+                    //         zipLink.download = `${fileNameBase}.zip`;
+                    //         document.body.appendChild(zipLink);
+                    //         zipLink.click();
+
+                    //         // 清理资源
+                    //         setTimeout(() => {
+                    //             document.body.removeChild(zipLink);
+                    //             URL.revokeObjectURL(zipUrl);
+                    //         }, 100);
+
+                    //         const endTimeStamp = new Date().getTime();
+                    //         const totalDuration = (endTimeStamp - startTimeStamp) / 1000 + 's';
+
+                    //         this.$message.success(`保存成功，用时${totalDuration}`);
+                    //         this.statusData.canvasChanged = false;
+                    //     }).catch((error) => {
+                    //         console.error('压缩包创建失败:', error);
+                    //         this.$message.error('压缩包创建失败');
+                    //     });
+                    // } else {
+                    //     //文件保存失败
+                    //     this.$message.error('保存失败');
+                    // }
+                });
+            },
+            fileSave1(type) {
                 if (type == 'save') {
                     const startTimeStamp = new Date().getTime();  // 设置计算开始时间戳为当前时间
 
@@ -336,30 +405,53 @@ export function headerVm() {
                                         if (!result.err) {
                                             // fileController.uploadNodePicture({ info: this.info }).then(() => {
                                             this.fileSaveDialogVisible = false;
+                                            const fileNameBase = this.info.name
 
-                                            // 生成下载文件 application/xml
-                                            const blob = new Blob([result.treeContent], { type: 'text/xml' });
-                                            const url = URL.createObjectURL(blob);
+                                            const zip = new JSZip();
 
-                                            const link = document.createElement('a');
-                                            link.href = url;
-                                            link.download = `${this.info.name}.xml`;
-                                            document.body.appendChild(link);
-                                            link.click();
-                                            document.body.removeChild(link);
+                                            // 添加文件到 zip 下载 XML 文件
+                                            if (result.treeContent) {
+                                                zip.file(`${fileNameBase}.xml`, result.treeContent);
+                                            }
+                                            // main.CPP 文件
+                                            if (result.cppMainContent) {
+                                                zip.file(`${fileNameBase}.cpp`, result.cppContent);
+                                            }
+                                            // 同名.CPP 文件
+                                            if (result.cppContent) {
+                                                zip.file(`${fileNameBase}.cpp`, result.cppContent);
+                                            }
+                                            // Node文件夹下所有Node.cpp、Node.h
+                                            // zip.file(`Node/${fileNameBase}.cpp`, result.cppContent);
 
-                                            URL.revokeObjectURL(url); // 释放资源
+                                            // 生成 zip 文件内容
+                                            zip.generateAsync({ type: 'blob' }).then(blob => {
+                                                // 创建下载链接
+                                                const zipUrl = URL.createObjectURL(blob);
+                                                const zipLink = document.createElement('a');
+                                                zipLink.href = zipUrl;
+                                                zipLink.download = `${fileNameBase}.zip`;
+                                                document.body.appendChild(zipLink);
+                                                zipLink.click();
 
+                                                // 清理资源
+                                                setTimeout(() => {
+                                                    document.body.removeChild(zipLink);
+                                                    URL.revokeObjectURL(zipUrl);
+                                                }, 100);
 
-                                            const endTimeStamp = new Date().getTime();  // 获取结束时间
-                                            const totalDuration = (endTimeStamp - startTimeStamp) / 1000 + 's';  // 计算总耗时 乘以7
+                                                const endTimeStamp = new Date().getTime();
+                                                const totalDuration = (endTimeStamp - startTimeStamp) / 1000 + 's';
 
-                                            this.$message.success(`保存成功,用时${totalDuration}`);
-                                            this.statusData.canvasChanged = false;
-                                            // });
+                                                this.$message.success(`保存成功，用时${totalDuration}`);
+                                                this.statusData.canvasChanged = false;
+                                            }).catch((error) => {
+                                                console.error('压缩包创建失败:', error);
+                                                this.$message.error('压缩包创建失败');
+                                            });
                                         } else {
                                             //文件保存失败
-                                            this.$message.error('图片保存失败');
+                                            this.$message.error('保存失败');
                                         }
                                     });
                                 } else {
@@ -749,10 +841,22 @@ export function headerVm() {
             },
             // 打开PDF文件
             openPDF() {
-                this.$message({
-                    message: '代码生成成功！',
-                    type: 'success'
-                });
+                const cppContent = cppCode.dataTypeH({ name: 'PracticeTankTree' })
+                console.log(cppContent);
+                // const cppBlob = new Blob([cppContent], { type: 'text/plain' }); // 或 'text/x-c++src'
+                // const cppUrl = URL.createObjectURL(cppBlob);
+                // const cppLink = document.createElement('a');
+                // cppLink.href = cppUrl;
+                // cppLink.download = `${fileNameBase}.cpp`;
+                // document.body.appendChild(cppLink);
+                // cppLink.click();
+                // document.body.removeChild(cppLink);
+                // URL.revokeObjectURL(cppUrl);
+
+                // this.$message({
+                //     message: '代码生成成功！',
+                //     type: 'success'
+                // });
                 // window.open('assets/test.pdf', '_blank');
             },
             // 登出
@@ -771,7 +875,119 @@ export function headerVm() {
             // 用户管理
             userManagement() {
                 window.open("/public/pages/manage/manage.html");
-            }
+            },
+            triggerFileInput() {
+                this.$refs.fileInput.click();
+            },
+            triggerFolderInput() {
+                this.$refs.folderInput.click();
+            },
+            // 打开本地项目
+            handleFileChange(event) {
+                const startTimeStamp = new Date().getTime();  // 设置计算开始时间戳为当前时间
+                const files = event.target.files;
+                // console.log(files);
+                if (files.length == 1) {//xml单文件
+                    const file = files[0];
+                    const fileName = Utils.splitFileName(file.name)[0];
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        this.project[0].children = [];
+                        fileController.analysisXml({ xml: e.target.result })
+                            .then((result) => {
+                                // console.log(result) 
+                                if (result.flag) {
+                                    // const treeName = JSON.parse(result.content).root.BehaviorTree[0].$.ID;
+                                    // console.log(this.treeMap)
+
+                                    this.$set(this.project[0], 'children', [{
+                                        label: fileName,
+                                        children: []
+                                    }]);
+                                    // console.log(this.treeMap)
+                                    // this.project[0].children[0].children.length = 0
+                                    for (let key in this.treeMap) {
+                                        this.project[0].children[0].children.push({
+                                            treeId: key,
+                                            isMainTree: this.treeMap[key].isMainTree,
+                                            label: this.treeMap[key].ID,
+                                        })
+                                    }
+
+                                }
+                            }).catch((err) => {
+                                console.log('解析失败', err);
+                                this.$message.error('解析失败');
+                            })
+                    }
+                    reader.readAsText(file);
+                } else if (files.length > 1) {
+
+                    //清空画布树 + 删除复制的子树
+                    nodesOPController.clearTreeDom()
+                    // deleteSubTree()
+                    this.fileContents = []; // 清空上次的文件内容
+
+                    for (let file of files) {
+                        const nameArr = Utils.splitFileName(file.name);
+
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            if (nameArr[1] == 'btproj') {
+                                fileController.analysisXml({ xml: e.target.result, status: 'proj' }).then((result) => {
+                                    this.handerPathArr(result.pathArr, result.projectName)
+                                }).catch((err) => {
+                                    console.log('解析失败', err);
+                                })
+                            }
+                            else {
+                                this.fileContents.push({
+                                    fileName: file.name,
+                                    name: nameArr[0],
+                                    xml: e.target.result
+                                });
+                            }
+                        };
+
+                        reader.onerror = (e) => {
+                            console.error(`Error reading file ${file.name}: ${e.target.error}`);
+                        };
+                        reader.readAsText(file);
+                    }
+                    // console.log(this.fileContents);
+                }
+            },
+
+            // 比较 项目文件的路径数组 和 文件夹下的xml文件
+            handerPathArr(pathArr, projectName) {
+                // console.log(pathArr)
+                // console.log(this.fileContents)
+                let flag = true;
+                pathArr.forEach(item => {
+                    const index = this.fileContents.findIndex(file => file.fileName == item);
+                    if (index != -1) {
+                        const { xml, name } = this.fileContents[index];
+                        fileController.analysisXml({ xml, status: 'forXml', name }).then((result) => {
+                            // console.log(result.treeNameArr)
+                            if (result.treeNameArr.length > 0) {
+                                this.project[0].children.push({
+                                    label: name,
+                                    children: result.treeNameArr
+                                })
+                            }
+                        }).catch((err) => {
+                            console.log('解析失败', err);
+                        })
+                    }
+                    else {
+                        if (flag) flag = false
+                        console.log(`${item}不存在`)
+                    }
+                })
+                if (flag) {//项目文件中全部路径都存在，才改项目名
+                    this.project[0].label = projectName
+                }
+            },
         }
     });
 };

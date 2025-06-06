@@ -65,7 +65,7 @@ export function attributePopVm() {
                 tableData: [],
                 nodePortData: [],
                 nodePortItem: { portName: 'port_name', value: '{tree_port_name}' },
-                tableItem: { id: 'newId', portName: 'key_name', direction: 'input_port', defaultValue: '', description: '' },
+                tableItem: { id: 'newId', portName: 'key_name', direction: 'input_port', dataType: '', defaultValue: '', description: '' },
                 selectPortIndex: -1,//选中的端口索引
                 selectNodePortIndex: -1,//选中的端口索引
                 tabsArr: ['Port Remapping', 'Pre Conditions', 'Post Conditions', 'Description'],
@@ -108,6 +108,7 @@ export function attributePopVm() {
                         this.nodePortData.push({
                             portName: key,
                             direction: this.entity.port[key].direction,
+                            dataType:this.entity.port[key].dataType,
                             defaultValue: this.entity.port[key].defaultValue,
                             description: this.entity.port[key].description,
                             value: this.entity.port[key].value,
@@ -131,6 +132,7 @@ export function attributePopVm() {
                             id: Math.random().toString(36).slice(2, 11),
                             portName: key,
                             direction: this.model.port[key].direction,
+                            dataType: this.model.port[key].dataType,
                             defaultValue: this.model.port[key].defaultValue,
                             description: this.model.port[key].description,
                         })

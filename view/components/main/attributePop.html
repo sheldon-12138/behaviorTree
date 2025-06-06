@@ -106,6 +106,7 @@
                     <tr class="thead">
                         <th>Port Name</th>
                         <th>Direction</th>
+                        <th>Data Type</th>
                         <th>Default Value</th>
                         <th>Description</th>
                     </tr>
@@ -121,6 +122,8 @@
                                     <option value="output_port">Output</option>
                                     <option value="inout_port">In/Out</option>
                                 </select>
+                            </td>
+                            <td><input :disabled="statusData.attrID == '4'" type="text" v-model="item.dataType">
                             </td>
                             <td><input :disabled="statusData.attrID == '4'" type="text" v-model="item.defaultValue">
                             </td>

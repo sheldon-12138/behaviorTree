@@ -36,13 +36,14 @@ function serializeUserModel() {
                 let model = {
                     ...attr, port: { 'input_port': [], 'output_port': [], 'inout_port': [] }, tagName: modelList[i].type
                 }
-                // console.log('port', port)
+                // console.log('port', port)s
                 if (port && Object.keys(port).length > 0) {
                     for (let [key, value] of Object.entries(port)) {
                         let portType = `${value.direction}`;
                         if (portType in model.port) {
                             model.port[portType].push({
                                 name: key,
+                                type: value.dataType,
                                 default: value.defaultValue,
                                 _: value.description
                             });

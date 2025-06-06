@@ -281,13 +281,24 @@
         <img src="assets/header/xinjian.png" @click="create()" draggable="false">
     </el-tooltip>
 </div>
-<!-- 打开 -->
-<!-- <div class="header-item"
+<!-- 打开单个xml -->
+<div class="header-item"
     :class="{'header-item-hover':!statusData.isCompute,'header-item-operation':statusData.isCompute}">
-    <el-tooltip effect="light" content="打开" placement="top">
-        <img src="assets/header/dakai.png" @click="open()" draggable="false">
+    <el-tooltip effect="light" content="打开单个xml文件" placement="top">
+        <img src="assets/header/danwenjian.png" @click="triggerFileInput" draggable="false">
     </el-tooltip>
-</div> -->
+</div>
+
+<!-- 打开文件夹 -->
+<div class="header-item"
+    :class="{'header-item-hover':!statusData.isCompute,'header-item-operation':statusData.isCompute}">
+    <el-tooltip effect="light" content="打开文件夹" placement="top">
+        <img src="assets/header/dakai.png" @click="triggerFolderInput" draggable="false">
+    </el-tooltip>
+</div>
+
+<input type="file" ref="fileInput" style="display: none;" @change="handleFileChange" accept=".xml">
+<input type="file" ref="folderInput" style="display: none;" @change="handleFileChange" webkitdirectory>
 <!-- 保存 -->
 <!-- , 'header-item-selected':!statusData.canvasChanged -->
 <div class="header-item" :class="{'header-item-hover':statusData.canvasChanged,

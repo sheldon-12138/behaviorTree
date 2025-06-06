@@ -41,6 +41,7 @@ function buildModel(userModelList, xmlDoc) {
                 let attributes = {};
                 if (item.name) attributes.name = item.name;
                 if (item.default) attributes.default = item.default;
+                if (item.type) attributes.type = item.type;
                 node.ele(key, attributes).txt(item._);;
             })
         }

@@ -8,7 +8,7 @@ const {
 } = require('child_process');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
-const multiparty = require("multiparty");
+// const multiparty = require("multiparty");
 
 const express = require('express');
 
@@ -1224,22 +1224,22 @@ app.get('/findFo/:user/:pro', function (req, resp) {
 	}
 })
 
-app.post('/upload/:user/:pro/:id', function (req, resp) {
+// app.post('/upload/:user/:pro/:id', function (req, resp) {
 
-	let user = req.params.user;
-	let pro = req.params.pro;
-	let id = req.params.id;
-	var form = new multiparty.Form({ uploadDir: './user/' + user + '/' + pro + '/img/' });
-	form.parse(req, function (err, fields, files) {
-		console.log(fields, files, ' fields2')
-		if (err) {
-		} else {
-			console.log(files.file[0].path);
-			resp.json({ img: files.file[0].path })
-		}
-	});
+// 	let user = req.params.user;
+// 	let pro = req.params.pro;
+// 	let id = req.params.id;
+// 	var form = new multiparty.Form({ uploadDir: './user/' + user + '/' + pro + '/img/' });
+// 	form.parse(req, function (err, fields, files) {
+// 		console.log(fields, files, ' fields2')
+// 		if (err) {
+// 		} else {
+// 			console.log(files.file[0].path);
+// 			resp.json({ img: files.file[0].path })
+// 		}
+// 	});
 
-})
+// })
 
 
 

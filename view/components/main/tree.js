@@ -49,11 +49,17 @@ export function treeVm() {
             rightClick(event, data, node) {
                 // console.log('event', event,'data', data, 'node',node)
                 if (node.isLeaf && data.label != 'Project') {
-                    const parent = node.parent;
-                    const siblings = parent ? parent.data.children : this.project; // 如果是根节点
-                    this.clearIsMain(siblings); // 只清除同级节点状态
-                    data.isMainTree = true;
-                    this.treeMap[data.treeId].isMainTree = true;
+
+                    if (data.isMainTree == true) {//取消主树
+                        data.isMainTree = false;
+                        this.treeMap[data.treeId].isMainTree = false;
+                    } else {
+                        const parent = node.parent;
+                        const siblings = parent ? parent.data.children : this.project; // 如果是根节点
+                        this.clearIsMain(siblings); // 只清除同级节点状态
+                        data.isMainTree = true;
+                        this.treeMap[data.treeId].isMainTree = true;
+                    }
                 }
             },
             // 清除兄弟节点主树状态

@@ -633,21 +633,21 @@ function handeTreeNodesModel(TreeNodesModel) {
                         // 处理 input_port
                         if (item2.input_port) {
                             item2.input_port.forEach(port => {
-                                result.port[port.$.name] = { direction: 'input_port', defaultValue: port.$.default || '', description: port._ || '' }
+                                result.port[port.$.name] = { direction: 'input_port', dataType: port.$.type, defaultValue: port.$.default || '', description: port._ || '' }
                             });
                         }
 
                         // 处理 output_port
                         if (item2.output_port) {
                             item2.output_port.forEach(port => {
-                                result.port[port.$.name] = { direction: 'output_port', defaultValue: port.$.default || '', description: port._ || '' }
+                                result.port[port.$.name] = { direction: 'output_port', dataType: port.$.type, defaultValue: port.$.default || '', description: port._ || '' }
                             });
                         }
 
                         // 处理 inout_port
                         if (item2.inout_port) {
                             item2.inout_port.forEach(port => {
-                                result.port[port.$.name] = { direction: 'inout_port', defaultValue: port.$.default || '', description: port._ || '' };
+                                result.port[port.$.name] = { direction: 'inout_port', dataType: port.$.type, defaultValue: port.$.default || '', description: port._ || '' };
                             });
                         }
                         return result;

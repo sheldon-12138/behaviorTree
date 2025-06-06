@@ -384,7 +384,8 @@ function loadXml(BehaviorTree) {
     let tempNodes = {};
     let tempNodesBtID = [];
 
-    let entityArr = parseEntityArr(BehaviorTree)
+    let entityArr = parseEntityArr(BehaviorTree);
+    console.log('entityArr', entityArr)
 
     // 添加子树节点
     if (!checkExists(BehaviorTree.$.ID, 'SubTree')) {
@@ -396,7 +397,7 @@ function loadXml(BehaviorTree) {
     for (let i = 0; i < entityArr.length; i++) {
         let { ID, modelName, btID, name, _description,
             _skipif, _successif, _failureif, _while,
-            _onSuccess, _onFailure, _onHalted, _post } = entityArr[i]
+            _onSuccess, _onFailure, _onHalted, _post, _autoremap } = entityArr[i]
 
         let type = findParentTypeById(modelName)
 
@@ -473,6 +474,7 @@ function loadXml(BehaviorTree) {
             _onFailure: _onFailure || '',
             _onHalted: _onHalted || '',
             _post: _post || '',
+            _autoremap: _autoremap || "true",
 
             port: port || null,
         }

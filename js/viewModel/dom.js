@@ -534,13 +534,13 @@ function createSubTreeLine(entity) {
     let checked = createSVGElement(
         "use",
         {
-            "href": "#checked",
+            "href": entity._autoremap == 'true' ? "#checked" : "#unchecked",
             "x": 15,
             "y": entity.size.height - 27,
             "data-key": entity.id,
-            "data-class": "unchecked",
+            "data-class": entity._autoremap == 'true' ? "checked" : "unchecked",
         },
-        ["unchecked"]
+        ["absolute", entity._autoremap == 'true' ? "checked" : "unchecked"]
     );
     subTreeG.appendChild(checked);
 

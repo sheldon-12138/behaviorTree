@@ -349,6 +349,11 @@ export const g = {
         //实体
         doorEntityMap: {},  //门数据
         eventEntityMap: {}, //事件数据
+
+        project:[{//当前打开的项目列表
+            label: 'Project',
+            children: []
+        }],
         treeMap: {},//树数据
         lineMap: {},  //连线数据
         userLineMap: {},//判据和圆圈的连线数据

@@ -14,10 +14,7 @@ export function treeVm() {
                 fileContents: [],
                 pathArr: [],//项目文件中存的路径数组
 
-                project: [{
-                    label: 'Project',
-                    children: []
-                }],
+                project: g.gContext.project,
                 model: g.gContext.modelList,
                 defaultProps: {
                     children: 'children',
@@ -80,112 +77,112 @@ export function treeVm() {
             triggerFolderInput() {
                 this.$refs.folderInput.click();
             },
-            // 打开本地项目
-            handleFileChange(event) {
-                const startTimeStamp = new Date().getTime();  // 设置计算开始时间戳为当前时间
-                const files = event.target.files;
-                // console.log(files);
-                if (files.length == 1) {//xml单文件
-                    const file = files[0];
-                    const fileName = Utils.splitFileName(file.name)[0];
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        this.project[0].children = [];
-                        fileController.analysisXml({ xml: e.target.result })
-                            .then((result) => {
-                                // console.log(result) 
-                                if (result.flag) {
-                                    // const treeName = JSON.parse(result.content).root.BehaviorTree[0].$.ID;
-                                    // console.log(this.treeMap)
+            // // 打开本地项目
+            // handleFileChange(event) {
+            //     const startTimeStamp = new Date().getTime();  // 设置计算开始时间戳为当前时间
+            //     const files = event.target.files;
+            //     // console.log(files);
+            //     if (files.length == 1) {//xml单文件
+            //         const file = files[0];
+            //         const fileName = Utils.splitFileName(file.name)[0];
+            //         const reader = new FileReader();
+            //         reader.onload = (e) => {
+            //             this.project[0].children = [];
+            //             fileController.analysisXml({ xml: e.target.result })
+            //                 .then((result) => {
+            //                     // console.log(result) 
+            //                     if (result.flag) {
+            //                         // const treeName = JSON.parse(result.content).root.BehaviorTree[0].$.ID;
+            //                         // console.log(this.treeMap)
 
-                                    this.$set(this.project[0], 'children', [{
-                                        label: fileName,
-                                        children: []
-                                    }]);
-                                    // console.log(this.treeMap)
-                                    // this.project[0].children[0].children.length = 0
-                                    for (let key in this.treeMap) {
-                                        this.project[0].children[0].children.push({
-                                            treeId: key,
-                                            isMainTree: this.treeMap[key].isMainTree,
-                                            label: this.treeMap[key].ID,
-                                        })
-                                    }
+            //                         this.$set(this.project[0], 'children', [{
+            //                             label: fileName,
+            //                             children: []
+            //                         }]);
+            //                         // console.log(this.treeMap)
+            //                         // this.project[0].children[0].children.length = 0
+            //                         for (let key in this.treeMap) {
+            //                             this.project[0].children[0].children.push({
+            //                                 treeId: key,
+            //                                 isMainTree: this.treeMap[key].isMainTree,
+            //                                 label: this.treeMap[key].ID,
+            //                             })
+            //                         }
 
-                                }
-                            }).catch((err) => {
-                                console.log('解析失败', err);
-                                this.$message.error('解析失败');
-                            })
-                    }
-                    reader.readAsText(file);
-                } else if (files.length > 1) {
+            //                     }
+            //                 }).catch((err) => {
+            //                     console.log('解析失败', err);
+            //                     this.$message.error('解析失败');
+            //                 })
+            //         }
+            //         reader.readAsText(file);
+            //     } else if (files.length > 1) {
 
-                    //清空画布树 + 删除复制的子树
-                    nodesOPController.clearTreeDom()
-                    // deleteSubTree()
-                    this.fileContents = []; // 清空上次的文件内容
+            //         //清空画布树 + 删除复制的子树
+            //         nodesOPController.clearTreeDom()
+            //         // deleteSubTree()
+            //         this.fileContents = []; // 清空上次的文件内容
 
-                    for (let file of files) {
-                        const nameArr = Utils.splitFileName(file.name);
+            //         for (let file of files) {
+            //             const nameArr = Utils.splitFileName(file.name);
 
-                        const reader = new FileReader();
-                        reader.onload = (e) => {
-                            if (nameArr[1] == 'btproj') {
-                                fileController.analysisXml({ xml: e.target.result, status: 'proj' }).then((result) => {
-                                    this.handerPathArr(result.pathArr, result.projectName)
-                                }).catch((err) => {
-                                    console.log('解析失败', err);
-                                })
-                            }
-                            else {
-                                this.fileContents.push({
-                                    fileName: file.name,
-                                    name: nameArr[0],
-                                    xml: e.target.result
-                                });
-                            }
-                        };
+            //             const reader = new FileReader();
+            //             reader.onload = (e) => {
+            //                 if (nameArr[1] == 'btproj') {
+            //                     fileController.analysisXml({ xml: e.target.result, status: 'proj' }).then((result) => {
+            //                         this.handerPathArr(result.pathArr, result.projectName)
+            //                     }).catch((err) => {
+            //                         console.log('解析失败', err);
+            //                     })
+            //                 }
+            //                 else {
+            //                     this.fileContents.push({
+            //                         fileName: file.name,
+            //                         name: nameArr[0],
+            //                         xml: e.target.result
+            //                     });
+            //                 }
+            //             };
 
-                        reader.onerror = (e) => {
-                            console.error(`Error reading file ${file.name}: ${e.target.error}`);
-                        };
-                        reader.readAsText(file);
-                    }
-                    // console.log(this.fileContents);
-                }
-            },
+            //             reader.onerror = (e) => {
+            //                 console.error(`Error reading file ${file.name}: ${e.target.error}`);
+            //             };
+            //             reader.readAsText(file);
+            //         }
+            //         // console.log(this.fileContents);
+            //     }
+            // },
 
-            // 比较 项目文件的路径数组 和 文件夹下的xml文件
-            handerPathArr(pathArr, projectName) {
-                // console.log(pathArr)
-                // console.log(this.fileContents)
-                let flag = true;
-                pathArr.forEach(item => {
-                    const index = this.fileContents.findIndex(file => file.fileName == item);
-                    if (index != -1) {
-                        const { xml, name } = this.fileContents[index];
-                        fileController.analysisXml({ xml, status: 'forXml', name }).then((result) => {
-                            // console.log(result.treeNameArr)
-                            if (result.treeNameArr.length > 0) {
-                                this.project[0].children.push({
-                                    label: name,
-                                    children: result.treeNameArr
-                                })
-                            }
-                        }).catch((err) => {
-                            console.log('解析失败', err);
-                        })
-                    }
-                    else {
-                        if (flag) flag = false
-                        console.log(`${item}不存在`)
-                    }
-                })
-                if (flag) {//项目文件中全部路径都存在，才改项目名
-                    this.project[0].label = projectName
-                }
-            },
+            // // 比较 项目文件的路径数组 和 文件夹下的xml文件
+            // handerPathArr(pathArr, projectName) {
+            //     // console.log(pathArr)
+            //     // console.log(this.fileContents)
+            //     let flag = true;
+            //     pathArr.forEach(item => {
+            //         const index = this.fileContents.findIndex(file => file.fileName == item);
+            //         if (index != -1) {
+            //             const { xml, name } = this.fileContents[index];
+            //             fileController.analysisXml({ xml, status: 'forXml', name }).then((result) => {
+            //                 // console.log(result.treeNameArr)
+            //                 if (result.treeNameArr.length > 0) {
+            //                     this.project[0].children.push({
+            //                         label: name,
+            //                         children: result.treeNameArr
+            //                     })
+            //                 }
+            //             }).catch((err) => {
+            //                 console.log('解析失败', err);
+            //             })
+            //         }
+            //         else {
+            //             if (flag) flag = false
+            //             console.log(`${item}不存在`)
+            //         }
+            //     })
+            //     if (flag) {//项目文件中全部路径都存在，才改项目名
+            //         this.project[0].label = projectName
+            //     }
+            // },
 
             downloadFile() {
                 const fileInput = document.getElementById('fileInput');

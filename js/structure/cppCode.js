@@ -321,8 +321,7 @@ function nodeCppCode(node) {
 
     return cpp;
 }
-// 节点文件.h
-function nodeHeaderCode(node) {
+
     // const node =
     // {
     //     ID: "Move",
@@ -353,22 +352,22 @@ function nodeHeaderCode(node) {
     //     }
 
     // };
-
+// 节点文件.h
+function nodeHeaderCode(node) {
     // SyncActionNode、ConditionNode 一次性完成 tick()
     // StatefulActionNode 生命周期异步 onStart() onRunning onHalted()
-
-    const { ID, nodeType, port = {} } = node;
+    // type [tagName]指Action、Condition、Decorator等，nodeType指StatefulActionNode、SyncActionNode、ConditionNode等
+    const { ID, nodeType, tagName, port = {} } = node;
+    // console.log(node)
     const headerGuard = `TREENODE_${ID.toUpperCase()}_H`;
 
-    console.log('port', port)
+    // console.log('port', port)
     // const cppPorts = Object.entries(port)
     //     .map(([name, p]) => {
     //         const portFunc = name === "input_port" ? "InputPort" :
     //             (name === "output_port" ? "OutputPort" : "InoutPort");
     //         return `            BT::${portFunc}<${p.type}*>("${p.name}"),`;
     //     }).join('\n');
-
-
 
     const portTypes = ['input_port', 'output_port', 'inout_port'];
     let cppPorts = '';
@@ -393,14 +392,14 @@ function nodeHeaderCode(node) {
     let header = `/* @class ${ID}\n*\n* @generate data :\n* @author :\n*\n*/\n\n`;//头部注释
     header += `#ifndef ${headerGuard}\n#define ${headerGuard}\n\n`;
     header += `#include "../DataType.h"\n`;
-    header += `#include "behaviortree_cpp/action_node.h"\n\n`;
+    header += `#include "behaviortree_cpp/${tagName.toLowerCase()}_node.h"\n\n`;
     header += `class ${ID} : public BT::${nodeType}\n{\n`;
     header += `public:\n`;
     header += `    ${ID}(const std::string& name, const BT::NodeConfig& config) :\n`;
     header += `        BT::${nodeType}(name, config)${hasHalted ? ", m_halted(false)" : ""} {}\n`; //是否需要 m_halted 成员变量
     header += `    static BT::PortsList providedPorts()\n    {\n`;
     header += `        return\n        {\n`;
-    header += cppPorts ? cppPorts : '' + `\n        };`;
+    header += (cppPorts ? cppPorts : '') + `\n        };`;
     header += `\n    }\n\n`;
 
     // 虚函数接口

@@ -106,6 +106,8 @@ function addEventEntity(entity) {
     event.port = entity.port;
     event.isCopySubTree = false;
 
+    event._autoremap = entity._autoremap || '';
+
     // event.desc = entity.desc || "";
     // console.log('event',event)
     return gContext.eventEntityMap[id] = event;
@@ -451,7 +453,19 @@ function buildTree(nodeId, eventEntityMap) {
     // console.log('nodeData', nodeData)
     if (nodeData.aliasName != nodeData.name) { attrObj.name = nodeData.aliasName }
 
-    const attrKeys = ['_description', '_skipif', '_successif', '_failureif', '_while', '_onSuccess', '_onFailure', '_onHalted', '_post'];
+    // let attrKeys = []
+    // if (nodeData.modelType == "SubTree") {
+    //     attrKeys = ['_description', '_skipif', '_successif', '_failureif', '_while', '_onSuccess', '_onFailure', '_onHalted', '_post', '_autoremap'];
+    // } else {
+    //     attrKeys = ['_description', '_skipif', '_successif', '_failureif', '_while', '_onSuccess', '_onFailure', '_onHalted', '_post'];
+    // }
+
+    let attrKeys = [
+        '_description', '_skipif', '_successif', '_failureif',
+        '_while', '_onSuccess', '_onFailure', '_onHalted', '_post',
+        ...(nodeData.modelType === 'SubTree' ? ['_autoremap'] : [])
+    ];
+
     attrKeys.forEach(key => {
         if (nodeData[key]) {
             attrObj[key] = nodeData[key];

@@ -104,9 +104,9 @@ function mainMouseDown(e) {
     }
     else if (dom_class === "event") {
         let entity = gContextDao.findEntity(dom_key);
-        // console.log('entity.isCopySubTree', entity.isCopySubTree)
-        if (entity.isCopySubTree || entity.collapse == false) return
-
+        console.log('entity.isCopySubTree', entity.isCopySubTree, entity)
+        if (entity.isCopySubTree || entity.collapse == false) return;
+        console.log('jinx', entity.isCopySubTree)
         gContextController.cancelHeightLine();
 
 
@@ -184,7 +184,11 @@ function closeAnimate() {
 function doubleClick(e) {
     let downDom = e.target;
     let dom_key = downDom.getAttribute("data-key");
-    if (gContextDao.findEntity(dom_key).modelType !== "Top") {
+
+    const entity = gContextDao.findEntity(dom_key);
+    if (entity.isCopySubTree) return;
+    // console.log('entity', entity)
+    if (entity.modelType !== "Top") {
         let statusData = gContextDao.getGContextProp("statusData");
         statusData.isShowProperty = true//打开弹窗  
     }
@@ -619,6 +623,7 @@ export function loadOperation() {
     mainSVG.addEventListener("mousemove", mainMove);
 
     modelTree.addEventListener("mousedown", modelTreeMouseDown);
+    // 模型树的双击
     modelTree.addEventListener("dblclick", (e) => {
         // 清除单击事件的延时
         clearTimeout(singleClickTimer);

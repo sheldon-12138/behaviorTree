@@ -385,7 +385,7 @@ function loadXml(BehaviorTree) {
     let tempNodesBtID = [];
 
     let entityArr = parseEntityArr(BehaviorTree);
-    console.log('entityArr', entityArr)
+    // console.log('entityArr', entityArr)
 
     // 添加子树节点
     if (!checkExists(BehaviorTree.$.ID, 'SubTree')) {

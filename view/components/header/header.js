@@ -325,6 +325,7 @@ export function headerVm() {
             },
             //保存文件 [压缩包]
             fileSave() {
+                // console.log(this.user)
                 const startTimeStamp = new Date().getTime();  // 设置计算开始时间戳为当前时间
                 fileController.uploadUserProject({ info: this.info }).then((result) => {
                     console.log(result, this.info)

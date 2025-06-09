@@ -100,29 +100,16 @@ app.get('/login/:user/:pwd', function (req, resp) {
 	const pwd = req.params.pwd;
 	const userDir = `./user/${user}`;
 	const infoPath = `${userDir}/${user}.info`;
-	// 获取 IP 地址（支持代理情况）
-	const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').toString();
-
 	// let corrent = false;
 	let files = fs.readdirSync('./user');
 
-	if (files.indexOf(user) === -1) {//若不存在则注册
-		fs.mkdirSync(userDir);
-		fs.writeFileSync(infoPath, JSON.stringify({
-			password: pwd,
-			registerTime: new Date().toISOString().replace('T', ' ').split('.')[0], // 格式化时间
-			enabled: true,
-			ip,
-		}), {
-			encoding: "utf-8"
-		});
-		// fetchRequest.session['user'] = {name:user, password:pwd};
-		resp.json({ status: '2' });// 首次注册用户
+	if (files.indexOf(user) === -1) {//用户不存在
+		resp.json({ status: '2' });
 	} else {
 		fs.readFile(infoPath, function (err, data) {
 			if (err) {
 				// resp.send('-2');
-				resp.json({ status: '-2'})
+				resp.json({ status: '-2' })
 			} else {
 				const userInfo = JSON.parse(data.toString());
 				if (userInfo.password === pwd) {
@@ -135,17 +122,47 @@ app.get('/login/:user/:pwd', function (req, resp) {
 							...userInfo
 						}
 					});
-
-					// resp.send('1');// 登录成功
 				} else {
 					resp.json({ status: '-1' });// 密码错误
 				}
 			}
 		});
-
-
 	}
 
+});
+
+app.post('/register', function (req, resp) {
+	const user = req.body.username;
+	const pwd = req.body.password;
+
+	if (!user || !pwd) {
+		return resp.json({ status: '-2', message: '用户名或密码不能为空' });
+	}
+
+	const userDir = `./user/${user}`;
+	const infoPath = `${userDir}/${user}.info`;
+	// 获取 IP 地址（支持代理情况）
+	const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').toString();
+
+	if (fs.existsSync(userDir)) {
+		return resp.json({ status: '0', message: '用户已存在' });
+	}
+
+	try {
+		fs.mkdirSync(userDir, { recursive: true });
+		const userInfo = {
+			password: pwd,
+			registerTime: new Date().toISOString().replace('T', ' ').split('.')[0],
+			enabled: true,
+			ip
+		};
+		fs.writeFileSync(infoPath, JSON.stringify(userInfo, null, 2), { encoding: "utf-8" });
+
+		resp.json({ status: '1', message: '注册成功' });
+	} catch (err) {
+		console.error('注册出错:', err);
+		resp.json({ status: '-2', message: '注册失败' });
+	}
 });
 
 app.get('/logout', (req, res) => {
@@ -1259,7 +1276,7 @@ function showObj(obj) {//遍历obj（即网络接口信息），查找符合条�
 	//     }
 	// }
 
-		// return '192.168.11.199';
+	// return '192.168.11.199';
 	return 'localhost';
 }
 

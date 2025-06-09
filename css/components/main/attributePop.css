@@ -170,6 +170,13 @@
   font-size: 16px;
 }
 
+.nodeType select {
+  margin: 10px 0px 0px 4px;
+  width: 538px;
+  height: 26px;
+  font-size: 16px;
+}
+
 .iconLine {
   display: flex;
   justify-content: space-between;

@@ -12,7 +12,7 @@
         <template v-if="statusData.attrID == '1'">
             <div class="item">
                 <div class="label">NodeType:</div>
-                {{entityInfo.modelType}}
+                <!-- {{entityInfo.modelType}} -->
             </div>
             <div class="item">
                 <div class="label">Model Name:</div>
@@ -93,6 +93,12 @@
                 <input :disabled="statusData.attrID == '4'" @input="selectTipTxt" type="text" v-model="newModel.name"
                     placeholder="Name">
             </div>
+            <!-- 仅自定义节点模型显示nodeType 2和3一个是新增框一个是编辑框 -->
+            <div class="nodeType" v-if="statusData.attrID == '2'||statusData.attrID == '3'">nodeType:
+                <select :disabled="statusData.attrID == '4'" v-model="newModel.nodeTypeIndex">
+                    <option v-for="(item,index) in nodeTypeList" :key="item" :value="index">{{item}}</option>
+                </select>
+            </div>
             <div v-if="statusData.attrID != '4'" class="iconLine">
                 <div style="margin-left: 4px;font-size: 20px;">
                     <i class="el-icon-plus" @click="addPort(true)" style="margin-right: 2px;"></i>
@@ -115,7 +121,8 @@
                     <table class="table">
                         <tr v-for="(item,index) in tableData" :key="item.id" @click="selectPortIndex = index"
                             :style="{ backgroundColor:selectPortIndex==index ? '#bceae1' : 'inherit'}">
-                            <td><input :disabled="statusData.attrID == '4'" type="text" v-model="item.portName" @blur="selectTipTxt"></td>
+                            <td><input :disabled="statusData.attrID == '4'" type="text" v-model="item.portName"
+                                    @blur="selectTipTxt"></td>
                             <td>
                                 <select :disabled="statusData.attrID == '4'" v-model="item.direction">
                                     <option value="input_port">Input</option>

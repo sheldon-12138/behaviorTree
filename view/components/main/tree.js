@@ -1,10 +1,6 @@
 import { g } from "../../../js/structure/gContext.js"
 import gContextController from "../../../js/controller/gContextController.js"
 import nodesOPController from "../../../js/controller/nodesOPController.js";
-import viewOPController from "../../../js/controller/viewOPController.js";
-import fileController from "../../../js/controller/fileController.js";
-import fileParser from "../../../js/parser/fileParser.js";
-import Utils from "../../../js/utils/utils.js";
 
 export function treeVm() {
     new Vue({

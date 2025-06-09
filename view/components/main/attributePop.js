@@ -31,6 +31,7 @@ export function attributePopVm() {
                 statusData: g.gContext.statusData,
                 attrData: g.gContext.attrData,  //属性栏（模型）数据
                 modelList: g.gContext.modelList, //模型列表
+                // 编辑节点 新增节点模型  编辑节点模型 编辑已有节点模型  选择项目路径 选择项目目录
                 headTextArr: ['Node Editor', 'Node Model Editor', 'Node Model Editor', 'Node Model (not editable)', 'Choose project path', 'Choose project directory',],
 
                 preTextArr: ['_skipif', '_successif', '_failureif', '_while'],
@@ -56,9 +57,11 @@ export function attributePopVm() {
                 // 新增节点模型
                 newModel: {
                     typeIndex: 0,
+                    nodeTypeIndex:0,
                     name: '',
                 },
                 typeList: ['Action', 'Condition', 'Control', 'Decorator'],
+                nodeTypeList: ['StatefulActionNode', 'SyncActionNode', 'ConditionNode'],
                 tipText: '模型名不可为空',
                 tipTextList: ['模型名不可为空', '模型名已存在', '模型名无效:仅允许使用字母、数字和下划线',
                     '端口名不可为空', '端口名重复', '端口名无效:仅允许使用字母、数字和下划线,且不允许以数字开头'],
@@ -85,7 +88,7 @@ export function attributePopVm() {
                 if (this.entity) {
                     this.nodePortData.length = 0;
                     // console.log(this.entity.name)
-                    // console.log('attr的entity', this.entity)
+                    console.log('attr的entity', this.entity)
                     this.entityInfo = {
                         ...this.entity
                         // modelType: this.entity.modelType,
@@ -108,7 +111,7 @@ export function attributePopVm() {
                         this.nodePortData.push({
                             portName: key,
                             direction: this.entity.port[key].direction,
-                            dataType:this.entity.port[key].dataType,
+                            dataType: this.entity.port[key].dataType,
                             defaultValue: this.entity.port[key].defaultValue,
                             description: this.entity.port[key].description,
                             value: this.entity.port[key].value,
@@ -120,12 +123,13 @@ export function attributePopVm() {
             },
             model() {
                 this.tableData.length = 0;
-                // console.log('attr的model', this.model)
+                console.log('attr的model', this.model)
                 if (this.model) {
                     this.newModel = {
                         typeIndex: this.typeList.indexOf(this.model.type),
                         name: this.model.ID,
-                        type: this.model.type
+                        type: this.model.type,
+                        nodeTypeIndex: this.nodeTypeList.indexOf(this.model.nodeType),
                     }
                     for (let key in this.model.port) {
                         this.tableData.push({
@@ -144,6 +148,7 @@ export function attributePopVm() {
                     // console.log('新增 model is null')
                     this.newModel = {
                         typeIndex: 0,
+                        nodeTypeIndex:0,
                         name: '',
                     }
                 }
@@ -353,7 +358,9 @@ export function attributePopVm() {
                     this.modelList[this.newModel.typeIndex].children.push({
                         ID: this.newModel.name,
                         isUser: true,
-                        port: tableObj
+                        port: tableObj,
+
+                        nodeType: this.nodeTypeList[this.newModel.nodeTypeIndex],
                     })
                 } else if (attrID == '3') {//编辑自定义的节点模型
                     const tableObj = this.handleTableData(this.tableData);
@@ -363,7 +370,9 @@ export function attributePopVm() {
                     Vue.set(this.modelList[this.newModel.typeIndex].children, index, {
                         ID: this.newModel.name,
                         isUser: true,
-                        port: tableObj
+                        port: tableObj,
+
+                        nodeType: this.nodeTypeList[this.newModel.nodeTypeIndex],
                     })
                     // console.log(tableObj, this.model.port)
                     nodesOPController.handleModelChange(this.newModel.name, tableObj)
@@ -420,7 +429,8 @@ export function attributePopVm() {
                     this.isOk = false
                     this.newModel = {
                         typeIndex: 0,
-                        name: ''
+                        name: '',
+                        nodeTypeIndex:0,
                     }
                     this.tableData.length = 0;
                     attrData.model = null;

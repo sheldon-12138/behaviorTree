@@ -224,8 +224,9 @@ function uploadUserProject(param) {
 function generateCode(content) {
     const className = content.projectName;
     const portTypes = ['input_port', 'output_port', 'inout_port'];
+    const types = ["short", "short int", "int", "long", "long int", "long long int", "unsigned short", "unsigned int", "unsigned long", "unsigned long long", "unsigned char", "signed char", "int8_t", "uint8_t", "int16_t", "uint16_t", "int32_t", "uint32_t", "int64_t", "uint64_t", "wchar_t", "char16_t", "char32_t", "float", "double", "long double", "char", "string", "bool"]
     const seenNames = new Set();
-    const blackboardVars = [], nodeNameList = [], dataTypeList = ['SVector3D'], nodeStrList = [];
+    const blackboardVars = [], nodeNameList = [], dataTypeList = [], nodeStrList = [];
 
     // 处理所有端口生成 nodeNameList、blackboardVars
     for (const node of content.userModelList) {
@@ -246,11 +247,18 @@ function generateCode(content) {
         const nodeH = cppCode.nodeHeaderCode(node)
         nodeStrList.push({ nodeName: node.ID, cpp: nodeCpp, h: nodeH })
     }
+    // 处理自定义的dataType 去重+过滤types
+    dataTypeList = [...new Set(blackboardVars.map(v => v.type))].filter(t => !types.includes(t));
 
 
     let data = {
         cppMainContent: cppCode.returnMainCode({ className }),
         cppContent: cppCode.returnCppCode({ className, nodeNameList, blackboardVars }),
+
+        vcxprojContent: cppCode.vcxprojContent({ className, nodeNameList }),
+        filtersContent: cppCode.filtersContent({ className, nodeNameList }),
+        userContent: cppCode.userContent({ className, nodeNameList }),
+
         hContent: cppCode.returnHeaderCode({ className, blackboardVars }),
         dataTypeH: cppCode.dataTypeH({ className, dataTypeList }),
         nodeStrList,

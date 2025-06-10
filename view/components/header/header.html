@@ -1,3 +1,15 @@
+<!-- 导出zip文件 -->
+<el-dialog title="导出" :visible.sync="fileExportDialogVisible" width="800px">
+    <el-form v-if="fileExportDialogVisible" ref="saveForm" :rules="saveFormRules" :model="info" label-width="80px">
+        <el-form-item label="文件名称" prop="name">
+            <el-input v-model="info.name"></el-input>
+        </el-form-item>
+    </el-form>
+    <div style="text-align: center">
+        <el-button @click="fileExportDialogVisible=false">取消</el-button>
+        <el-button type="primary" @click="fileExport">确定</el-button>
+    </div>
+</el-dialog>
 <!-- 保存文件 -->
 <el-dialog title="保存文件" :visible.sync="fileSaveDialogVisible" width="800px">
     <el-form v-if="fileSaveDialogVisible" ref="saveForm" :rules="saveFormRules" :model="info" label-width="80px">
@@ -306,6 +318,13 @@
     <el-tooltip effect="light" content="保存" placement="top">
         <!-- openSave fileSave -->
         <img src="assets/header/baocun.png" @click="openSave()" draggable="false">
+    </el-tooltip>
+</div>
+<!-- 导出 -->
+<div class="header-item" :class="{'header-item-hover':statusData.canvasChanged,
+'header-item-operation':statusData.isCompute||!statusData.canvasChanged,}">
+    <el-tooltip effect="light" content="导出" placement="top">
+        <img src="assets/header/daochu.png" @click="openExport()" draggable="false">
     </el-tooltip>
 </div>
 

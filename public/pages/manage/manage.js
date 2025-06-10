@@ -44,7 +44,7 @@ window.onload = function () {
                         role: userInfo.role == 'Admin' ? '管理员' : '普通用户',
                         status: userInfo.enabled === false ? '禁用' : '启用' // 如果返回有enabled字段
                     });
-                    console.log(this.tableData);
+                    // console.log(this.tableData);
                 }
 
 

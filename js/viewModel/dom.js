@@ -531,27 +531,27 @@ function createDes(entity) {
 // 创建子树的icon和折叠按钮
 function createSubTreeLine(entity) {
     let subTreeG = createSVGElement("g", {}, ['subTreeG']);
-    let checked = createSVGElement(
-        "use",
-        {
-            "href": entity._autoremap == 'true' ? "#checked" : "#unchecked",
-            "x": 15,
-            "y": entity.size.height - 27,
-            "data-key": entity.id,
-            "data-class": entity._autoremap == 'true' ? "checked" : "unchecked",
-        },
-        ["absolute", entity._autoremap == 'true' ? "checked" : "unchecked"]
-    );
-    subTreeG.appendChild(checked);
+    // let checked = createSVGElement(
+    //     "use",
+    //     {
+    //         "href": entity._autoremap == 'true' ? "#checked" : "#unchecked",
+    //         "x": 15,
+    //         "y": entity.size.height - 27,
+    //         "data-key": entity.id,
+    //         "data-class": entity._autoremap == 'true' ? "checked" : "unchecked",
+    //     },
+    //     ["absolute", entity._autoremap == 'true' ? "checked" : "unchecked"]
+    // );
+    // subTreeG.appendChild(checked);
 
-    let text = createSVGElement("text", {
-        "x": 35,
-        "y": entity.size.height - 20,
-        "dominant-baseline": "middle",
-        "fill": '#fff'
-    }, []);
-    text.textContent = "_autoremap";
-    subTreeG.appendChild(text);
+    // let text = createSVGElement("text", {
+    //     "x": 35,
+    //     "y": entity.size.height - 20,
+    //     "dominant-baseline": "middle",
+    //     "fill": '#fff'
+    // }, []);
+    // text.textContent = "_autoremap";
+    // subTreeG.appendChild(text);
 
     let collapse = createSVGElement(
         "use",

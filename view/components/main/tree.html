@@ -26,16 +26,20 @@
     <div class="pane bottomPane" ref="bottomPane">
         <div class="treeHeader">
             <span>模型</span>
+            <el-input clearable class="filterInput" placeholder="输入关键字" v-model="filterNodeText"
+                prefix-icon="el-icon-search">
+            </el-input>
+            <!-- <input class="filterInput" placeholder="输入关键字过滤节点" v-model="filterNodeText"></input> -->
             <div>
                 <i @click="addNode" class="el-icon-plus" style="margin-right: 5px;"></i>
-                <i @click="importNode" class="el-icon-download"></i>
+                <!-- <i @click="importNode" class="el-icon-download"></i> -->
             </div>
         </div>
         <div class="treeBody">
-            <el-tree id="modelTree" :data="model" default-expand-all>
+            <el-tree id="modelTree" :data="model" default-expand-all :filter-node-method="filterNode" ref="tree">
                 <template #default="{ node, data }">
-                    <span :data-type="node.parent.data.type" :data-nodeType="node.parent.data.nodeType" :data-isLeaf="node.isLeaf"
-                        :style="{ color: data.isUser ? '#0000ff' : 'inherit' ,width:'100%'}">
+                    <span :data-type="node.parent.data.type" :data-nodeType="node.parent.data.nodeType"
+                        :data-isLeaf="node.isLeaf" :style="{ color: data.isUser ? '#0000ff' : 'inherit' ,width:'100%'}">
                         <i v-if="data.isUser" class="el-icon-edit"></i>
                         {{ data.ID }}
                     </span>

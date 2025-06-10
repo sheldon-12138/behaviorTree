@@ -57,11 +57,11 @@ export function attributePopVm() {
                 // 新增节点模型
                 newModel: {
                     typeIndex: 0,
-                    nodeTypeIndex:0,
+                    nodeType: '',
                     name: '',
                 },
                 typeList: ['Action', 'Condition', 'Control', 'Decorator'],
-                nodeTypeList: ['StatefulActionNode', 'SyncActionNode', 'ConditionNode'],
+                nodeTypeList: ['SyncActionNode', 'SimpleActionNode', 'ThreadedAction', 'StatefulActionNode', 'CoroActionNode', 'ConditionNode'],
                 tipText: '模型名不可为空',
                 tipTextList: ['模型名不可为空', '模型名已存在', '模型名无效:仅允许使用字母、数字和下划线',
                     '端口名不可为空', '端口名重复', '端口名无效:仅允许使用字母、数字和下划线,且不允许以数字开头'],
@@ -82,13 +82,24 @@ export function attributePopVm() {
             model() {
                 return g.gContext.attrData.model;
             },
+            // nodeTypeList的过滤
+            filteredNodeTypeList() {
+                if (this.newModel.typeIndex === 0) {
+                    // 不改变原数组
+                    return this.nodeTypeList.slice(0, 5);
+                } else if (this.newModel.typeIndex === 1) {
+                    return this.nodeTypeList.slice(5, 6);
+                } else {
+                    return []; // 默认返回全部
+                }
+            },
         },
         watch: {
             entity() {
                 if (this.entity) {
                     this.nodePortData.length = 0;
                     // console.log(this.entity.name)
-                    console.log('attr的entity', this.entity)
+                    // console.log('attr的entity', this.entity)
                     this.entityInfo = {
                         ...this.entity
                         // modelType: this.entity.modelType,
@@ -123,13 +134,13 @@ export function attributePopVm() {
             },
             model() {
                 this.tableData.length = 0;
-                console.log('attr的model', this.model)
+                // console.log('attr的model', this.model)
                 if (this.model) {
                     this.newModel = {
                         typeIndex: this.typeList.indexOf(this.model.type),
                         name: this.model.ID,
                         type: this.model.type,
-                        nodeTypeIndex: this.nodeTypeList.indexOf(this.model.nodeType),
+                        nodeType: this.model.nodeType,
                     }
                     for (let key in this.model.port) {
                         this.tableData.push({
@@ -148,7 +159,7 @@ export function attributePopVm() {
                     // console.log('新增 model is null')
                     this.newModel = {
                         typeIndex: 0,
-                        nodeTypeIndex:0,
+                        nodeType: '',
                         name: '',
                     }
                 }
@@ -164,7 +175,6 @@ export function attributePopVm() {
         methods: {
             //-----------------函数-----------------------
             // 检查输入 给出提示文字
-            // 检查输入并给出提示文字
             selectTipTxt() {
                 const value = this.newModel.name;
                 const nameResult = this.checkNameValue(value);
@@ -355,33 +365,59 @@ export function attributePopVm() {
                 else if (attrID == '2') {//新增节点模型
                     const tableObj = this.handleTableData(this.tableData);
                     // console.log('tableObj', tableObj)
+                    // 判断nodeType是否匹配type
+                    let { nodeType } = this.newModel
+                    if (nodeType !== '') {
+                        if (this.newModel.typeIndex == 0) {//Action
+                            if (nodeType == 'ConditionNode') nodeType = ''
+                        } else if (this.newModel.typeIndex == 1) {//Condition
+                            if (nodeType !== 'ConditionNode') nodeType = ''
+                        }
+                    }
                     this.modelList[this.newModel.typeIndex].children.push({
                         ID: this.newModel.name,
                         isUser: true,
                         port: tableObj,
 
-                        nodeType: this.nodeTypeList[this.newModel.nodeTypeIndex],
+                        nodeType: this.newModel.nodeType,
+                        editable: 'true',
                     })
                 } else if (attrID == '3') {//编辑自定义的节点模型
                     const tableObj = this.handleTableData(this.tableData);
+                    const isTypeChanged = this.typeList[this.newModel.typeIndex] !== this.model.type;
+                    // 判断nodeType是否匹配type
+                    let { nodeType } = this.newModel
+                    if (nodeType !== '') {
+                        if (this.newModel.typeIndex == 0) {//Action
+                            if (nodeType == 'ConditionNode') nodeType = ''
+                        } else if (this.newModel.typeIndex == 1) {//Condition
+                            if (nodeType !== 'ConditionNode') nodeType = ''
+                        }
+                    }
 
-                    const index = this.modelList[this.newModel.typeIndex].children.findIndex(item => item.ID === this.model.ID);
-
-                    Vue.set(this.modelList[this.newModel.typeIndex].children, index, {
+                    const newChild = {
                         ID: this.newModel.name,
                         isUser: true,
                         port: tableObj,
+                        nodeType,
+                        editable: 'true',
+                    };
 
-                        nodeType: this.nodeTypeList[this.newModel.nodeTypeIndex],
-                    })
-                    // console.log(tableObj, this.model.port)
-                    nodesOPController.handleModelChange(this.newModel.name, tableObj)
-                    // this.modelList[this.newModel.typeIndex].children[index] = {
-                    //     ID: this.newModel.name,
-                    //     isUser: true,
-                    //     port: tableObj
-                    // };
-                    // console.log('modelList', this.modelList)
+                    if (isTypeChanged) {
+                        // console.log('切换了类型，删除原modelList中的节点');
+                        const orgTypeIndex = this.typeList.indexOf(this.model.type);
+                        const oldIndex = this.modelList[orgTypeIndex].children.findIndex(item => item.ID === this.model.ID);
+                        if (oldIndex !== -1) {
+                            this.modelList[orgTypeIndex].children.splice(oldIndex, 1);
+                        }
+                        this.modelList[this.newModel.typeIndex].children.push(newChild);
+                    } else {
+                        const curIndex = this.modelList[this.newModel.typeIndex].children.findIndex(item => item.ID === this.model.ID);
+                        if (curIndex !== -1) {
+                            Vue.set(this.modelList[this.newModel.typeIndex].children, curIndex, newChild);
+                        }
+                    }
+                    nodesOPController.handleModelChange(this.newModel.name, tableObj);
                 }
                 this.handleClose()
             },
@@ -430,7 +466,7 @@ export function attributePopVm() {
                     this.newModel = {
                         typeIndex: 0,
                         name: '',
-                        nodeTypeIndex:0,
+                        nodeType: '',
                     }
                     this.tableData.length = 0;
                     attrData.model = null;

@@ -7,6 +7,7 @@ export function treeVm() {
         el: '#treeList',
         data() {
             return {
+                filterNodeText: '',
                 fileContents: [],
                 pathArr: [],//项目文件中存的路径数组
 
@@ -24,8 +25,17 @@ export function treeVm() {
                 treeMap: g.gContext.treeMap,
             };
         },
-
+        watch: {
+            filterNodeText(val) {
+                this.$refs.tree.filter(val);
+            }
+        },
         methods: {
+            // 过滤节点
+            filterNode(value, data) {
+                if (!value) return true;
+                return data.ID.indexOf(value) !== -1;
+            },
             //选中树
             handleTreeClick(node, selected, event) {
                 // console.log(node, selected, event)

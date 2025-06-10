@@ -24,6 +24,7 @@
 .treeHeader {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   color: #606266;
 }
 
@@ -35,6 +36,29 @@
 .treeBody::-webkit-scrollbar {
   width: 8px;
 }
+
+.filterInput {
+  width: 120px;
+  height: 18px;
+  /* padding: 0 5px; */
+  font-size: 12px;
+}
+
+.filterInput .el-input__inner {
+  height: 20px;
+  line-height: 20px;
+  padding-right: 5px;
+  padding-left: 17px;
+}
+
+.filterInput .el-input__prefix {
+  left: -3px;
+}
+
+.filterInput .el-input__icon {
+  line-height: 20px;
+}
+
 
 #tree {
   width: 100%;

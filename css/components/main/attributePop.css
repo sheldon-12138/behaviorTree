@@ -221,6 +221,10 @@
   overflow-y: auto;
 }
 
+.dragPop .table input {
+  width: 135px;
+}
+
 /* .dragPop .table-container .table td:nth-child(1) {
   width: 27%;
 }

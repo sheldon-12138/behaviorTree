@@ -95,6 +95,16 @@ app.get('/login', function (req, resp) {
 		}
 	})
 });
+
+app.get('/manage', function (req, resp) {
+	fs.readFile('./public/pages/manage/manage.html', function (err, data) {
+		if (err) {
+			resp.send(err);
+		} else {
+			resp.send(data.toString());
+		}
+	})
+});
 app.get('/login/:user/:pwd', function (req, resp) {
 	const user = req.params.user;
 	const pwd = req.params.pwd;

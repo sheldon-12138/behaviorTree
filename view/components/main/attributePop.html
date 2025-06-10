@@ -12,7 +12,7 @@
         <template v-if="statusData.attrID == '1'">
             <div class="item">
                 <div class="label">NodeType:</div>
-                <!-- {{entityInfo.modelType}} -->
+                {{entityInfo.modelType}}
             </div>
             <div class="item">
                 <div class="label">Model Name:</div>
@@ -95,8 +95,8 @@
             </div>
             <!-- 仅自定义节点模型显示nodeType 2和3一个是新增框一个是编辑框 -->
             <div class="nodeType" v-if="statusData.attrID == '2'||statusData.attrID == '3'">nodeType:
-                <select :disabled="statusData.attrID == '4'" v-model="newModel.nodeTypeIndex">
-                    <option v-for="(item,index) in nodeTypeList" :key="item" :value="index">{{item}}</option>
+                <select :disabled="statusData.attrID == '4'" v-model="newModel.nodeType">
+                    <option v-for="(item,index) in filteredNodeTypeList" :key="item" :value="item">{{item}}</option>
                 </select>
             </div>
             <div v-if="statusData.attrID != '4'" class="iconLine">

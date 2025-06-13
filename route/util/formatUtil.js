@@ -12,8 +12,8 @@ function buildTree(node, xmlDoc, projectName) {
         let tagName = capitalize(node.tagName || 'node')
         if (node.type == 'Top') {
             tagName = 'BehaviorTree'
-            let id = (node.tagName == 'Root') ? projectName : node.tagName
-            node.attrObj.ID = capitalize(id)
+            // let id = (node.tagName == 'Root') ? projectName : node.tagName
+            node.attrObj.ID = capitalize(node.tagName)
         } else if (node.type == 'SubTree') {
             tagName = 'SubTree'
             node.attrObj.ID = capitalize(node.tagName)

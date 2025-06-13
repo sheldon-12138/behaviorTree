@@ -2,12 +2,12 @@ import gContextDao from "../dao/gContextDao.js";
 import codec from "../codec/codec.js";
 
 function serializeAll(param) {
-    let treeMap = gContextDao.getGContextProp("treeMap");
+    // let treeMap = gContextDao.getGContextProp("treeMap");
 
-    const mainIds =
-        Object.values(treeMap)
-            .filter(node => node.isMainTree)
-            .map(node => node.ID);
+    // const mainIds =
+    //     Object.values(treeMap)
+    //         .filter(node => node.isMainTree)
+    //         .map(node => node.ID);
     const { info } = param;
     // const config = serializeConfig()
     let result = {
@@ -15,26 +15,28 @@ function serializeAll(param) {
         userModelList: [],
         user: gContextDao.getGContextProp("user").username,
         projectName: info.name,
-        mainTree: mainIds[0] || '',//主树的名字
+        mainTree: info.mainTreeName || '',//主树的名字
     };
     //批量保存时需要再补充文件与主树名对应的代码
 
-    result.treeContent = JSON.stringify(gContextDao.returnTreeArr());
-    result.userModelList = serializeUserModel()
+    result.treeContent = JSON.stringify(gContextDao.returnTreeArr(info.topIdArr));
+    const nodeNameArr = gContextDao.filterUserModel(info.treeIdArr)
+    result.userModelList = serializeUserModel(nodeNameArr);//筛选出当前树用到的自定义模型
 
     return result;
     // return '';
 };
 
-function serializeUserModel() {
+function serializeUserModel(nodeNameArr) {
     let modelList = gContextDao.getGContextProp("modelList");
     let userModelList = [];
     for (let i = 0; i < 4; i++) {
         modelList[i].children.forEach(child => {
-            let { isUser, port, ...attr } = child
-            if (isUser) {
+            let { isUser, port, ID, ...attr } = child
+            const index = nodeNameArr.findIndex(item => item == ID)
+            if (isUser && (index != -1)) {
                 let model = {
-                    ...attr, port: { 'input_port': [], 'output_port': [], 'inout_port': [] }, tagName: modelList[i].type
+                    ID, ...attr, port: { 'input_port': [], 'output_port': [], 'inout_port': [] }, tagName: modelList[i].type
                 }
                 // console.log('port', port)s
                 if (port && Object.keys(port).length > 0) {

@@ -368,7 +368,7 @@ function createNode(entity) {
             y: "15",
             width: "25",
             height: "25"
-        });
+        }, ["iconImg"]);
         entityFragment.appendChild(img);
     }
 
@@ -618,6 +618,14 @@ function updateConnectionPoints(entity) {
         const down = dom.querySelector(".conn-down");
         setAttributeByDom(down, { "cx": downNodeOffset.x, "cy": downNodeOffset.y });
     }
+}
+
+// 更新图标
+function updateIcon(entity) {
+    const iconName = imgName(entity);
+    const { dom } = entity;
+    const iconImg = dom.querySelector(".iconImg");
+    setAttributeByDom(iconImg, { "href": `../assets/node/${iconName}.svg` });
 }
 
 // 更新节点元素
@@ -1386,5 +1394,6 @@ export default {
     updateStandButton,
     // updateEffectStats,
     // updateDoorMark,
-    setFill
+    setFill,
+    updateIcon
 }

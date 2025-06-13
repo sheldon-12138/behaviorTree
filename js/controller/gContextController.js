@@ -11,104 +11,6 @@ import nodesOPController from "./nodesOPController.js";
 import viewOPController from "./viewOPController.js";
 import fileParser from "../parser/fileParser.js"
 
-function updateTest() {
-    // 
-    let criterionPopList = gContextDao.getGContextProp("criterionPopList");
-    let userLineMap = gContextDao.getGContextProp("userLineMap");
-    let statusData = gContextDao.getGContextProp("statusData");
-    let zoom = viewOPController.getZoom();
-
-    const length = criterionPopList.filter(obj => obj.show === true).length
-    const left = 936 - Math.min(length * 517, 1845) / 2
-    let content = dom.query("#content");
-
-    let index = 0
-    criterionPopList.forEach((item) => {
-        if (!item.show) return
-        let line = userLineMap[item.drawerID]
-        line.orginX = left + index * 517 + 248
-        // line.end.posX = content.scrollLeft + (line.orginX-) / zoom
-
-        line.end.posY = g.gContext.svgCanvas.size.height - (statusData.isShowBottomMsg ? 380 : 400)
-        line.end.posY = 682 / zoom + content.scrollTop
-
-        line.update()
-        dom.setAttributeByDom(line.dom, { "x": line.pos.x, "y": line.pos.y });
-        dom.setAttributeByDom(line.dom.querySelector(".polyline"), { "d": line.path });
-        index++
-    });
-}
-
-// 放大缩小更新判据线
-function updateUserLine() {
-    let criterionPopList = gContextDao.getGContextProp("criterionPopList");
-    let userLineMap = gContextDao.getGContextProp("userLineMap");
-    // let statusData = gContextDao.getGContextProp("statusData");
-    let zoom = viewOPController.getZoom();
-    const viewPort = g.gContext.viewPort
-
-
-    const length = criterionPopList.filter(obj => obj.show === true).length
-    const left = viewPort.width / 2 - Math.min(length * 517, viewPort.width - 30) / 2
-    // console.log(g.gContext.svgCanvas.size.height)
-    let content = dom.query("#content");
-    const cardList = dom.query('#criterionPopList')
-
-    let index = 0
-    criterionPopList.forEach((item) => {
-        if (!item.show) return
-        let line = userLineMap[item.drawerID]
-
-        line.orginX = (left + index * 517 + 248)
-        line.end.posX = content.scrollLeft + (line.orginX - cardList.scrollLeft) / zoom
-        // line.end.posY = g.gContext.svgCanvas.size.height - (statusData.isShowBottomMsg ? 380 : 400)
-        line.end.posY = (viewPort.height - 200) / zoom + content.scrollTop //682
-
-        // line.end.posY = g.gContext.svgCanvas.size.height / zoom
-        // console.log(g.gContext.svgCanvas.size.height, line.end.posY, zoom)
-        // console.log('放大缩小')
-        line.update()
-        dom.setAttributeByDom(line.dom, { "x": line.pos.x, "y": line.pos.y });
-        dom.setAttributeByDom(line.dom.querySelector(".polyline"), { "d": line.path });
-        index++
-    });
-}
-
-function test() {
-
-    let fragment = document.createDocumentFragment();
-
-    for (let i = 0; i < 10000; ++i) {
-        // g.gContext.doorEntityMap[i] = new DoorEntity(i, "ftID", "and_door", 0, i, i,
-        //     {width:64, height:64}, {x:i/100, y:i/50},
-        //     true, true, true,
-        //     null, null);
-        //g.gContext.doorEntityMap[i].dom = dom.createNode(g.gContext.doorEntityMap[i]);
-        let entity = gContextDao.addEntity({
-            ftID: "ftID",
-            type: "and_door0",
-            layer: 0,
-            size: { width: 64, height: 64 },
-            pos: { x: Math.round(Math.random() * 2000), y: Math.round(Math.random() * 2000) },
-            // pos: {x: i/5, y: i/5},
-            hasUpNodes: true,
-            hasDownNodes: false,
-            collapse: true,
-            category: "door",
-        });
-        if (entity) {
-            let eDom = dom.createNode(entity);
-            entity.dom = eDom;
-            fragment.appendChild(eDom);
-        }
-    }
-
-    let mainSVG = document.querySelector("#mainSVG");
-
-    mainSVG.appendChild(fragment);
-
-};
-
 // 模型栏创建新节点
 function createNewNode(type, pos, name) {
     let model = gContextDao.getModelByType(type);
@@ -156,10 +58,6 @@ function newNodeUpdate(pos) {
     //     "style":"left:"+pos.x+"px;top:"+pos.y+"px;",
     // });
 };
-
-function getNodeSize(id) {
-    // if()
-}
 
 //创建画布
 function createCanvas() {
@@ -272,8 +170,8 @@ function getFocus() {
     content.focus();
 }
 
-//生成节点
-function createNode(type, pos, name) {
+//生成节点 有 treeId, TopNodeName是新建树标志
+function createNode(type, pos, name, treeId, TopNodeName) {
     // console.log(type, pos, name)
     let model = gContextDao.getModelByType(type);
     let statusData = gContextDao.getGContextProp("statusData");
@@ -311,25 +209,61 @@ function createNode(type, pos, name) {
         hasDownNodes: model.hasDownNodes,
         collapse: null,
         category: model.category,
-        modelType: model.type,
+        modelType: type == 'Top' ? TopNodeName || model.type : model.type,
         aliasName: name || model.name,
 
         name: name || model.name,
         textColor: model.textColor,
 
         port: port || {},
-        treeId: statusData.currentTreeID || 'newTree',
+        treeId: treeId || statusData.currentTreeID || 'newTree',
         // port: port,
     };
     let entity = gContextDao.addEntity(entityProp);
     // console.log('新建的entity', entityProp, entity) 
     if (entity) {
-        let eDom = dom.createNode(entity);
-        entity.dom = eDom;
-        dom.query("#mainSVG").appendChild(eDom);
+        if (!treeId || treeId == 'newTree') {//新建树的情况：不加载节点在画布上
+            let eDom = dom.createNode(entity);
+            entity.dom = eDom;
+            dom.query("#mainSVG").appendChild(eDom);
+        }
+
         return entity;
     }
 };
+
+// 新增树+默认节点
+function createNewTree(newTreeName, addTreeProj, isInitial) {
+    const treeId = isInitial ? 'newTree' : gContextDao.generateID();
+    let treeMap = gContextDao.getGContextProp("treeMap");
+    let project = gContextDao.getGContextProp("project");
+
+    // 给新建树加顶节点
+    const entity = createNode('Top', { x: 60, y: 60 }, null, treeId, newTreeName);
+    // console.log("entity", entity);
+    Vue.set(treeMap, treeId, {
+        ID: newTreeName,
+        entityMap: { [`${entity.id}`]: entity },
+        isMainTree: false,
+        topNodeId: entity.id,
+    });
+
+
+    const children = { treeId, isMainTree: false, label: newTreeName, topNodeId: entity.id, isEditing: false }
+    let index = -1;
+    if (project.length == 0) {
+        index = 0;
+        project.push({ label: addTreeProj, children: [children], isEditing: false });
+    } else {
+        index = project.findIndex(item => item.label == addTreeProj);
+        if (index != -1) {
+            project[index].children.push(children);
+        }
+    }
+    // console.log("treeMap", g.gContext.treeMap);
+    console.log("project", g.gContext.project);
+}
+
 //生成多选框
 function createMarquee(marquee) {
     let temp = new Marquee(marquee.pos, marquee.size, false, marquee.stroke, marquee.strokeWidth, marquee.fill, marquee.opacity);
@@ -832,6 +766,13 @@ function findTreeId(treeName) {
     return undefined; // 显式地返回 undefined，以确保函数始终有返回值
 }
 
+// 检查树名是否重复
+function checkTreeName(treeName) {
+    const treeMap = gContextDao.getGContextProp("treeMap");
+    if (!treeMap) return false;
+    return Object.values(treeMap).some(tree => tree.ID === treeName);
+}
+
 //获取线dom节点
 function getNewLine() {
     return gContextDao.getGContextProp("newLine");
@@ -1264,11 +1205,12 @@ function createCriterionDefs(criterionImgList) {
 }
 
 export default {
+    createNewTree,
+    checkTreeName,
+
     findTreeId,
     updateLine,
     isAttrData,
-    updateUserLine,
-    test,
     scrollToBottom,
     IncreaseMainSVGSize,
     hideAcLine,

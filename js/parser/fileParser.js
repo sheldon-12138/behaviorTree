@@ -353,29 +353,42 @@ function xmlParser(content, xmlName) {
                 ID: item.$.ID,
                 entityMap: {}, isMainTree: mainTreeName == item.$.ID //补上isMainTree属性
             }
-
-            projStruct.push({ label: item.$.ID, treeId, isMainTree: mainTreeName == item.$.ID })
+            for (let key in events) {
+                if (events[key].treeId == treeId) {
+                    treeMap[treeId].entityMap[key] = events[key];
+                    if (events[key].type == 'Top') treeMap[treeId].topNodeId = key
+                }
+            }
+            projStruct.push({
+                label: item.$.ID, treeId,
+                isMainTree: mainTreeName == item.$.ID,
+                topNodeId: treeMap[treeId].topNodeId,
+                isEditing: false
+            })
             // console.log(index, parseEntityArr(item))
 
             // 添加子树节点
             if (!checkExists(item.$.ID, 'SubTree')) {
                 modelList[4].children.push({ ID: item.$.ID, isUser: true })
             }
-        })
+        });
+        console.log('treeMap', treeMap)
         return projStruct
     } else {//读单个xml文件
         handeTreeNodesModel(TreeNodesModel[0])
         BehaviorTree.forEach(item => {
             const treeId = loadXml(item)
-            treeMap[treeId] = { ID: item.$.ID, entityMap: {}, isMainTree: mainTreeName == item.$.ID }
+            treeMap[treeId] = { ID: item.$.ID, entityMap: {}, isMainTree: mainTreeName == item.$.ID, topNodeId: '' }
 
             for (let key in events) {
                 if (events[key].treeId == treeId) {
-                    treeMap[treeId].entityMap[key] = events[key]
+                    treeMap[treeId].entityMap[key] = events[key];
+                    if (events[key].type == 'Top') treeMap[treeId].topNodeId = key
                 }
             }
         })
     }
+
     console.log('treeMap', treeMap)
 }
 
@@ -491,8 +504,7 @@ function loadXml(BehaviorTree) {
             btLine(tempNodesBtID[k], entityArr[k].downEntity, tempNodes);
         }
     }
-
-    return treeId
+    return treeId;
 }
 
 

@@ -368,6 +368,9 @@ function mouseMove(e) {
 
 //全局鼠标松开操作
 function mouseUp(e) {
+
+    let treeMap = gContextDao.getGContextProp("treeMap");
+
     g.gContext.statusData.canvasChanged = true;//标识画布有改动
     Utils.stopDefault(e);
     // clearTimeout(opContext.timeOutId);
@@ -396,13 +399,15 @@ function mouseUp(e) {
         // console.log(gContextController.inContent(clientPosition), newSVGNode)
         if (gContextController.inContent(clientPosition) && newSVGNode) {
             //console.log(111);
-            gContextController.createNode(newSVGNode.type,
+            let entity = gContextController.createNode(newSVGNode.type,
                 {
                     x: (clientPosition.x - mainSVGOffset.x) / zoom + scrollOffset.x,
                     y: (clientPosition.y - mainSVGOffset.y) / zoom + scrollOffset.y
                 },
                 newSVGNode.name,
             );
+            // 加入进treeMap中
+            Vue.set(treeMap[entity.treeId].entityMap, entity.id, entity);
             nodesOPController.updateLayer();
             nodesOPController.updateTreeData();
 

@@ -115,7 +115,6 @@ function analysisXml(param) {
             } else if (param.status == 'forXml') {//通过项目打开的xml文件
                 // console.log(xmlContent, param.name);
                 const treeNameArr = fileParser.xmlParser(xmlContent, param.name);
-
                 return Promise.resolve({ treeNameArr });
             } else {//单打开的xml文件
 
@@ -200,11 +199,11 @@ function loadNodePic(param) {
 
 //保存用户项目
 function uploadUserProject(param) {
-    let fileInfo = gContextDao.getGContextProp("fileInfo");
-    fileInfo = Object.assign(fileInfo, param.info);
+    // let fileInfo = gContextDao.getGContextProp("fileInfo");
+    // fileInfo = Object.assign(fileInfo, param.info);
     //保存项目的具体内容
-    let content = serialize.serializeAll({ info: fileInfo });
-    // console.log('content', content);
+    let content = serialize.serializeAll({ info: param.info });
+    console.log('content', content);
 
     return fileRequest.uploadUserProject(content)
         .then((data) => {
@@ -226,7 +225,7 @@ function generateCode(content) {
     const portTypes = ['input_port', 'output_port', 'inout_port'];
     const types = ["short", "short int", "int", "long", "long int", "long long int", "unsigned short", "unsigned int", "unsigned long", "unsigned long long", "unsigned char", "signed char", "int8_t", "uint8_t", "int16_t", "uint16_t", "int32_t", "uint32_t", "int64_t", "uint64_t", "wchar_t", "char16_t", "char32_t", "float", "double", "long double", "char", "string", "bool"]
     const seenNames = new Set();
-    const blackboardVars = [], nodeNameList = [], dataTypeList = [], nodeStrList = [];
+    const blackboardVars = [], nodeNameList = [], nodeStrList = [];
 
     // 处理所有端口生成 nodeNameList、blackboardVars
     for (const node of content.userModelList) {
@@ -248,7 +247,7 @@ function generateCode(content) {
         nodeStrList.push({ nodeName: node.ID, cpp: nodeCpp, h: nodeH })
     }
     // 处理自定义的dataType 去重+过滤types
-    dataTypeList = [...new Set(blackboardVars.map(v => v.type))].filter(t => !types.includes(t));
+    let dataTypeList = [...new Set(blackboardVars.map(v => v.type))].filter(t => !types.includes(t));
 
 
     let data = {

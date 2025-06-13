@@ -1,24 +1,32 @@
+<el-dialog title="new Behavior Tree" :visible.sync="addTreeVisible" width="30%">
+    Name: <el-input v-model="newTreeName" placeholder="请输入新建树名称"></el-input>
+    <span slot="footer" class="dialog-footer">
+        <el-button @click="addTreeVisible = false">取 消</el-button>
+        <el-button :disabled="newTreeName.trim()==''" type="primary" @click="addTree()">确 定</el-button>
+    </span>
+</el-dialog>
 <div class="content-el_tree" id="content-el_tree">
     <div class="pane topPane" ref="topPane">
         <div class="treeHeader">
             <span>项目</span>
-            <div>
-                <!-- <i @click="triggerFileInput" class="el-icon-document" style="margin-right: 5px;"></i>
-                <i @click="triggerFolderInput" class="el-icon-folder-opened" style="margin-right: 5px;"></i>
-                <input type="file" ref="fileInput" style="display: none;" @change="handleFileChange" accept=".xml">
-                <input type="file" ref="folderInput" style="display: none;" @change="handleFileChange" webkitdirectory> -->
-
-                <!-- <i class="el-icon-folder-checked" @click="saveProject" style="margin-right: 5px;"></i>
-                <i class="el-icon-upload2" @click="saveProject1" style="margin-right: 5px;"></i>
-                <i class="el-icon-delete"></i> -->
-            </div>
         </div>
         <div class="treeBody">
             <el-tree :data="project" :props="defaultProps" @node-click="handleTreeClick" @node-contextmenu="rightClick"
                 default-expand-all>
-                <span slot-scope="{ node, data }">
-                    <i v-if="data.isMainTree && node.isLeaf" class="el-icon-star-off"></i>
-                    <span>{{ node.label }}</span>
+                <span class="custom-tree-node" slot-scope="{ node, data }">
+                    <span>
+                        <i v-if="data.isMainTree && node.isLeaf" class="el-icon-star-off"></i>
+                        <input v-if="data.isEditing" v-model="data.label" @click.stop @blur="editTreeName(node,data)"
+                            @keyup.enter="editTreeName(node,data)" style="width: 100px" />
+                        <span v-else>{{ node.label }}</span>
+                    </span>
+
+                    <span>
+                        <i class="el-icon-edit" style="margin-right: 5px;" @click.stop="data.isEditing = true"></i>
+                        <i v-if="node.level==1" class="el-icon-plus" @click.stop="() =>addTreePre(node,data)"></i>
+                        <i v-else class="el-icon-delete" @click.stop="() =>delteTree(node,data)"></i>
+                    </span>
+                </span>
             </el-tree>
         </div>
     </div>

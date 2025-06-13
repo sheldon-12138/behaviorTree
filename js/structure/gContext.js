@@ -349,12 +349,17 @@ export const g = {
         //实体
         doorEntityMap: {},  //门数据
         eventEntityMap: {}, //事件数据
-
-        project:[{//当前打开的项目列表
-            label: 'Project',
-            children: []
-        }],
-        treeMap: {},//树数据
+        //{//当前打开的项目列表
+        // label: 'Untitled',
+        // children: [{ treeId: 'newTree', label: 'Untitled', topNodeId: '' }]
+        // }
+        project: [],
+        treeMap: {
+            // "newTree": {
+            //     ID: "Untitled",
+            //     entityMap: {}
+            // }
+        },//树数据
         lineMap: {},  //连线数据
         userLineMap: {},//判据和圆圈的连线数据
 
@@ -397,7 +402,7 @@ export const g = {
         svgCanvas: {
             _size: {
                 width: window.innerWidth - 280,//-280 1872,window.innerWidth 1453 2080
-                height: window.innerHeight - 104,// -74 892 999
+                height: window.innerHeight - 115,// -74 892 999 -104
                 // width: window.innerWidth-10,//1872,window.innerWidth 1453 2080
                 // height: window.innerHeight-74,//892 999
             },
@@ -423,7 +428,7 @@ export const g = {
 
         // tab页数据
         // { id: 'dfdsf', name: '测试1tab' }, { id: 'dfddsfsasf', name: '测试2tab' }
-        tabsArr: [],
+        tabsArr: [{ id: 'newTree', name: 'Unilted' },],
 
         //各种状态控制
         statusData: {

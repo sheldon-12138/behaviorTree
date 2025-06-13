@@ -12,8 +12,47 @@ import renderFTree from "../render/renderFTree.js";
 import { g } from "../structure/gContext.js";
 import fileParser from "../parser/fileParser.js";
 
+// 删除树
+function deleteTree(treeId) {
+    let treeMap = gContextDao.getGContextProp("treeMap");
+    // 删除eventEntityMap及dom元素
+    __delete(treeMap[treeId].entityMap);
+    // 删除treeMap
+    delete this.treeMap[treeId];
+}
+
+// 删除tabs中的树
+function deleteTabTree(treeId) {
+    let statusData = gContextDao.getGContextProp("statusData");
+    // statusData.currentTreeID = null
+    if (statusData.currentTreeID === treeId) {
+        closeTab()
+    }
+    let tabsArr = gContextDao.getGContextProp("tabsArr");
+    let index = tabsArr.findIndex(element => element.id === treeId);
+    tabsArr.splice(index, 1);
+}
+
+// 关闭tab页
+function closeTab(index) {
+    let statusData = gContextDao.getGContextProp("statusData");
+    let tabsArr = gContextDao.getGContextProp("tabsArr");
+
+    const currentTreeID = tabsArr[index].id
+    tabsArr.splice(index, 1)
+    if ((currentTreeID == statusData.currentTreeID)) {
+        if (tabsArr.length > 0) {
+            const item = tabsArr[tabsArr.length - 1]
+            selectedTree(item.id)
+        } else {//关闭最后一个tab
+            // console.log("close all tabs")
+            closeLastTab()
+        }
+    }
+}
+
 // 清空
-function closeTab() {
+function closeLastTab() {
     //清空画布树 + 删除复制的子树
     clearTreeDom()
     deleteSubTree()
@@ -28,7 +67,7 @@ function selectedTree(treeId, name) {
     if (treeId === statusData.currentTreeID) return
 
     //清空画布树 + 删除复制的子树
-    closeTab()
+    closeLastTab()
 
     // 根据数据渲染dom
     let subArr = renderFTree.renderByContext(treeId);
@@ -232,7 +271,7 @@ function handleNodeSurface(entity, aliasFlag, orgFlag, orgDesIsNull) {
 }
 
 // 模型改变后
-function handleModelChange(ID, port) {
+function handleModelChange(ID, port, type) {
     let eventEntityMap = gContextDao.getGContextProp("eventEntityMap");
     let statusData = gContextDao.getGContextProp("statusData");
 
@@ -241,7 +280,11 @@ function handleModelChange(ID, port) {
 
         if (entity.name === ID && entity.treeId === statusData.currentTreeID) {
             // console.log('jin', entity)
-
+            if (type) {
+                entity.type = type;
+                // 改type后，更新节点元素
+                dom.updateIcon(entity);
+            }
             entity.port = port;
             handleNodeSurface(entity,
                 entity.aliasName !== entity.name, entity.aliasName !== entity.name, !entity._description)
@@ -479,20 +522,19 @@ function _delete() {
     }
 }
 
-function __delete() {
-
+function __delete(deleteMap) {
+    // console.log('delete', deleteMap)
     removeActivedLine();
 
-    let activedEntityMap = gContextDao.getGContextProp("activedEntityMap");
+    let activedEntityMap = deleteMap || gContextDao.getGContextProp("activedEntityMap");
     let eventEntityMap = gContextDao.getGContextProp("eventEntityMap");
-    let doorEntityMap = gContextDao.getGContextProp("doorEntityMap");
     let lineMap = gContextDao.getGContextProp("lineMap");
 
     let deleteIdMap = {};
     //删除节点
     for (let key in activedEntityMap) {
         let entity = activedEntityMap[key];
-        if (entity.type === "Top") continue;//顶事件不可删
+        if (entity.type === "Top" && !deleteMap) continue;//顶事件不可删(当删除整个树时，顶事件会被删掉)
 
         let len = entity.upEntity.length;
         for (let upIndex = 0; upIndex < len; ++upIndex) {
@@ -511,7 +553,7 @@ function __delete() {
         if (entity) {
             dom.query("#mainSVG").removeChild(entity.dom);
         }
-        (entity.category === "door") ? delete (doorEntityMap[key]) : delete (eventEntityMap[key]);
+        delete (eventEntityMap[key]);
         // console.log(isRemove);
         deleteIdMap[key] = key;
 
@@ -534,7 +576,7 @@ function __delete() {
         delete (lineMap[key]);
     }
 
-    gContextDao.setGContextProp("activedEntityMap", {});
+    if (!deleteMap) gContextDao.setGContextProp("activedEntityMap", {});
     updateLayer();
     viewOPController.updateAmount(["nodeNum", "maxLayer", "topNodeNum", "midNodeNum",
         "bottomNodeNum", "doorType", "doorNum", "maxDamageLevel", "criterionNum", "criterionTypeNum",
@@ -1713,8 +1755,19 @@ function bottomUserCode(id) {
     }
 }
 
+// 修改树名——实则修改树根节点的modelType属性
+function editTreeName(nodeId, label) {
+    let entity = gContextDao.findEntity(nodeId);
+    if (entity && entity.type == 'Top') {
+        entity.modelType = label
+    }
+}
+
 
 export default {
+    deleteTree,
+    deleteTabTree,
+    editTreeName,
     closeTab,
     loadSubTree,
     handleModelChange,

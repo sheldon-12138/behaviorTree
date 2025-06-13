@@ -417,7 +417,7 @@ export function attributePopVm() {
                             Vue.set(this.modelList[this.newModel.typeIndex].children, curIndex, newChild);
                         }
                     }
-                    nodesOPController.handleModelChange(this.newModel.name, tableObj);
+                    nodesOPController.handleModelChange(this.newModel.name, tableObj, isTypeChanged ? this.typeList[this.newModel.typeIndex] : null);
                 }
                 this.handleClose()
             },

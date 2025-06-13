@@ -429,16 +429,16 @@ function returnTree() {
     return tree;
 }
 
-// 返回多棵树结构数组
-function returnTreeArr() {
+// 返回指定rootIds的多棵树结构数组
+function returnTreeArr(rootIds) {
     let arr = []
     const { eventEntityMap } = g.gContext;
-    const rootIds = findTopNodeIds()
-    // console.log('rootIds', rootIds)
+    // const rootIds = findTopNodeIds()
     rootIds.forEach(rootId => {
         let tree = buildTree(rootId, eventEntityMap)
         arr.push(tree)
     })
+    // console.log('arr', arr)
     return arr;
 }
 
@@ -491,6 +491,24 @@ function buildTree(nodeId, eventEntityMap) {
     return new TreeNode(nodeData.id, tagName, attrObj, children, nodeData.type);
 }
 
+// 过滤指定树中的用户模型名称
+function filterUserModel(treeIds) {
+    const treeMap = getGContextProp("treeMap");
+    // let nodeNameArr = []
+    // treeIds.forEach((treeId) => {
+    //     for (let key in treeMap[treeId].entityMap) {
+    //         nodeNameArr.push(treeMap[treeId].entityMap[key].name)
+    //     }
+    // });
+    const nodeNameArr = Array.from(new Set(
+        treeIds.flatMap(treeId =>
+            Object.values(treeMap[treeId].entityMap).map(entity => entity.name)
+        )
+    ));
+    // console.log('nodeNameArr', nodeNameArr);
+    return nodeNameArr;
+}
+
 //计算总层数包括门
 function amountLayer(num) {
     let maxLayer = 0;
@@ -522,83 +540,8 @@ function amountLayer(num) {
     return maxLayer;
 }
 
-let hsStandard = (function () {
-    return {
-        //修改hs标准等级
-        updateHsStandardLevel(target) {
-
-        },
-        //添加标准
-        addHSStandard(id, target) {
-            let hsStandard = getGContextProp("hsStandard");
-            let standardList = hsStandard.standardList;
-            if (target) {
-                standardList[id] = target;
-            }
-            else {
-                let standard = {
-                    code: "",
-                    levelCatch: {},
-                };
-                for (let i = 1; i < 5; ++i) {
-                    standard.levelCatch[i] = [];
-                    for (let j = 0; j < i + 1; ++j) {
-                        let levelDescribe = {
-                            levelName: `level${j + 1}`,
-                            aliasLevelName: `等级${j + 1}`,
-                            describe: "",
-                            understandDescribe: "",
-                        };
-                        standard.levelCatch[i].push(levelDescribe);
-                    }
-                }
-
-                standardList[id] = (standard);
-            }
-        },
-
-        removeHSStandard(id) {
-            let hsStandard = getGContextProp("hsStandard");
-            let standardList = hsStandard.standardList;
-            delete standardList[id];
-
-        },
-    }
-})();
-
-let effectProxy = (function () {
-    return {
-        addEffectEvent(ftID, target) {
-            let effectEvent = getGContextProp("effectEvent");
-            if (target) {
-                effectEvent.effectEventList[ftID] = target;
-            }
-            else {
-                let effect = {
-                    code: "",
-                    stats: [],
-                };
-                effectEvent.effectEventList[ftID] = effect;
-            }
-        },
-        removeEffectEvent(ftID) {
-            let effectEvent = getGContextProp("effectEvent");
-
-            if (effectEvent.effectEventList.hasOwnProperty(ftID)) {
-                delete effectEvent.effectEventList[ftID];
-            }
-        },
-        setEffectStats(ftID, stats) {
-            let effectEvent = getGContextProp("effectEvent");
-            if (effectEvent.effectEventList.hasOwnProperty(ftID)) {
-                effectEvent.effectEventList[ftID].stats = stats;
-            }
-        },
-
-    }
-})();
-
 export default {
+    filterUserModel,
     generateID,
     returnTreeArr,
     returnTree,

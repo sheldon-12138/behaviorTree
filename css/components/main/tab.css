@@ -5,14 +5,14 @@
 
 .tab {
     /* width: 100px; */
-    height: 30px;
+    height: 40px;
     padding: 0px 5px;
     box-sizing: border-box;
     background-color: #dddde0;
     text-align: center;
-    line-height: 30px;
+    line-height: 40px;
     border: 1px solid #666;
     border-radius: 5px 5px 0 0;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 16px;
 }

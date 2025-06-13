@@ -41,7 +41,9 @@ function init() {
         //加载刻度线
         loadAxis();
         // gContextController.createNode('top_event',{x: 20, y: 20});
-        gContextController.createNode('Top', { x: 60, y: 60 });
+        // gContextController.createNode('Top', { x: 60, y: 60 });
+        // 树名，项目名
+        gContextController.createNewTree('Untitled', 'Untitled', true);
     });
 
 };

@@ -14,15 +14,6 @@ function registerDefaultListener() {
     let publish = gContextDao.getGContextProp("publish");
     let handler = function (entity) {
         if (entity.dom) {
-            // let hiddenPopoverData = gContextDao.getGContextProp("hiddenPopoverData");
-            // if(entity.modelType.includes("door")){
-            //     hiddenPopoverData.show = false;
-            // }
-            // else{
-            //     hiddenPopoverData.show = true;
-            // }
-            // hiddenPopoverData.data = Utils.jsonClone(entity);
-            // entity.dom.querySelector(".pic").classList.add("node-height-light");
             // 鼠标悬浮节点时显示描述信息
             if (entity.dom.querySelector(".desG")) {
                 entity.dom.querySelector(".desG").classList.remove("hide");
@@ -33,9 +24,6 @@ function registerDefaultListener() {
         // console.log("explantation-node");
         let doms = document.querySelectorAll(".desG");
         if (!doms) return;
-        // let hiddenPopoverData = gContextDao.getGContextProp("hiddenPopoverData");
-        // hiddenPopoverData.show = false;
-        // hiddenPopoverData.data = null;
         for (let i = 0; i < doms.length; ++i) {
             // doms[i].classList.remove("node-height-light");
             doms[i].parentNode.querySelector(".desG").classList.add("hide");

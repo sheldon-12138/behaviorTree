@@ -32,7 +32,7 @@ function init() {
         loadManager();
         //加载资源
         loadResource();
-        //绑定操作
+        //绑定操作 (包含创建画布)
         loadOperation();
         //加载系统配置项
         loadSystemInfo();

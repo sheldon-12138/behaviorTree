@@ -432,6 +432,7 @@ export const g = {
 
         //各种状态控制
         statusData: {
+            ifSplitScreen: false, //是否分屏显示
             currentTreeID: 'newTree',//当前树id
 
             showPort: true,

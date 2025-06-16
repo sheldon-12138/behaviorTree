@@ -1,9 +1,9 @@
 import { g } from "../../../js/structure/gContext.js"
 import nodesOPController from "../../../js/controller/nodesOPController.js";
 
-export function tabVm() {
+export function tabVm2() {
     new Vue({
-        el: '#tabList',
+        el: '#tabList2',
         data() {
             return {
                 tabsArr: g.gContext.tabsArr,

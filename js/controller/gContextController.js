@@ -112,12 +112,6 @@ function createCanvas() {
     });
 
     let canvas = dom.createCanvas(svgCanvas.size);
-    // let mf = dom.query("#marquee-field");
-    // dom.addElement(canvas, dom.query("#content"));
-
-    //网格
-    // let grid = dom.createGrid({ size: svgCanvas.size });
-    // canvas.appendChild(grid);
 
     //背景色
     let background = dom.createBackground({ size: svgCanvas.size });

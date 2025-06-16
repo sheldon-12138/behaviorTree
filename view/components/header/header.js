@@ -211,7 +211,7 @@ export function headerVm() {
                 // console.log('info', this.info);
                 const startTimeStamp = new Date().getTime();  // 设置计算开始时间戳为当前时间
                 fileController.uploadUserProject({ info: this.info }).then((result) => {
-                    console.log(result, this.info)
+                    // console.log(result, this.info)
                     if (!result.err) {
                         this.fileExportDialogVisible = false;
                         const fileNameBase = this.info.name

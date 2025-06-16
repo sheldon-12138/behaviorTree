@@ -1,17 +1,9 @@
 import gContextDao from "../dao/gContextDao.js";
-import dom from "../viewModel/dom.js";
-import { EventEntity } from "../structure/entity.js";
-import Model from "../structure/model.js";
-import Line from "../structure/line.js";
-import { g } from "../structure/gContext.js";
 import Utils from "../utils/utils.js";
 import fileRequest from "../request/fileRequest.js";
 import fileParser from "../parser/fileParser.js";
 import renderFTree from "../render/renderFTree.js";
 import serialize from "../parser/serialize.js";
-import viewOPController from "./viewOPController.js";
-import gContextController from "./gContextController.js";
-import computeController from "./computeController.js";
 
 import nodesOPController from "./nodesOPController.js";
 import cppCode from "../structure/cppCode.js";

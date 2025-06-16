@@ -1,10 +1,5 @@
 import gContextDao from "../dao/gContextDao.js";
-import { g } from "../structure/gContext.js";
-import Criterion from "../structure/criterion.js";
 import codec from "../codec/codec.js"
-import color from "../utils/color.js";
-import computeController from "../controller/computeController.js";
-import gContextController from "../controller/gContextController.js"
 import dom from "../viewModel/dom.js";
 
 //将解析节点函数注册到解析器中

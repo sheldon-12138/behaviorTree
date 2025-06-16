@@ -1,6 +1,5 @@
 import {headerVm} from "../../view/components/header/header.js"
 import {mainVm} from "../../view/components/main/main.js"
-import {bottomVm} from "../../view/components/bottom/bottom.js"
 export function loadDom(){
     $.ajaxSetup({
         async: false
@@ -10,10 +9,6 @@ export function loadDom(){
     });
     $('#main').load('view/components/main/main.html',function(responseTxt,statusTxt,xhr){
         mainVm();
-    });
-
-    $('#bottom').load('view/components/bottom/bottom.html', function () {
-        bottomVm();
     });
     $.ajaxSetup({
         async: true

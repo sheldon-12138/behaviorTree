@@ -1763,8 +1763,18 @@ function editTreeName(nodeId, label) {
     }
 }
 
+// 分屏
+function splitScreen() {
+
+}
+
+// 合屏
+function mergeScreen() { }
 
 export default {
+    splitScreen,
+    mergeScreen,
+    
     deleteTree,
     deleteTabTree,
     editTreeName,

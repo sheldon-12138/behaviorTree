@@ -1,9 +1,11 @@
-<div style="display: flex;justify-content:space-between;align-items:center;">
-    <div style="display: flex;">
+<div style="display: flex;margin-left: 5px;">
+    <template v-if="tabsArr.length>0">
         <div v-for="(item,index) in tabsArr" :key="item.id"
-            :class="`tab ${statusData.currentTreeID==item.id?'activeTab':''}`" @click="clickTab(item.id)">
+            :class="`tab ${statusData.currentTreeID2==item.id?'activeTab':''}`" @click="clickTab(item.id)">
+            <i v-if="statusData.isSplitScreen" class="el-icon-back" @click.stop="changeScreen(item.id,index)"></i>
             {{item.name}}
             <i class="el-icon-circle-close" @click.stop="closeTab(index)"></i>
         </div>
-    </div>
+    </template>
+    <div v-else style="height: 43px;"></div>
 </div>

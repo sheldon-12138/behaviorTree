@@ -408,8 +408,6 @@ function mouseUp(e) {
             );
             // 加入进treeMap中
             Vue.set(treeMap[entity.treeId].entityMap, entity.id, entity);
-            nodesOPController.updateLayer();
-            nodesOPController.updateTreeData();
 
 
             let attrData = gContextDao.getGContextProp("attrData");
@@ -592,7 +590,10 @@ export function loadOperation() {
 
     gContextController.createCanvas();
 
-    // gContextController.test();
+    // 分屏的第二个画布
+    const mainSVG2 = gContextController.createCanvas2("mainSVG2");
+    dom.query("#content2").appendChild(mainSVG2);
+
 
     let mainSVG = dom.query("#mainSVG");
     // let listSVG = dom.query("#list");

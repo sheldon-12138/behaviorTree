@@ -22,11 +22,11 @@ function init() {
     new Promise((resolve, reject) => {
         //加载dom并绑定VUE实例
         loadDom();
-        //resolve();
-        //初始化插件，将插件注入
-        return initPlugin("hs").then(() => {
-            resolve();
-        });
+        resolve();
+        // //初始化插件，将插件注入
+        // return initPlugin("hs").then(() => {
+        //     resolve();
+        // });
     }).then(() => {
         //加载管理器
         loadManager();

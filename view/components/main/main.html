@@ -3,21 +3,17 @@
     <div class="tree-content" v-show="statusData.isShowTree">
         <div id="tree"></div>
     </div>
-  </div>
+</div>
 
-<!-- 画布1 -->
-<div>
-    <div class="tabs" id="tabList">
-        <div class="tab-content" v-show="statusData.isShowTab">
-            <div id="tab"></div>
-        </div>
+<!-- 画布1  把画版放到tabs中，因为需要boardWidth监管画布的大小 -->
+<div class="tabs" id="tabList">
+    <div class="tab-content" v-show="statusData.isShowTab">
+        <div id="tab"></div>
     </div>
 
-
     <!-- 画板 style="width: calc(100vw - 272px);height: calc(100vh - 100px);"> -->
-    <div class="drawingBoard" id="drawingBoard" style="width: calc((100vw - 272px)/2);height: calc(100vh - 110px);">
+    <div class="drawingBoard" id="drawingBoard" :style="{ width: boardWidth, height: boardHeight }">
         <div class="content" id="content" tabindex="0"></div>
-
 
         <div class="axis_x" id="axis_x">
             <canvas id="canvas_axis_x"></canvas>
@@ -30,16 +26,14 @@
 </div>
 
 <!-- 画布2 -->
-<div>
-    <div class="tabs" id="tabList2">
-        <div class="tab-content" v-show="statusData.isShowTab">
-            <div id="tab2"></div>
-        </div>
+<div class="tabs" id="tabList2">
+    <div class="tab-content" v-show="statusData.isShowTab&&statusData.isSplitScreen">
+        <div id="tab2"></div>
     </div>
 
-    <div class="drawingBoard" id="drawingBoard2" style="width: calc((100vw - 272px)/2);height: calc(100vh - 110px);">
-        <div class="content" id="content2" tabindex="0">
-        </div>
+    <div v-show="statusData.isSplitScreen" class="drawingBoard" id="drawingBoard2"
+        style="width: calc(50vw - 140px);height: calc(100vh - 106px);margin-left: 5px;">
+        <div class="content" id="content2" tabindex="0"></div>
     </div>
 </div>
 

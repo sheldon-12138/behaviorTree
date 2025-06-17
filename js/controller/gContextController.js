@@ -126,6 +126,20 @@ function createCanvas() {
 
     return canvas;
 };
+
+// 创建分屏画布
+function createCanvas2(id) {
+    let svgCanvas = gContextDao.getGContextProp("svgCanvas");
+
+    let canvas = dom.createCanvas(svgCanvas.size, id);
+
+    //背景色
+    let background = dom.createBackground({ size: svgCanvas.size });
+    canvas.appendChild(background);
+
+    return canvas;
+};
+
 //创建模型栏的model
 function createModel(model) {
     let new_model = new Model(model.path,
@@ -221,7 +235,6 @@ function createNode(type, pos, name, treeId, TopNodeName) {
             entity.dom = eDom;
             dom.query("#mainSVG").appendChild(eDom);
         }
-
         return entity;
     }
 };
@@ -255,7 +268,7 @@ function createNewTree(newTreeName, addTreeProj, isInitial) {
         }
     }
     // console.log("treeMap", g.gContext.treeMap);
-    console.log("project", g.gContext.project);
+    // console.log("project", g.gContext.project);
 }
 
 //生成多选框
@@ -1199,6 +1212,7 @@ function createCriterionDefs(criterionImgList) {
 }
 
 export default {
+    createCanvas2,
     createNewTree,
     checkTreeName,
 

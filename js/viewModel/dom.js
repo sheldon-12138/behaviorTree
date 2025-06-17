@@ -771,7 +771,7 @@ function createNewSVGNode(newSVGNode) {
 };
 
 //创建画布
-function createCanvas(size) {
+function createCanvas(size, id) {
     // console.log(size)
     let canvas = createSVGElement(
         "svg",
@@ -780,7 +780,7 @@ function createCanvas(size) {
             "height": size.height,
 
             "data-class": "canvas",
-            "id": "mainSVG",
+            "id": id || "mainSVG",
         },
         [],
     );

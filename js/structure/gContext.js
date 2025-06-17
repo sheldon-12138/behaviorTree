@@ -394,15 +394,15 @@ export const g = {
         port: null,
 
         viewPort: {
-            width: window.innerWidth - 280,//-10
-            height: window.innerHeight - 104,
+            width: window.innerWidth - 280,//
+            height: window.innerHeight - 119, //
         },
 
         //svgCanvas
         svgCanvas: {
             _size: {
                 width: window.innerWidth - 280,//-280 1872,window.innerWidth 1453 2080
-                height: window.innerHeight - 115,// -74 892 999 -104
+                height: window.innerHeight - 119,// -74 892 999 -104  - 115 843
                 // width: window.innerWidth-10,//1872,window.innerWidth 1453 2080
                 // height: window.innerHeight-74,//892 999
             },
@@ -429,11 +429,13 @@ export const g = {
         // tab页数据
         // { id: 'dfdsf', name: '测试1tab' }, { id: 'dfddsfsasf', name: '测试2tab' }
         tabsArr: [{ id: 'newTree', name: 'Unilted' },],
+        tabsArr2: [],
 
         //各种状态控制
         statusData: {
-            ifSplitScreen: false, //是否分屏显示
+            isSplitScreen: false, //是否分屏显示
             currentTreeID: 'newTree',//当前树id
+            currentTreeID2: '',//分屏的当前树id
 
             showPort: true,
             showPrePost: true,

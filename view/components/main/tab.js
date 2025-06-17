@@ -10,7 +10,29 @@ export function tabVm() {
                 statusData: g.gContext.statusData,
             }
         },
+        computed: {
+            boardWidth() {
+                // 'calc((100vw - 272px)/2)'
+                return this.statusData.isSplitScreen
+                    ? 'calc(50vw - 140px)'
+                    : 'calc(100vw - 270px)';
+            },
+            boardHeight() {
+                return 'calc(100vh - 106px)'; //-110
+            }
+        },
         methods: {
+            // 树切屏
+            changeScreen(treeID, index) {
+                if (this.tabsArr.length < 2) {
+                    //主屏只有一棵树时，直接合屏
+                    this.statusData.isSplitScreen = false;
+                    nodesOPController.mergeScreen();
+                }
+                else {
+                    nodesOPController.changeScreen(treeID, index, true)
+                }
+            },
             clickTab(treeID) {
                 nodesOPController.selectedTree(treeID)
             },
@@ -19,12 +41,11 @@ export function tabVm() {
             },
             // 分屏
             splitScreen() {
-                this.statusData.ifSplitScreen = true;
-                nodesOPController.splitScreen();
+                this.statusData.isSplitScreen = true;
             },
             // 合屏
             mergeScreen() {
-                this.statusData.ifSplitScreen = false;
+                this.statusData.isSplitScreen = false;
                 nodesOPController.mergeScreen();
             },
         }

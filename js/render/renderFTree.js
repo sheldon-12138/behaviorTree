@@ -21,32 +21,13 @@ function _renderElement(entity, nodeFragment, lineFragment, treeId) {
         }
     }
 }
-function renderByContext(treeId) {
+function renderByContext(treeId, isMainScreen = true) {
     let nodeFragment = dom.doc.createDocumentFragment();
     let lineFragment = dom.doc.createDocumentFragment();
     // let doors = gContextDao.getGContextProp("doorEntityMap");
     let events = gContextDao.getGContextProp("eventEntityMap");
     let treeMap = gContextDao.getGContextProp("treeMap");
-    // for(let key in doors){
-    //     _renderElement(doors[key], nodeFragment, lineFragment);
-    // }
 
-    // for (let key in events) {
-    //     if (events[key].treeId == treeId) {
-    //         if (events[key].type == "SubTree") {
-    //             // console.log(events[key]);
-    //             const downId = findSubTree(events[key].name);
-    //             if (downId) {
-    //                 events[key].downEntity.push(downId);
-    //                 let downEntity = gContextDao.findEntity(downId)
-    //                 downEntity.upEntity.splice(0, downEntity.upEntity.length, events[key].id);
-    //             }
-    //             console.log(events[key].name, downId)
-    //             // 
-    //         }
-    //         // console.log(events[key]);
-    //     }
-    // }
     const treeEvents = treeMap[treeId].entityMap;
     // console.log(treeEvents);
     let subArr = []
@@ -78,12 +59,12 @@ function renderByContext(treeId) {
 
     // gContextDao.setGContextProp("activedEntityMap", subtreeEvents);
 
-    let mainSVG = dom.query("#mainSVG");
+    let mainSVG = dom.query(isMainScreen ? "#mainSVG" : "#mainSVG2");
     mainSVG.appendChild(lineFragment);
     mainSVG.appendChild(nodeFragment);
 
 
-    return subArr
+    return subArr;
 }
 
 function findSubTree(name) {

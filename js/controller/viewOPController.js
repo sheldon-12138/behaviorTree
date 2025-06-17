@@ -1,9 +1,5 @@
 import gContextDao from "../dao/gContextDao.js";
 import dom from "../viewModel/dom.js";
-import { EventEntity } from "../structure/entity.js";
-import Model from "../structure/model.js";
-import Line from "../structure/line.js";
-import Utils from "../utils/utils.js";
 import { g } from "../structure/gContext.js";
 import nodesOPController from "./nodesOPController.js";
 

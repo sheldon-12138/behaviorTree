@@ -138,7 +138,6 @@ export function headerVm() {
                         this.scale = 25;
                     }
                     gContextController.updateMainSVGSizeUp();
-                    gContextController.updateUserLine()
                 }, 400);
             },
             openProgress(val) {
@@ -276,7 +275,7 @@ export function headerVm() {
                             const endTimeStamp = new Date().getTime();
                             const totalDuration = (endTimeStamp - startTimeStamp) / 1000 + 's';
 
-                            this.$message.success(`保存成功，用时${totalDuration}`);
+                            this.$message.success(`导出成功，用时${totalDuration}`);
                             this.statusData.canvasChanged = false;
                         }).catch((error) => {
                             console.error('压缩包创建失败:', error);
@@ -444,7 +443,7 @@ export function headerVm() {
             },
             // 打开本地项目
             handleFileChange(event) {
-                const startTimeStamp = new Date().getTime();  // 设置计算开始时间戳为当前时间
+                // const startTimeStamp = new Date().getTime();  // 设置计算开始时间戳为当前时间
                 const files = event.target.files;
                 // console.log(files);
                 if (files.length == 1) {//xml单文件

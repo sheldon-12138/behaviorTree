@@ -1,0 +1,8 @@
+{
+  "role": "user",
+  "password": "123456",
+  "loggedIn": false,
+  "registerTime": "2025-06-20  11:25:08",
+  "enabled": true,
+  "ip": "::1"
+}

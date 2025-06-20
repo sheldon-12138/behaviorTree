@@ -45,7 +45,7 @@ function closeTab(index) {
             const item = tabsArr[tabsArr.length - 1]
             selectedTree(item.id)
         } else {//关闭最后一个tab
-            mergeScreen()
+            closeLastTab();
         }
     }
 }
@@ -95,8 +95,10 @@ function selectedTree(treeId, name) {
     }
     // if (obj.subTreeId) { loadSubTree(treeId, obj.subNodeId); }
 
-    if (nodeLayoutFlag)
-        _nodeLayout(treeId);
+    // 分屏状态下，自动布局
+    // if (statusData.isSplitScreen) nodeLayoutFlag = true;
+    // if (nodeLayoutFlag) 
+    _nodeLayout(treeId);
 
     viewOPController.updateAmount(["nodeNum"]);
     // 调整画布大小
@@ -124,10 +126,8 @@ function closeAssTab(index) {
         if (tabsArr.length > 0) {
             const item = tabsArr[tabsArr.length - 1]
             selectedAssTree(item.id)
-            // selectedTree(item.id)
-        } else {//关闭最后一个tab
-            // console.log("close all tabs")
-            closeLastTab()
+        } else {//关闭最后一个tab 直接合屏
+            mergeScreen();
         }
     }
 }
@@ -162,6 +162,14 @@ function changeScreen(treeId, index, mainScreenFlag) {
     } else {//副切主
         tabsArr.push(tabsArr2[index]);
         tabsArr2.splice(index, 1);
+
+        // 副屏的操作：保持/打开最后一个tabs的树
+        if (treeId == statusData.currentTreeID2) {//正打开的树切过去
+            const item = tabsArr2[tabsArr2.length - 1]
+            selectedAssTree(item.id)
+        }
+        // 主屏
+        selectedTree(treeId);
     }
 
     // 主切副
@@ -181,6 +189,11 @@ function mergeScreen() {
     // 清空副屏画布树 + 删除复制的子树
     clearTreeDom(true);
     // deleteSubTree();
+
+    let statusData = gContextDao.getGContextProp("statusData");
+    statusData.currentTreeID2 = null;
+
+    viewOPController.updateAmount(["nodeNum"]);
 }
 
 // 加载子树
@@ -196,7 +209,7 @@ function loadSubTree(treeId, subNodeId, subtreeEvents, isAssScreen) {
     // console.log('subNode', subNode)
 
     let subTreeRoot = findSubTreeRoot(treeId)
-    console.log('subTreeRoot', subTreeRoot)
+    // console.log('subTreeRoot', subTreeRoot)
     if (subTreeRoot) {
         subNode.downEntity.push(subTreeRoot.id);
         subTreeRoot.upEntity.push(subNode.id);

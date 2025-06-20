@@ -16,29 +16,31 @@
             <!-- <el-header>用户管理</el-header> -->
             <el-main>
                 <!-- height="500" width: 100%;  -->
-                <el-table :data="tableData" border stripe style="margin-top: 20px"
-                    @selection-change="handleSelectionChange">
-                    <el-table-column type="selection" width="60" align="center"></el-table-column>
-                    <el-table-column prop="role" label="角色" width="180" align="center"></el-table-column>
-                    <el-table-column prop="ip" label="Ip地址" width="180" align="center"></el-table-column>
-                    <el-table-column prop="username" label="用户名" width="180" align="center"></el-table-column>
-                    <el-table-column prop="password" label="密码" width="180" align="center"></el-table-column>
-                    <el-table-column prop="tel" label="手机号码" width="240" align="center"></el-table-column>
-                    <el-table-column prop="email" label="邮箱" width="240" align="center"></el-table-column>
-                    <el-table-column prop="registerTime" label="注册时间" width="170" align="center"></el-table-column>
-                    <el-table-column prop="status" label="用户状态" width="100" align="center"></el-table-column>
-                    <el-table-column label="操作" width="320" align="center">
+                <el-table :data="tableData" border stripe style="margin-top: 20px">
+                    <el-table-column type="index" label="序号" width="60" align="center"></el-table-column>
+                    <el-table-column v-for="(col, index) in columnArr" :key="index" :prop="col.prop" :label="col.label"
+                        :width="col.width" align="center">
+                    </el-table-column>
+                    <el-table-column label="操作" width="395" align="center">
                         <template slot-scope="scope">
-                            <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                            <el-button size="mini" type="danger" :disabled="scope.row.role === '管理员'"
-                                @click="handleDelete(scope.$index, scope.row)">禁用</el-button>
-                            <el-button size="mini" type="danger" :disabled="scope.row.role === '管理员'"
-                                @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-                            <el-button size="mini" type="danger"
-                                @click="handleEdit(scope.$index, scope.row)">重置密码</el-button>
+                            <el-button v-if="scope.row.role === '管理员'||userInfo.role === 'user'" size="mini"
+                                type="danger" @click="editPwd(scope.row,true)">修改密码</el-button>
+
+                            <template v-else>
+                                <el-button v-if="scope.row.status === '禁用'" size="mini"
+                                    @click="changeUserStatus(scope.row,true)">启用</el-button>
+                                <el-button v-else size="mini" type="danger"
+                                    @click="changeUserStatus(scope.row,false)">禁用</el-button>
+                                <el-button size="mini" type="danger" @click="deleteUser(scope.row)">删除</el-button>
+                                <el-button size="mini" type="danger" @click="editPwd(scope.row,false)">重置密码</el-button>
+                            </template>
                         </template>
                     </el-table-column>
                 </el-table>
+
+                <div style="text-align: right; margin-top: 20px">
+                    <el-button type="primary" @click="addUser">新增用户</el-button>
+                </div>
             </el-main>
         </el-container>
     </div>

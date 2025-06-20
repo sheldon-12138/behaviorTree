@@ -39,7 +39,8 @@ app.use(cookieParser('sessiontest'));
 app.use(session({
 	secret: 'sessiontest', //与cookieParser中的一致
 	resave: true,
-	saveUninitialized: true
+	saveUninitialized: true,
+	cookie: { maxAge: 14400000 }    // 4小时过期
 }));
 
 app.use('/', user);
@@ -85,6 +86,12 @@ app.get('/', function (req, resp) {
 // 加载静态文件  静态目录还是设为整个项目根 ./
 app.use(express.static('./'));
 
+// 获取当前时间
+function getCurrentTime() {
+	const date = new Date();
+	const pad = (n) => n.toString().padStart(2, '0');
+	return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}  ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+}
 
 app.get('/login', function (req, resp) {
 	fs.readFile('./public/pages/login/login.html', function (err, data) {
@@ -105,42 +112,71 @@ app.get('/manage', function (req, resp) {
 		}
 	})
 });
+
 app.get('/login/:user/:pwd', function (req, resp) {
 	const user = req.params.user;
 	const pwd = req.params.pwd;
-	const userDir = `./user/${user}`;
-	const infoPath = `${userDir}/${user}.info`;
-	// let corrent = false;
-	let files = fs.readdirSync('./user');
 
-	if (files.indexOf(user) === -1) {//用户不存在
-		resp.json({ status: '2' });
-	} else {
-		fs.readFile(infoPath, function (err, data) {
-			if (err) {
-				// resp.send('-2');
-				resp.json({ status: '-2' })
-			} else {
-				const userInfo = JSON.parse(data.toString());
-				if (userInfo.password === pwd) {
-					req.session.user = user; // 设置 session
-					// fetchRequest.sesstion['user'] = {name:user, password:pwd};
-					resp.json({
-						status: '1', // 登录成功
-						user: {
-							username: user,
-							...userInfo
-						}
-					});
-				} else {
-					resp.json({ status: '-1' });// 密码错误
-				}
-			}
-		});
+	const userRoot = './user';
+	if (!fs.existsSync(userRoot)) {
+		return resp.json({ status: '2' }); // 用户目录不存在
 	}
 
-});
+	// 获取所有用户名目录，确保大小写精确匹配
+	const allUsers = fs.readdirSync(userRoot);
+	const matched = allUsers.find(u => u === user);
 
+	if (!matched) {
+		return resp.json({ status: '2' }); // 用户不存在（大小写不一致也视为不存在）
+	}
+
+	const userDir = `./user/${user}`;
+	const infoPath = `${userDir}/${user}.info`;
+
+	if (!fs.existsSync(userDir)) {
+		return resp.json({ status: '2' }); // 用户不存在
+	}
+
+	fs.readFile(infoPath, function (err, data) {
+		if (err) {
+			return resp.json({ status: '-2' }); // 读取失败
+		}
+
+		const userInfo = JSON.parse(data.toString());
+
+		// 新增：检查是否启用
+		if (userInfo.enabled === false) {
+			return resp.json({ status: '-4', message: '该用户已被禁用' });
+		}
+		if (userInfo.loggedIn) {
+			return resp.json({ status: '-3', message: '用户已登录，请先退出当前会话' });
+		}
+
+		if (userInfo.password === pwd) {
+			userInfo.loggedIn = true; // 标记为已登录
+
+			// 保存更改
+			fs.writeFile(infoPath, JSON.stringify(userInfo, null, 2), (err) => {
+				if (err) {
+					console.error('写入登录状态失败:', err);
+					return resp.json({ status: '-2' });
+				}
+
+				req.session.user = user;
+
+				resp.json({
+					status: '1',
+					user: {
+						username: user,
+						...userInfo
+					}
+				});
+			});
+		} else {
+			resp.json({ status: '-1' }); // 密码错误
+		}
+	});
+});
 app.post('/register', function (req, resp) {
 	const user = req.body.username;
 	const pwd = req.body.password;
@@ -149,20 +185,31 @@ app.post('/register', function (req, resp) {
 		return resp.json({ status: '-2', message: '用户名或密码不能为空' });
 	}
 
+	const userRoot = './user';
+	if (!fs.existsSync(userRoot)) {
+		// 如果 user 根目录不存在，先创建
+		fs.mkdirSync(userRoot, { recursive: true });
+	}
+
+	// 读取所有已有用户名目录，严格大小写匹配
+	const allUsers = fs.readdirSync(userRoot);
+	const matched = allUsers.find(u => u === user);
+	if (matched) {
+		return resp.json({ status: '0', message: '用户已存在' });
+	}
+
 	const userDir = `./user/${user}`;
 	const infoPath = `${userDir}/${user}.info`;
 	// 获取 IP 地址（支持代理情况）
 	const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').toString();
 
-	if (fs.existsSync(userDir)) {
-		return resp.json({ status: '0', message: '用户已存在' });
-	}
-
 	try {
 		fs.mkdirSync(userDir, { recursive: true });
 		const userInfo = {
+			role: "user",
 			password: pwd,
-			registerTime: new Date().toISOString().replace('T', ' ').split('.')[0],
+			loggedIn: false,
+			registerTime: getCurrentTime(),
 			enabled: true,
 			ip
 		};
@@ -176,6 +223,26 @@ app.post('/register', function (req, resp) {
 });
 
 app.get('/logout', (req, res) => {
+	const username = req.session?.user;
+
+	if (!username) {
+		return res.redirect('/'); // 未登录，直接跳回首页
+	}
+
+	// const infoPath = path.join(__dirname, 'user', username, `${username}.info`);
+	const infoPath = `./user/${username}/${username}.info`;
+	// 清除 loggedIn 标志
+	if (fs.existsSync(infoPath)) {
+		try {
+			const userInfo = JSON.parse(fs.readFileSync(infoPath, 'utf-8'));
+			userInfo.loggedIn = false;
+			fs.writeFileSync(infoPath, JSON.stringify(userInfo, null, 2), 'utf-8');
+		} catch (err) {
+			console.error('登出时修改用户文件失败:', err);
+			// 不阻止登出流程，只记录错误
+		}
+	}
+
 	// 销毁 session
 	req.session.destroy(err => {
 		if (err) {
@@ -189,6 +256,27 @@ app.get('/logout', (req, res) => {
 		res.redirect('/');
 	});
 });
+
+
+function clearAllUserLoginStatus() {
+	const userRoot = './user';
+	if (!fs.existsSync(userRoot)) return;
+
+	const users = fs.readdirSync(userRoot);
+	users.forEach(user => {
+		const infoPath = `${userRoot}/${user}/${user}.info`;
+		if (fs.existsSync(infoPath)) {
+			try {
+				const data = fs.readFileSync(infoPath, 'utf-8');
+				const userInfo = JSON.parse(data);
+				userInfo.loggedIn = false;
+				fs.writeFileSync(infoPath, JSON.stringify(userInfo, null, 2), 'utf-8');
+			} catch (e) {
+				console.warn(`清理用户 ${user} 登录状态失败:`, e.message);
+			}
+		}
+	});
+}
 
 // 主页面
 app.get('/index', function (req, resp) {
@@ -930,38 +1018,6 @@ app.get('/read', function (req, resp) {
 	resp.send(JSON.stringify(newFiles));
 });
 
-function endWidth(target, endStr) {
-	let d = target.length - endStr.length;
-	return (d >= 0 && target.lastIndexOf(endStr) == d);
-}
-
-//获取用户所有的项目
-// app.get('/api/getUserProjectList/:user', function (req, resp) {
-// 	let user = req.params.user;
-// 	let files = fs.readdirSync('./user/' + user);
-// 	let projectList = {};
-// 	// let newFiles = files.filter(function (file) {
-// 	// 	return fs.lstatSync('./user/' + user + '/' + file).isDirectory();
-// 	// });
-
-// 	for (let i = 0; i < files.length; ++i) {
-// 		if (fs.lstatSync('./user/' + user + '/' + files[i]).isDirectory()) {
-// 			let proFiles = fs.readdirSync('./user/' + user + '/' + files[i]);
-// 			projectList[files[i]] = files[i];
-// 			for (let j = 0; j < proFiles.length; ++j) {
-// 				if (endWidth(proFiles[j], "infomation")) {
-// 					projectList[files[i]] = fs.readFileSync('./user/' + user + '/' + files[i] + '/' + proFiles[j], 'utf-8');
-// 				}
-// 			}
-// 		}
-// 	}
-
-
-// 	resp.send(JSON.stringify(projectList));
-
-// });
-
-
 app.get('/new/:user', function (req, resp) {
 	let user = req.params.user;
 	if (!fs.existsSync('./user/' + user)) {
@@ -1289,6 +1345,8 @@ function showObj(obj) {//遍历obj（即网络接口信息），查找符合条�
 	// return '192.168.11.199';
 	return 'localhost';
 }
+// 清除所有用户的登录状态
+clearAllUserLoginStatus();
 
 console.log(`Server running at http://${ip}:9800/`);
 app.listen(9800, ip);

@@ -12,66 +12,19 @@ const formatUtil = require('./util/formatUtil');
 const logManager = require('./util/logManager');
 
 const path = require('path');
-
+const userRoot = './user';
 
 router.post('/kk', function () {
     resp.send('yes');
 });
 
-//获取用户所有的项目
-router.get('/api/user/getUserProjectList/:user', function (req, resp) {
-    console.log(req.params)
-    let user = req.params.user;
-    let files = fs.readdirSync('./user/' + user);
-    let projectList = {};
-
-    for (let i = 0; i < files.length; ++i) {
-        if (fs.lstatSync('./user/' + user + '/' + files[i]).isDirectory()) {
-            let proFiles = fs.readdirSync('./user/' + user + '/' + files[i]);
-            projectList[files[i]] = files[i];
-            for (let j = 0; j < proFiles.length; ++j) {
-                if (fileUtil.endWidth(proFiles[j], "info")) {
-                    projectList[files[i]] = fs.readFileSync('./user/' + user + '/' + files[i] + '/' + proFiles[j], 'utf-8');
-                }
-            }
-        }
-    }
-    resp.send(JSON.stringify(projectList));
-});
-
 //保存文件
 router.post('/api/user/uploadUserProject', jp, function (req, resp) {
-    // console.log(req.body);
+    let { projectName, userModelList, mainTree } = req.body;
 
-    let { user, projectName, userModelList, mainTree } = req.body;
-
-    // console.log(req.body);
     let treeContent = formatUtil.returnXml(JSON.parse(req.body.treeContent), projectName, userModelList, mainTree);
 
-    //同步创建目录
-    let firstCreate = false;
-    // let dir = `./user/${user}/${projectName}`;
-    // if (!fs.existsSync(dir)) {
-    //     firstCreate = true;
-    //     fs.mkdirSync(dir);
-    // }
     resp.send({ message: "success", treeContent });
-    // let tree = fileUtil.writeContent(`${dir}/${projectName}.xml`, treeContent);
-    // let savePromiseList = [tree];
-    // Promise.all(savePromiseList).then((message) => {
-    //     resp.send({ message });
-    // }).catch((err) => {
-    //     console.log(err);
-    //     resp.send({ err: err });
-    // });
-    // fileUtil.writeContent(`${dir}/${projectName}.xml`, treeContent)
-    //     .then((message) => {
-    //         resp.send({ message });
-    //     })
-    //     .catch((err) => {
-    //         console.log(err);
-    //         resp.send({ err });
-    //     });
 });
 
 //图片上传
@@ -140,53 +93,6 @@ router.get('/api/user/getNodePic/:user/:project', function (req, resp) {
 });
 
 
-//打开项目
-router.get('/api/user/getUserProject/:user/:project', function (req, resp) {
-
-    const folderPath = fileUtil.getUserFolder(req.params.user, req.params.project);
-    let btprojFiles = null
-    fs.readdir(folderPath, (err, files) => {
-        if (err) {
-            return console.error(`无法读取文件夹: ${err}`);
-        }
-        // console.log(files);
-
-        btprojFiles = files.filter(file => path.extname(file) === '.btproj');
-        const xmlFiles = files.filter(file => path.extname(file) === '.xml');
-
-
-        // console.log(xmlFiles);
-    });
-    console.log(btprojFiles);
-
-
-    // let btproj = '', projcontent = ''
-
-
-    // btproj = fileUtil.getUserFile(req.params.user, req.params.project, '.btproj');
-
-    // if (btproj === '') {
-    //     resp.send('-1');
-    //     return;
-    // }
-
-    // Promise异步读文件
-    // let getBtproj = fileUtil.getContent(btproj);
-
-    // Promise.all([getBtproj]).then(function (dataList) {
-    //     projcontent = dataList[0];
-    //     let content = {
-    //         xml: {
-    //             name: xml,
-    //             content: formatUtil.xmlToJson(projcontent),
-    //         },
-    //     }
-    resp.send(JSON.stringify({}));
-    //     let logger = logManager.getLogger();
-    //     logger.info(`${req.params.user}/${req.params.project} 文件读取成功`);
-    // });
-
-});
 
 // 解析xml
 router.post('/api/user/analysisXml', jp, function (req, resp) {
@@ -228,24 +134,136 @@ router.get('/api/user/getUserList', function (req, resp) {
     }
 });
 
-// router.get('/api/user/getUserInfo/:user', function (req, resp) {
-//     const infoPath = `./user/${user}/${user}.info`;
+// 获取当前时间
+function getCurrentTime() {
+    const date = new Date();
+    const pad = (n) => n.toString().padStart(2, '0');
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}  ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+}
+// 封装的中间件统一进行权限检查
+function requireAdmin(req, res, next) {
+    console.log(req.session)
+    if (req.session?.role === 'Admin') {
+        return next();
+    }
+    return res.status(403).json({ status: '-403', message: '没有权限' });
+}
 
-//     try {
-//         const result = [];
+// 新增用户
+router.post('/api/user/addUser', jp,  (req, res) => {
+    const { username } = req.body;
 
-//         if (fs.existsSync(infoPath)) {
-//             const data = fs.readFileSync(infoPath, 'utf-8');
-//             const parsed = JSON.parse(data);
-//             result.push({
-//                 username: user,
-//                 ...parsed // 比如包含 password 字段
-//             });
-//         }
-//         resp.json(result);
-//     } catch (err) {
-//         resp.status(500).json({ error: '读取用户信息失败', details: err.message });
-//     }
-// });
+    if (!username || !/\S/.test(username)) {
+        return res.json({ status: '-2', message: '用户名不能为空' });
+    }
+
+    if (!fs.existsSync(userRoot)) {
+        fs.mkdirSync(userRoot, { recursive: true });
+    }
+
+    const allUsers = fs.readdirSync(userRoot);
+    if (allUsers.includes(username)) {
+        return res.json({ status: '0', message: '用户已存在' });
+    }
+
+    const userDir = path.join(userRoot, username);
+    const infoPath = path.join(userDir, `${username}.info`);
+
+    try {
+        fs.mkdirSync(userDir, { recursive: true });
+
+        const userInfo = {
+            role: 'user',
+            password: '123456',
+            loggedIn: false,
+            registerTime: getCurrentTime(),
+            enabled: true,
+            ip: ''
+        };
+
+        fs.writeFileSync(infoPath, JSON.stringify(userInfo, null, 2), 'utf-8');
+        res.json({ status: '1', message: '新增用户成功' });
+    } catch (err) {
+        console.error('新增用户出错:', err);
+        res.json({ status: '-2', message: '新增用户失败' });
+    }
+});
+
+// 启用/禁用用户
+router.post('/api/user/changeUserStatus', jp,  (req, res) => {
+    const { username, enabled } = req.body;
+
+    if (typeof enabled !== 'boolean' || !username) {
+        return res.json({ status: '-2', message: '参数错误' });
+    }
+
+    const infoPath = path.join(userRoot, username, `${username}.info`);
+    if (!fs.existsSync(infoPath)) {
+        return res.json({ status: '0', message: '用户不存在' });
+    }
+
+    try {
+        const userInfo = JSON.parse(fs.readFileSync(infoPath, 'utf-8'));
+        userInfo.enabled = enabled;
+        fs.writeFileSync(infoPath, JSON.stringify(userInfo, null, 2), 'utf-8');
+
+        res.json({ status: '1', message: enabled ? '用户已启用' : '用户已禁用' });
+    } catch (err) {
+        console.error('修改启用状态失败:', err);
+        res.json({ status: '-2', message: '操作失败' });
+    }
+});
+
+// 修改密码
+router.post('/api/user/updatePassword', jp,  (req, res) => {
+    const { username, newPassword } = req.body;
+
+    if (!username || !newPassword) {
+        return res.json({ status: '-2', message: '参数不能为空' });
+    }
+
+    const infoPath = path.join(userRoot, username, `${username}.info`);
+    if (!fs.existsSync(infoPath)) {
+        return res.json({ status: '0', message: '用户不存在' });
+    }
+
+    try {
+        const userInfo = JSON.parse(fs.readFileSync(infoPath, 'utf-8'));
+        userInfo.password = newPassword;
+        fs.writeFileSync(infoPath, JSON.stringify(userInfo, null, 2), 'utf-8');
+        res.json({ status: '1', message: '密码修改成功' });
+    } catch (err) {
+        console.error('修改密码失败:', err);
+        res.json({ status: '-2', message: '修改密码失败' });
+    }
+});
+
+// 删除用户
+router.post('/api/user/deleteUser', jp,  (req, res) => {
+    const { username } = req.body;
+
+    if (!username) {
+        return res.json({ status: '-2', message: '用户名不能为空' });
+    }
+
+    if (!fs.existsSync(userRoot)) {
+        return res.json({ status: '0', message: '用户目录不存在' });
+    }
+
+    const allUsers = fs.readdirSync(userRoot);
+    if (!allUsers.includes(username)) {
+        return res.json({ status: '0', message: '用户不存在' });
+    }
+
+    const userDir = path.join(userRoot, username);
+
+    try {
+        fs.rmSync(userDir, { recursive: true, force: true });
+        res.json({ status: '1', message: '用户已删除' });
+    } catch (err) {
+        console.error('删除用户失败:', err);
+        res.json({ status: '-2', message: '删除失败' });
+    }
+});
 
 module.exports = router;

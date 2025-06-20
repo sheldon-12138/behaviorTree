@@ -39,10 +39,10 @@
 
 <!-- 右上角的浮动按钮显示项目事件数等信息 -->
 <div class="float" id="float">
-    <div v-show="statusData.isShowFloat">
+    <div v-show="(!statusData.isSplitScreen)&&statusData.isShowFloat">
         <div id="floatMsg"></div>
     </div>
-    <div class="btn">
+    <div class="btn" v-show="(!statusData.isSplitScreen)">
         <img src="assets/main/floatMsg.png" @click="statusData.isShowFloat=!statusData.isShowFloat">
     </div>
 </div>

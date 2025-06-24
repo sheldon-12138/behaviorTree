@@ -82,18 +82,36 @@ function analysisXml(param) {
     });
 }
 
+// 合并两个有深层嵌套的对象
+function deepMerge(target, source) {
+    const isObject = obj => obj && typeof obj === 'object' && !Array.isArray(obj);
+
+    for (const key in source) {
+        if (isObject(source[key])) {
+            if (!target[key]) {
+                target[key] = {};
+            }
+            deepMerge(target[key], source[key]);
+        } else {
+            target[key] = source[key]; // source 的值覆盖 target
+        }
+    }
+
+    return target;
+}
+
 //保存用户项目
 function uploadUserProject(param) {
     //保存项目的具体内容
     let content = serialize.serializeAll({ info: param.info });
-    console.log('content', content);
+    // console.log('content', content);
 
     return fileRequest.uploadUserProject(content)
         .then((data) => {
 
             let codeObj = generateCode(content);
-            Object.assign(codeObj, data);//codeObj中包含深层嵌套，后端返回的data只有message和treeContent两个简单属性，可以浅拷贝进去
-
+            // Object.assign(codeObj, data);//codeObj中包含深层嵌套，后端返回的data只有message和treeContent两个简单属性，可以浅拷贝进去
+            codeObj = deepMerge(codeObj, data);
             // console.log('codeObj', codeObj);
             return Promise.resolve(codeObj);
         }).catch((err) => {

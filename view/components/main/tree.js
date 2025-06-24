@@ -53,14 +53,29 @@ export function treeVm() {
                 this.newTreeName = "";
                 this.addTreeProj = '';
             },
+            startEdit(node, data) {
+                data._oldLabel = data.label; // 缓存旧名
+                data.isEditing = true;
+            },
             // 修改xml名/树名
             editTreeName(node, data) {
                 let trimmedLabel = data.label.trim();
+                // 为空，恢复旧值
                 if (!trimmedLabel) {
-                    this.$message.warning('节点名称不能为空');
-                    // 恢复为之前的名称（需要缓存旧值）
-                    trimmedLabel == data._oldLabel || 'Unnamed';
+                    this.$message.warning('树名称不能为空');
+                    data.label = data._oldLabel || 'Unnamed';
+                    data.isEditing = false;
+                    return;
                 }
+
+                // 判断是否重名
+                if (gContextController.checkTreeName(trimmedLabel)) {
+                    this.$message.warning('树名称重复，请重新输入');
+                    data.label = data._oldLabel || 'Unnamed';
+                    data.isEditing = false;
+                    return;
+                }
+
                 data.label = trimmedLabel;
                 data.isEditing = false;
 
@@ -79,7 +94,7 @@ export function treeVm() {
             delteTree(node, data) {
                 // 删除project中的树
                 const parent = node.parent;
-                const children = parent.data.children ;
+                const children = parent.data.children;
                 const index = children.findIndex(d => d.treeId === data.treeId);
                 children.splice(index, 1);
 
@@ -91,7 +106,7 @@ export function treeVm() {
                 nodesOPController.deleteTree(data.treeId);
 
                 // 删除树相关的自定义节点
-                
+
             },
             // 过滤节点
             filterNode(value, data) {

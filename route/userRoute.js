@@ -18,13 +18,53 @@ router.post('/kk', function () {
     resp.send('yes');
 });
 
+// 遍历
+function readStaticFilesRecursively(dirPath, basePath = dirPath) {
+    const entries = fs.readdirSync(dirPath, { withFileTypes: true });
+    const files = [];
+
+    for (const entry of entries) {
+        const fullPath = path.join(dirPath, entry.name);
+        const relativePath = path.relative(basePath, fullPath).replace(/\\/g, '/');
+
+        if (entry.isDirectory()) {
+            files.push(...readStaticFilesRecursively(fullPath, basePath));
+        } else if (entry.isFile()) {
+            const content = fs.readFileSync(fullPath);
+            files.push({
+                path: `behaviortree_cpp/${relativePath}`, // 用于前端 zip 内路径
+                content: content.toString('base64') // base64 编码
+            });
+        }
+    }
+
+    return files;
+}
+
 //保存文件
 router.post('/api/user/uploadUserProject', jp, function (req, resp) {
-    let { projectName, userModelList, mainTree } = req.body;
+    const { projectName, userModelList, mainTree } = req.body;
 
-    let treeContent = formatUtil.returnXml(JSON.parse(req.body.treeContent), projectName, userModelList, mainTree);
+    const treeContent = formatUtil.returnXml(
+        JSON.parse(req.body.treeContent),
+        projectName,
+        userModelList,
+        mainTree
+    );
 
-    resp.send({ message: "success", treeContent });
+    // 读取静态资源目录
+    const staticDir = path.resolve(__dirname, '../assets/behaviortree_cpp');
+    let staticFiles = [];
+    if (fs.existsSync(staticDir)) {
+        staticFiles = readStaticFilesRecursively(staticDir);
+    }
+    // console.log('staticFiles', staticFiles);
+    // 返回给前端
+    resp.send({
+        message: "success",
+        treeContent,
+        staticFiles
+    });
 });
 
 //图片上传
@@ -150,7 +190,7 @@ function requireAdmin(req, res, next) {
 }
 
 // 新增用户
-router.post('/api/user/addUser', jp,  (req, res) => {
+router.post('/api/user/addUser', jp, (req, res) => {
     const { username } = req.body;
 
     if (!username || !/\S/.test(username)) {
@@ -190,7 +230,7 @@ router.post('/api/user/addUser', jp,  (req, res) => {
 });
 
 // 启用/禁用用户
-router.post('/api/user/changeUserStatus', jp,  (req, res) => {
+router.post('/api/user/changeUserStatus', jp, (req, res) => {
     const { username, enabled } = req.body;
 
     if (typeof enabled !== 'boolean' || !username) {
@@ -215,7 +255,7 @@ router.post('/api/user/changeUserStatus', jp,  (req, res) => {
 });
 
 // 修改密码
-router.post('/api/user/updatePassword', jp,  (req, res) => {
+router.post('/api/user/updatePassword', jp, (req, res) => {
     const { username, newPassword } = req.body;
 
     if (!username || !newPassword) {
@@ -239,7 +279,7 @@ router.post('/api/user/updatePassword', jp,  (req, res) => {
 });
 
 // 删除用户
-router.post('/api/user/deleteUser', jp,  (req, res) => {
+router.post('/api/user/deleteUser', jp, (req, res) => {
     const { username } = req.body;
 
     if (!username) {

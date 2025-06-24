@@ -29,7 +29,7 @@ function buildTree(node, xmlDoc, projectName) {
     }
 }
 
-// TreeNodesModel
+// TreeNodesModel 自定义节点端口固定属性有dataType、default、name等
 function buildModel(userModelList, xmlDoc) {
     const treeNodes = xmlDoc.ele('TreeNodesModel');
     userModelList.forEach(model => {
@@ -41,7 +41,7 @@ function buildModel(userModelList, xmlDoc) {
                 let attributes = {};
                 if (item.name) attributes.name = item.name;
                 if (item.default) attributes.default = item.default;
-                if (item.type) attributes.type = item.type;
+                if (item.dataType || item.type) attributes.dataType = item.dataType || item.type;
                 node.ele(key, attributes).txt(item._);;
             })
         }

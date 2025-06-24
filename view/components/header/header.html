@@ -187,12 +187,7 @@
         </el-form-item>
     </el-form> -->
 </el-dialog>
-<el-dialog title="正在加载文件" center :visible.sync="loadID" width="500px" :show-close="false" :close-on-click-modal="false"
-    :close-on-press-escape="false">
-    <el-progress :percentage="progressData.openProgress"></el-progress>
-</el-dialog>
 <!-- 用户管理 -->
-<!-- {{ isAdmin }}{{statusData}} -->
 <div class="header-item"
     :class="{'header-item-hover':!statusData.isCompute,'header-item-operation':statusData.isCompute}">
     <el-tooltip effect="light" content="用户管理" placement="top">

@@ -22,7 +22,7 @@
                     </span>
 
                     <span>
-                        <i class="el-icon-edit" style="margin-right: 5px;" @click.stop="data.isEditing = true"></i>
+                        <i class="el-icon-edit" style="margin-right: 5px;" @click.stop="startEdit(node, data)"></i>
                         <i v-if="node.level==1" class="el-icon-plus" @click.stop="() =>addTreePre(node,data)"></i>
                         <i v-else class="el-icon-delete" @click.stop="() =>delteTree(node,data)"></i>
                     </span>

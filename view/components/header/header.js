@@ -44,15 +44,9 @@ export function headerVm() {
             //粘贴位置随粘贴次数改变,
             optionSettings: false,//选项配置项窗口
             fileExportDialogVisible: false,   //文件保存窗口
-            fileSaveDialogVisible: false,   //文件保存窗口
-            fileOpenDialogVisible: false,   //打开文件窗口
-            saveAsID: false, //另存为窗口
             ip: window.location.hostname,
             port: window.location.port,
-            workspace: "",
             user: g.gContext.user,
-            saveTitle: "",
-            currentSaveProject: "",
             info: {
                 topIdArr: [],
                 treeIdArr: [],
@@ -60,41 +54,8 @@ export function headerVm() {
                 mainTreeName: '',
             },
             exportProject: null,
-            // saveFormRules: {
-            //     name: [{ required: true, message: '请输入树名称', trigger: 'blur' },],
-            //     createUnit: [{ required: true, message: '请输入创建单位', trigger: 'blur' },],
-            //     founder: [{ required: true, message: '请输入联系人', trigger: 'blur' },],
-            //     contactInformation: [{ required: true, message: '请输入联系方式', trigger: 'blur' },],
-            // },
-            colors: ['#99A9BF', '#F7BA2A', '#FF9900'],
-            modeID: g.gContext.statusData.modeID,
             scale: 100,
             timeout: null,
-            currentProject: "",
-            failureCalculationID: false, //di计算（单次）计算窗口开关控制
-            failureCalculationData: {  //di计算（单次）计算相关数据
-                frequency: 1000000,
-                accuracy: 5,
-                isWhole: false,
-                isCheck: false,
-                condition: '或'
-            },
-            probabilityCalculationID: false, // di计算（多次） 计算窗口开关控制
-            probabilityCalculationData: {  // di计算（多次） 计算相关数据
-                frequency: 1000000,
-                accuracy: 5,
-                isWhole: false,
-                isCheck: false,
-                condition: '或'
-            },
-            probabilityCalculationID2: false,    //PI计算窗口开关控制
-            progressData: g.gContext.progressData,
-            loadID: false,   //打开文件时的进度条
-            showProgressID: false,   //是否展示失效计算进度条
-            showProgressID2: false,  //是否展示概率计算进度条
-            failureComputedData: g.gContext.failureComputedData, //失效计算相关数据
-            isShowFtId: true,
-            isShowImg: true,
             softInfoID: false,
             softInfo: {
                 sysInfo: null,
@@ -102,20 +63,7 @@ export function headerVm() {
                 softVersion: '1.0.0',
                 currentDate: '2024-03-18'
             },
-            statusData: g.gContext.statusData,   //状态集
-            fileInfoPreview: g.gContext.fileInfoPreview, //预览信息
-            fileInfoHoverPreview: g.gContext.fileInfoHoverPreview, //预览信息
-            filInfoShow: 1,  //1-显示选中文件的信息 2-显示悬浮文件的信息
-            saveAsForm: {    //另存为名字
-                name: null,
-            },
-            saveAsFormRules: {
-                name: [{ required: true, message: '请输入树名称', trigger: 'blur' },],
-            },
-            doorModelList: g.gContext.doorModelList,
-            eventModelList: g.gContext.eventModelList,
-            criterionImgList: g.gContext.criterionImgList,
-            // statusData:g.gContext.statusData
+            statusData: g.gContext.statusData,
         },
         watch: {
             //缩放比例发生变化
@@ -140,35 +88,6 @@ export function headerVm() {
                     gContextController.updateMainSVGSizeUp();
                 }, 400);
             },
-            openProgress(val) {
-                if (val >= 100) {
-                    this.loadID = false;
-                }
-            },
-            failureCalculationProgress(val) {
-                if (val == 99) {
-                    setTimeout(() => {
-                        this.showProgressID = false;
-                        this.$notify({
-                            title: '失效计算完成',
-                            type: 'success',
-                            duration: 3000
-                        });
-                    }, 5000);
-                }
-            },
-            probabilityCalculationProgress(val) {
-                if (val == 99) {
-                    setTimeout(() => {
-                        this.showProgressID2 = false;
-                        this.$notify({
-                            title: '概率计算完成',
-                            type: 'success',
-                            duration: 3000
-                        });
-                    }, 2000);
-                }
-            }
         },
         methods: {
             //新建
@@ -180,9 +99,10 @@ export function headerVm() {
                 this.info = {
                     name: "",  //文件名称
                     topIdArr: [],
-                    treeIdArr:[],
+                    treeIdArr: [],
                     mainTreeName: ''
                 };
+                this.exportProject = null;
                 this.fileExportDialogVisible = true;
                 // console.log('treeMap', this.treeMap)
             },
@@ -210,81 +130,95 @@ export function headerVm() {
                 // console.log('info', this.info);
                 const startTimeStamp = new Date().getTime();  // 设置计算开始时间戳为当前时间
                 fileController.uploadUserProject({ info: this.info }).then((result) => {
-                    // console.log(result, this.info)
-                    if (!result.err) {
-                        this.fileExportDialogVisible = false;
-                        const fileNameBase = this.info.name
+                    console.log('result', result)
+                    // if (!result.err) {
+                    //     this.fileExportDialogVisible = false;
+                    //     const fileNameBase = this.info.name
 
-                        const zip = new JSZip();
-                        // 添加文件到 zip 下载 XML 文件
-                        if (result.treeContent) {
-                            zip.file(`config/${fileNameBase}.xml`, result.treeContent);
-                        }
-                        // main.CPP 文件
-                        if (result.cppMainContent) {
-                            zip.file(`${fileNameBase}/main.cpp`, result.cppMainContent);
-                        }
-                        // 同名.CPP 文件
-                        if (result.cppContent) {
-                            zip.file(`${fileNameBase}/${fileNameBase}.cpp`, result.cppContent);
-                        }
-                        // 同名.vcxproj 文件
-                        if (result.vcxprojContent) {
-                            zip.file(`${fileNameBase}/${fileNameBase}.vcxproj`, result.vcxprojContent);
-                        }
-                        // 同名.vcxproj.filters 文件
-                        if (result.filtersContent) {
-                            zip.file(`${fileNameBase}/${fileNameBase}.vcxproj.filters`, result.filtersContent);
-                        }
-                        // 同名.vcxproj.user 文件
-                        if (result.userContent) {
-                            zip.file(`${fileNameBase}/${fileNameBase}.vcxproj.user`, result.userContent);
-                        }
-                        // 同名.h 文件
-                        if (result.hContent) {
-                            zip.file(`${fileNameBase}/${fileNameBase}.h`, result.hContent);
-                        }
-                        // dataType.h 文件
-                        if (result.dataTypeH) {
-                            zip.file(`${fileNameBase}/DataType.h`, result.dataTypeH);
-                        }
-                        // Node文件夹下所有Node.cpp、Node.h
-                        if (result.nodeStrList && result.nodeStrList.length > 0) {
-                            result.nodeStrList.forEach(nodeStr => {
-                                zip.file(`${fileNameBase}/Node/${nodeStr.nodeName}.cpp`, nodeStr.cpp);
-                                zip.file(`${fileNameBase}/Node/${nodeStr.nodeName}.h`, nodeStr.h);
-                            });
-                        }
+                    //     const zip = new JSZip();
+                    //     // 添加文件到 zip 下载 XML 文件
+                    //     if (result.treeContent) {
+                    //         zip.file(`config/${fileNameBase}.xml`, result.treeContent);
+                    //     }
 
-                        // 生成 zip 文件内容
-                        zip.generateAsync({ type: 'blob' }).then(blob => {
-                            // 创建下载链接
-                            const zipUrl = URL.createObjectURL(blob);
-                            const zipLink = document.createElement('a');
-                            zipLink.href = zipUrl;
-                            zipLink.download = `${fileNameBase}.zip`;
-                            document.body.appendChild(zipLink);
-                            zipLink.click();
+                    //     // 添加静态资源文件
+                    //     if (result.staticFiles && result.staticFiles.length > 0) {
+                    //         result.staticFiles.forEach(file => {
+                    //             const binary = atob(file.content); // base64 -> binary string
+                    //             const len = binary.length;
+                    //             const bytes = new Uint8Array(len);
+                    //             for (let i = 0; i < len; i++) {
+                    //                 bytes[i] = binary.charCodeAt(i);
+                    //             }
+                    //             zip.file(`${file.path}`, bytes); // 保持路径结构
+                    //         });
+                    //     }
 
-                            // 清理资源
-                            setTimeout(() => {
-                                document.body.removeChild(zipLink);
-                                URL.revokeObjectURL(zipUrl);
-                            }, 100);
+                    //     // main.CPP 文件
+                    //     if (result.cppMainContent) {
+                    //         zip.file(`${fileNameBase}/main.cpp`, result.cppMainContent);
+                    //     }
+                    //     // 同名.CPP 文件
+                    //     if (result.cppContent) {
+                    //         zip.file(`${fileNameBase}/${fileNameBase}.cpp`, result.cppContent);
+                    //     }
+                    //     // 同名.vcxproj 文件
+                    //     if (result.vcxprojContent) {
+                    //         zip.file(`${fileNameBase}/${fileNameBase}.vcxproj`, result.vcxprojContent);
+                    //     }
+                    //     // 同名.vcxproj.filters 文件
+                    //     if (result.filtersContent) {
+                    //         zip.file(`${fileNameBase}/${fileNameBase}.vcxproj.filters`, result.filtersContent);
+                    //     }
+                    //     // 同名.vcxproj.user 文件
+                    //     if (result.userContent) {
+                    //         zip.file(`${fileNameBase}/${fileNameBase}.vcxproj.user`, result.userContent);
+                    //     }
+                    //     // 同名.h 文件
+                    //     if (result.hContent) {
+                    //         zip.file(`${fileNameBase}/${fileNameBase}.h`, result.hContent);
+                    //     }
+                    //     // dataType.h 文件
+                    //     if (result.dataTypeH) {
+                    //         zip.file(`${fileNameBase}/DataType.h`, result.dataTypeH);
+                    //     }
+                    //     // Node文件夹下所有Node.cpp、Node.h
+                    //     if (result.nodeStrList && result.nodeStrList.length > 0) {
+                    //         result.nodeStrList.forEach(nodeStr => {
+                    //             zip.file(`${fileNameBase}/Node/${nodeStr.nodeName}.cpp`, nodeStr.cpp);
+                    //             zip.file(`${fileNameBase}/Node/${nodeStr.nodeName}.h`, nodeStr.h);
+                    //         });
+                    //     }
 
-                            const endTimeStamp = new Date().getTime();
-                            const totalDuration = (endTimeStamp - startTimeStamp) / 1000 + 's';
+                    //     // 生成 zip 文件内容
+                    //     zip.generateAsync({ type: 'blob' }).then(blob => {
+                    //         // 创建下载链接
+                    //         const zipUrl = URL.createObjectURL(blob);
+                    //         const zipLink = document.createElement('a');
+                    //         zipLink.href = zipUrl;
+                    //         zipLink.download = `${fileNameBase}.zip`;
+                    //         document.body.appendChild(zipLink);
+                    //         zipLink.click();
 
-                            this.$message.success(`导出成功，用时${totalDuration}`);
-                            this.statusData.canvasChanged = false;
-                        }).catch((error) => {
-                            console.error('压缩包创建失败:', error);
-                            this.$message.error('压缩包创建失败');
-                        });
-                    } else {
-                        //文件保存失败
-                        this.$message.error('保存失败');
-                    }
+                    //         // 清理资源
+                    //         setTimeout(() => {
+                    //             document.body.removeChild(zipLink);
+                    //             URL.revokeObjectURL(zipUrl);
+                    //         }, 100);
+
+                    //         const endTimeStamp = new Date().getTime();
+                    //         const totalDuration = (endTimeStamp - startTimeStamp) / 1000 + 's';
+
+                    //         this.$message.success(`导出成功，用时${totalDuration}`);
+                    //         this.statusData.canvasChanged = false;
+                    //     }).catch((error) => {
+                    //         console.error('压缩包创建失败:', error);
+                    //         this.$message.error('压缩包创建失败');
+                    //     });
+                    // } else {
+                    //     //文件保存失败
+                    //     this.$message.error('保存失败');
+                    // }
                 });
             },
             //粘贴

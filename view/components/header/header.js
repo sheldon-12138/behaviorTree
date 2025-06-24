@@ -131,94 +131,94 @@ export function headerVm() {
                 const startTimeStamp = new Date().getTime();  // 设置计算开始时间戳为当前时间
                 fileController.uploadUserProject({ info: this.info }).then((result) => {
                     console.log('result', result)
-                    // if (!result.err) {
-                    //     this.fileExportDialogVisible = false;
-                    //     const fileNameBase = this.info.name
+                    if (!result.err) {
+                        this.fileExportDialogVisible = false;
+                        const fileNameBase = this.info.name
 
-                    //     const zip = new JSZip();
-                    //     // 添加文件到 zip 下载 XML 文件
-                    //     if (result.treeContent) {
-                    //         zip.file(`config/${fileNameBase}.xml`, result.treeContent);
-                    //     }
+                        const zip = new JSZip();
+                        // 添加文件到 zip 下载 XML 文件
+                        if (result.treeContent) {
+                            zip.file(`config/${fileNameBase}.xml`, result.treeContent);
+                        }
 
-                    //     // 添加静态资源文件
-                    //     if (result.staticFiles && result.staticFiles.length > 0) {
-                    //         result.staticFiles.forEach(file => {
-                    //             const binary = atob(file.content); // base64 -> binary string
-                    //             const len = binary.length;
-                    //             const bytes = new Uint8Array(len);
-                    //             for (let i = 0; i < len; i++) {
-                    //                 bytes[i] = binary.charCodeAt(i);
-                    //             }
-                    //             zip.file(`${file.path}`, bytes); // 保持路径结构
-                    //         });
-                    //     }
+                        // 添加静态资源文件
+                        if (result.staticFiles && result.staticFiles.length > 0) {
+                            result.staticFiles.forEach(file => {
+                                const binary = atob(file.content); // base64 -> binary string
+                                const len = binary.length;
+                                const bytes = new Uint8Array(len);
+                                for (let i = 0; i < len; i++) {
+                                    bytes[i] = binary.charCodeAt(i);
+                                }
+                                zip.file(`${file.path}`, bytes); // 保持路径结构
+                            });
+                        }
 
-                    //     // main.CPP 文件
-                    //     if (result.cppMainContent) {
-                    //         zip.file(`${fileNameBase}/main.cpp`, result.cppMainContent);
-                    //     }
-                    //     // 同名.CPP 文件
-                    //     if (result.cppContent) {
-                    //         zip.file(`${fileNameBase}/${fileNameBase}.cpp`, result.cppContent);
-                    //     }
-                    //     // 同名.vcxproj 文件
-                    //     if (result.vcxprojContent) {
-                    //         zip.file(`${fileNameBase}/${fileNameBase}.vcxproj`, result.vcxprojContent);
-                    //     }
-                    //     // 同名.vcxproj.filters 文件
-                    //     if (result.filtersContent) {
-                    //         zip.file(`${fileNameBase}/${fileNameBase}.vcxproj.filters`, result.filtersContent);
-                    //     }
-                    //     // 同名.vcxproj.user 文件
-                    //     if (result.userContent) {
-                    //         zip.file(`${fileNameBase}/${fileNameBase}.vcxproj.user`, result.userContent);
-                    //     }
-                    //     // 同名.h 文件
-                    //     if (result.hContent) {
-                    //         zip.file(`${fileNameBase}/${fileNameBase}.h`, result.hContent);
-                    //     }
-                    //     // dataType.h 文件
-                    //     if (result.dataTypeH) {
-                    //         zip.file(`${fileNameBase}/DataType.h`, result.dataTypeH);
-                    //     }
-                    //     // Node文件夹下所有Node.cpp、Node.h
-                    //     if (result.nodeStrList && result.nodeStrList.length > 0) {
-                    //         result.nodeStrList.forEach(nodeStr => {
-                    //             zip.file(`${fileNameBase}/Node/${nodeStr.nodeName}.cpp`, nodeStr.cpp);
-                    //             zip.file(`${fileNameBase}/Node/${nodeStr.nodeName}.h`, nodeStr.h);
-                    //         });
-                    //     }
+                        // main.CPP 文件
+                        if (result.cppMainContent) {
+                            zip.file(`${fileNameBase}/main.cpp`, result.cppMainContent);
+                        }
+                        // 同名.CPP 文件
+                        if (result.cppContent) {
+                            zip.file(`${fileNameBase}/${fileNameBase}.cpp`, result.cppContent);
+                        }
+                        // 同名.vcxproj 文件
+                        if (result.vcxprojContent) {
+                            zip.file(`${fileNameBase}/${fileNameBase}.vcxproj`, result.vcxprojContent);
+                        }
+                        // 同名.vcxproj.filters 文件
+                        if (result.filtersContent) {
+                            zip.file(`${fileNameBase}/${fileNameBase}.vcxproj.filters`, result.filtersContent);
+                        }
+                        // 同名.vcxproj.user 文件
+                        if (result.userContent) {
+                            zip.file(`${fileNameBase}/${fileNameBase}.vcxproj.user`, result.userContent);
+                        }
+                        // 同名.h 文件
+                        if (result.hContent) {
+                            zip.file(`${fileNameBase}/${fileNameBase}.h`, result.hContent);
+                        }
+                        // dataType.h 文件
+                        if (result.dataTypeH) {
+                            zip.file(`${fileNameBase}/DataType.h`, result.dataTypeH);
+                        }
+                        // Node文件夹下所有Node.cpp、Node.h
+                        if (result.nodeStrList && result.nodeStrList.length > 0) {
+                            result.nodeStrList.forEach(nodeStr => {
+                                zip.file(`${fileNameBase}/Node/${nodeStr.nodeName}.cpp`, nodeStr.cpp);
+                                zip.file(`${fileNameBase}/Node/${nodeStr.nodeName}.h`, nodeStr.h);
+                            });
+                        }
 
-                    //     // 生成 zip 文件内容
-                    //     zip.generateAsync({ type: 'blob' }).then(blob => {
-                    //         // 创建下载链接
-                    //         const zipUrl = URL.createObjectURL(blob);
-                    //         const zipLink = document.createElement('a');
-                    //         zipLink.href = zipUrl;
-                    //         zipLink.download = `${fileNameBase}.zip`;
-                    //         document.body.appendChild(zipLink);
-                    //         zipLink.click();
+                        // 生成 zip 文件内容
+                        zip.generateAsync({ type: 'blob' }).then(blob => {
+                            // 创建下载链接
+                            const zipUrl = URL.createObjectURL(blob);
+                            const zipLink = document.createElement('a');
+                            zipLink.href = zipUrl;
+                            zipLink.download = `${fileNameBase}.zip`;
+                            document.body.appendChild(zipLink);
+                            zipLink.click();
 
-                    //         // 清理资源
-                    //         setTimeout(() => {
-                    //             document.body.removeChild(zipLink);
-                    //             URL.revokeObjectURL(zipUrl);
-                    //         }, 100);
+                            // 清理资源
+                            setTimeout(() => {
+                                document.body.removeChild(zipLink);
+                                URL.revokeObjectURL(zipUrl);
+                            }, 100);
 
-                    //         const endTimeStamp = new Date().getTime();
-                    //         const totalDuration = (endTimeStamp - startTimeStamp) / 1000 + 's';
+                            const endTimeStamp = new Date().getTime();
+                            const totalDuration = (endTimeStamp - startTimeStamp) / 1000 + 's';
 
-                    //         this.$message.success(`导出成功，用时${totalDuration}`);
-                    //         this.statusData.canvasChanged = false;
-                    //     }).catch((error) => {
-                    //         console.error('压缩包创建失败:', error);
-                    //         this.$message.error('压缩包创建失败');
-                    //     });
-                    // } else {
-                    //     //文件保存失败
-                    //     this.$message.error('保存失败');
-                    // }
+                            this.$message.success(`导出成功，用时${totalDuration}`);
+                            this.statusData.canvasChanged = false;
+                        }).catch((error) => {
+                            console.error('压缩包创建失败:', error);
+                            this.$message.error('压缩包创建失败');
+                        });
+                    } else {
+                        //文件保存失败
+                        this.$message.error('保存失败');
+                    }
                 });
             },
             //粘贴

@@ -224,7 +224,7 @@ function loadSubTree(treeId, subNodeId, subtreeEvents, isAssScreen) {
     }
 
     // 折叠子树节点
-    // gContextController.foldNodeById(subNode.id)
+    gContextController.foldNodeById(subNode.id)
 
     gContextDao.setGContextProp("activedEntityMap", {});
 }

@@ -19,24 +19,24 @@
         <el-button :disabled="!info.name||!exportProject" type="primary" @click="fileExport">确定</el-button>
     </div>
 </el-dialog>
-<!-- 新建 -->
+<!-- 新建 ,'header-item-operation':statusData.isCompute-->
 <div style="margin-left: 16px;" class="header-item"
-    :class="{'header-item-hover':!statusData.isCompute,'header-item-operation':statusData.isCompute}">
+    :class="{'header-item-hover':!statusData.isCompute}">
     <el-tooltip effect="light" content="新建" placement="top">
         <img src="assets/header/xinjian.png" @click="create()" draggable="false">
     </el-tooltip>
 </div>
-<!-- 打开单个xml -->
+<!-- 打开单个xml ,'header-item-operation':statusData.isCompute-->
 <div class="header-item"
-    :class="{'header-item-hover':!statusData.isCompute,'header-item-operation':statusData.isCompute}">
+    :class="{'header-item-hover':!statusData.isCompute}">
     <el-tooltip effect="light" content="打开单个xml文件" placement="top">
         <img src="assets/header/danwenjian.png" @click="triggerFileInput" draggable="false">
     </el-tooltip>
 </div>
 
-<!-- 打开文件夹 -->
+<!-- 打开文件夹 ,'header-item-operation':statusData.isCompute-->
 <div class="header-item"
-    :class="{'header-item-hover':!statusData.isCompute,'header-item-operation':statusData.isCompute}">
+    :class="{'header-item-hover':!statusData.isCompute}">
     <el-tooltip effect="light" content="打开文件夹" placement="top">
         <img src="assets/header/dakai.png" @click="triggerFolderInput" draggable="false">
     </el-tooltip>
@@ -45,9 +45,9 @@
 <input type="file" ref="fileInput" style="display: none;" @change="handleFileChange" accept=".xml">
 <input type="file" ref="folderInput" style="display: none;" @change="handleFileChange" webkitdirectory>
 
-<!-- 导出 -->
-<div class="header-item" :class="{'header-item-hover':statusData.canvasChanged,
-'header-item-operation':statusData.isCompute||!statusData.canvasChanged,}">
+<!-- 导出 :class="{'header-item-hover':statusData.canvasChanged,
+'header-item-operation':statusData.isCompute||!statusData.canvasChanged,}"-->
+<div class="header-item header-item-hover" >
     <el-tooltip effect="light" content="导出" placement="top">
         <img src="assets/header/daochu.png" @click="openExport()" draggable="false">
     </el-tooltip>
@@ -78,17 +78,17 @@
     </el-tooltip>
 </div>
 <div class="bar" style="margin-left: 12px;margin-right: 20px;"></div>
-<!-- 自动布局 -->
+<!-- 自动布局 ,'header-item-operation':statusData.isCompute-->
 <div class="header-item "
-    :class="{'header-item-hover':!statusData.isCompute,'header-item-operation':statusData.isCompute}">
+    :class="{'header-item-hover':!statusData.isCompute}">
     <el-tooltip effect="light" content="自动布局" placement="top">
         <!-- :class="{'header-item-autoLayout':isAutoLayoutMode}" -->
         <img src="assets/header/zidongbuju.png" @click="autoLayout()" draggable="false">
     </el-tooltip>
 </div>
-<!-- 缩小 -->
+<!-- 缩小 ,'header-item-operation':statusData.isCompute-->
 <div class="header-item"
-    :class="{'header-item-hover':!statusData.isCompute,'header-item-operation':statusData.isCompute}">
+    :class="{'header-item-hover':!statusData.isCompute}">
     <el-tooltip effect="light" content="缩小" placement="top">
         <img src="assets/header/suoxiao.png" @click="narrow()" draggable="false">
     </el-tooltip>
@@ -103,18 +103,18 @@
         {{ scale + '%' }}
     </div>
 </div>
-<!-- 放大 -->
+<!-- 放大 ,'header-item-operation':statusData.isCompute-->
 <div class="header-item"
-    :class="{'header-item-hover':!statusData.isCompute,'header-item-operation':statusData.isCompute}">
+    :class="{'header-item-hover':!statusData.isCompute}">
     <el-tooltip effect="light" content="放大" placement="top">
         <img src="assets/header/fangda.png" @click="enlarge()" draggable="false">
     </el-tooltip>
 </div>
 <div class="bar" style="margin-left: 13px;margin-right: 20px;"></div>
 
-<!-- 系统信息 -->
+<!-- 系统信息 ,'header-item-operation':statusData.isCompute-->
 <div style="width: 64px;" class="header-item"
-    :class="{'header-item-hover':!statusData.isCompute,'header-item-operation':statusData.isCompute}">
+    :class="{'header-item-hover':!statusData.isCompute}">
     <el-tooltip effect="light" content="设置" placement="top">
         <img src="assets/header/setting.png" @click="getOSAndBrowser()" draggable="false">
     </el-tooltip>
@@ -187,16 +187,16 @@
         </el-form-item>
     </el-form> -->
 </el-dialog>
-<!-- 用户管理 -->
+<!-- 用户管理 ,'header-item-operation':statusData.isCompute-->
 <div class="header-item"
-    :class="{'header-item-hover':!statusData.isCompute,'header-item-operation':statusData.isCompute}">
+    :class="{'header-item-hover':!statusData.isCompute}">
     <el-tooltip effect="light" content="用户管理" placement="top">
         <img src="assets/header/user.png" @click="userManagement()" draggable="false">
     </el-tooltip>
 </div>
-<!-- 登出 -->
+<!-- 登出 ,'header-item-operation':statusData.isCompute-->
 <div class="header-item"
-    :class="{'header-item-hover':!statusData.isCompute,'header-item-operation':statusData.isCompute}">
+    :class="{'header-item-hover':!statusData.isCompute}">
     <el-tooltip effect="light" content="登出" placement="top">
         <img src="assets/header/logOut.png" @click="logOut()" draggable="false">
     </el-tooltip>

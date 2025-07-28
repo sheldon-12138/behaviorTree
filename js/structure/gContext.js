@@ -27,7 +27,7 @@ export const g = {
         tempModel: null,
         modelList: [
             {
-                ID: '行为节点',
+                ID: '动作节点',
                 type: 'Action',
                 children: [{
                     ID: 'AlwaysFailure'
@@ -185,7 +185,7 @@ export const g = {
             }],
         modelList1: [
             {
-                ID: '行为节点',
+                ID: '动作节点',
                 type: 'Action',
                 children: [{
                     ID: 'AlwaysFailure'

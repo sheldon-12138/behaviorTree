@@ -136,7 +136,7 @@ function generateCode(content) {
                 if (!seenNames.has(port.name)) {
                     seenNames.add(port.name);
                     blackboardVars.push({
-                        type: port.type,
+                        type: port.dataType,
                         name: port.name
                     });
                 }
@@ -158,6 +158,7 @@ function generateCode(content) {
         vcxprojContent: cppCode.vcxprojContent({ className, nodeNameList }),
         filtersContent: cppCode.filtersContent({ className, nodeNameList }),
         userContent: cppCode.userContent({ className, nodeNameList }),
+        slnContent: cppCode.slnContent({ className }),
 
         hContent: cppCode.returnHeaderCode({ className, blackboardVars }),
         dataTypeH: cppCode.dataTypeH({ className, dataTypeList }),

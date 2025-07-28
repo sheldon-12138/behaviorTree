@@ -125,6 +125,15 @@ export function headerVm() {
                 this.info.treeIdArr = treeIdArr;
                 this.info.mainTreeName = mainTreeName;
             },
+
+            stringToGBK(str) {
+                const gbkBytes = Encoding.convert(Encoding.stringToCode(str), {
+                    from: 'UTF8',
+                    to: 'GBK',
+                    type: 'arraybuffer'
+                });
+                return new Uint8Array(gbkBytes);
+            },
             //导出zip文件
             fileExport() {
                 // console.log('info', this.info);
@@ -174,13 +183,17 @@ export function headerVm() {
                         if (result.userContent) {
                             zip.file(`${fileNameBase}/${fileNameBase}.vcxproj.user`, result.userContent);
                         }
+                        // 同名.sln 文件
+                        if (result.dataTypeH) {
+                            zip.file(`${fileNameBase}.sln`, result.slnContent);
+                        }
                         // 同名.h 文件
                         if (result.hContent) {
-                            zip.file(`${fileNameBase}/${fileNameBase}.h`, result.hContent);
+                            zip.file(`${fileNameBase}/${fileNameBase}.h`, this.stringToGBK(result.hContent));
                         }
                         // dataType.h 文件
                         if (result.dataTypeH) {
-                            zip.file(`${fileNameBase}/DataType.h`, result.dataTypeH);
+                            zip.file(`${fileNameBase}/DataType.h`, this.stringToGBK(result.dataTypeH));
                         }
                         // Node文件夹下所有Node.cpp、Node.h
                         if (result.nodeStrList && result.nodeStrList.length > 0) {

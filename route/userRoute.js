@@ -37,14 +37,12 @@ function readStaticFilesRecursively(dirPath, basePath = dirPath) {
             });
         }
     }
-
     return files;
 }
 
 //保存文件
 router.post('/api/user/uploadUserProject', jp, function (req, resp) {
     const { projectName, userModelList, mainTree } = req.body;
-
     const treeContent = formatUtil.returnXml(
         JSON.parse(req.body.treeContent),
         projectName,

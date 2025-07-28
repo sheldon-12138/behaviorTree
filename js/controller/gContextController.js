@@ -269,6 +269,8 @@ function createNewTree(newTreeName, addTreeProj, isInitial) {
     }
     // console.log("treeMap", g.gContext.treeMap);
     // console.log("project", g.gContext.project);
+    let modelList = gContextDao.getGContextProp("modelList");
+    modelList[4].children.push({ ID: newTreeName, isUser: true })
 }
 
 //生成多选框
@@ -530,7 +532,7 @@ function createNewLine(type, beginPoint) {
         newLine = new Line(statusData.currentTreeID || "newTree", "newLine",
             { entityID: beginPoint.id, posX: pos.x, posY: pos.y, type: t },
             { posX: pos.x, posY: pos.y, type: et }, true);
-        console.log("newLine", newLine)
+        // console.log("newLine", newLine)
         newLine.update();// 更新连接线的属性
         gContextDao.setGContextProp("newLine", newLine);// 将新连接线对象存储到gContext中
         let line = dom.createLine(newLine);
@@ -555,16 +557,35 @@ function updateNewLine(endPosition) {
         // console.log('newLine', newLine)
         newLine.end.entityID = null;
 
+
         for (let key in map) {
             if (key === newLine.begin.entityID) continue;
 
             let entity = map[key];
-            if (t === "up") { // 上向下连
-                if (entity.upEntity.length >= 1 || (beginE.type == "Control" ? false : beginE.downEntity.length >= 1) || !entity.hasUpNodes) continue;
-            } else if (t === "down") { // 下往上连
-                if ((entity.type == "Control" ? false : entity.downEntity.length >= 1) || beginE.upEntity.length >= 1 || !entity.hasDownNodes) continue;
-            }
+            let isModifyMode = acLine && acLine.dom.classList.contains("hide");
 
+            // if (t === "up") { // 上向下连
+            //     if ((isModifyMode ? false : entity.upEntity.length >= 1) || ((beginE.type == "Control" || isModifyMode) ? false : beginE.downEntity.length >= 1) || !entity.hasUpNodes) continue;
+            // } else if (t === "down") { // 下往上连
+            //     if (((entity.type == "Control" || isModifyMode) ? false : entity.downEntity.length >= 1) || (isModifyMode ? false : beginE.upEntity.length >= 1) || !entity.hasDownNodes) continue;
+            // }
+
+            // 上向下连线（begin 在上方）
+            if (t === "up") {
+                let targetFull = !isModifyMode && entity.upEntity.length >= 1;
+                let sourceFull = !(beginE.type === "Control" || isModifyMode) && beginE.downEntity.length >= 1;
+                let targetHasNoInput = !entity.hasUpNodes;
+
+                if (targetFull || sourceFull || targetHasNoInput) continue;
+
+                // 下往上连线（begin 在下方）
+            } else if (t === "down") {
+                let targetFull = !(entity.type === "Control" || isModifyMode) && entity.downEntity.length >= 1;
+                let sourceFull = !isModifyMode && beginE.upEntity.length >= 1;
+                let targetHasNoOutput = !entity.hasDownNodes;
+
+                if (targetFull || sourceFull || targetHasNoOutput) continue;
+            }
 
             let pos = { x: entity.pos.x + entity[point].x, y: entity.pos.y + entity[point].y + entity.lineOffset[t] };
             if (Math.abs(endPosition.x - pos.x) <= 10 && Math.abs(endPosition.y - pos.y) <= 10) {
@@ -575,6 +596,7 @@ function updateNewLine(endPosition) {
             }
         }
     }
+    // console.log('newLine.end.entityID', newLine.end.entityID)
     newLine.end.posX = endPosition.x;
     newLine.end.posY = endPosition.y;
     newLine.update();

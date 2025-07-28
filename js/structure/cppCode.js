@@ -59,7 +59,7 @@ function returnCppCode(data) {
 
   const header = `#include "${className}.h"
 /********* node include file ************/
-${nodeNameList.map(node => `#include "${node}.h"`).join('\n')}`;
+${nodeNameList.map(node => `#include "Node/${node}.h"`).join('\n')}`;
 
   // 注册叶子节点
   const registerLines = nodeNameList.map(node => `\tfactory.registerNodeType<${node}>("${node}");`).join('\n');
@@ -350,6 +350,45 @@ function nodeCppCode(node) {
 //     }
 
 // };
+
+function slnContent(data) {
+  const { className } = data;
+  // Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "${className}", "${className}\\${className}.vcxproj", "{F382D2E7-C1E5-496F-8B9B-3369767EDAF2}"
+  
+  const codeStr = `Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31410.357
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "${className}", "${className}\\${className}.vcxproj", "{F382D2E7-C1E5-496F-8B9B-3369767EDAF2}"
+EndProject
+Global
+  GlobalSection(SolutionConfigurationPlatforms) = preSolution
+    Debug|x64 = Debug|x64
+    Debug|x86 = Debug|x86
+    Release|x64 = Release|x64
+    Release|x86 = Release|x86
+  EndGlobalSection
+  GlobalSection(ProjectConfigurationPlatforms) = postSolution
+    {F382D2E7-C1E5-496F-8B9B-3369767EDAF2}.Debug|x64.ActiveCfg = Debug|x64
+    {F382D2E7-C1E5-496F-8B9B-3369767EDAF2}.Debug|x64.Build.0 = Debug|x64
+    {F382D2E7-C1E5-496F-8B9B-3369767EDAF2}.Debug|x86.ActiveCfg = Debug|Win32
+    {F382D2E7-C1E5-496F-8B9B-3369767EDAF2}.Debug|x86.Build.0 = Debug|Win32
+    {F382D2E7-C1E5-496F-8B9B-3369767EDAF2}.Release|x64.ActiveCfg = Release|x64
+    {F382D2E7-C1E5-496F-8B9B-3369767EDAF2}.Release|x64.Build.0 = Release|x64
+    {F382D2E7-C1E5-496F-8B9B-3369767EDAF2}.Release|x86.ActiveCfg = Release|Win32
+    {F382D2E7-C1E5-496F-8B9B-3369767EDAF2}.Release|x86.Build.0 = Release|Win32
+  EndGlobalSection
+  GlobalSection(SolutionProperties) = preSolution
+    HideSolutionNode = FALSE
+  EndGlobalSection
+  GlobalSection(ExtensibilityGlobals) = postSolution
+    SolutionGuid = {6A027368-0105-4038-A4DF-CBCED33D10C2}
+  EndGlobalSection
+EndGlobal
+
+`
+  return codeStr;
+}
 // 节点文件.h
 function nodeHeaderCode(node) {
   // SyncActionNode、ConditionNode 一次性完成 tick()
@@ -380,7 +419,7 @@ function nodeHeaderCode(node) {
     const ports = port[type];
     const portFunc = portFuncMap[type];
     for (const p of ports) {
-      cppPorts += `\t\t\tBT::${portFunc}<${p.type}*>("${p.name}"),\n`;
+      cppPorts += `\t\t\tBT::${portFunc}<${p.dataType}*>("${p.name}"),\n`;
     }
   }
 
@@ -426,7 +465,7 @@ function vcxprojContent(data) {
   const { nodeHStr, nodeCppStr } = nodeNameList.reduce(
     (acc, name) => {
       acc.nodeHStr += `\t\t<ClInclude Include="Node\\${name}.h" />\n`;
-      acc.nodeCppStr += `\t\t<ClInclude Include="Node\\${name}.cpp" />\n`;
+      acc.nodeCppStr += `\t\t<ClCompile Include="Node\\${name}.cpp" />\n`;
       return acc;
     },
     { nodeHStr: '', nodeCppStr: '' }
@@ -613,7 +652,7 @@ function filtersContent(data) {
   const { nodeHStr, nodeCppStr } = nodeNameList.reduce(
     (acc, name) => {
       acc.nodeHStr += `\t<ClInclude Include="Node\\${name}.h">\n\t\t<Filter>头文件\\行为树节点</Filter>\n\t</ClInclude>\n`;
-      acc.nodeCppStr += `\t<ClInclude Include="Node\\${name}.cpp">\n\t\t<Filter>源文件\\行为树节点</Filter>\n\t</ClInclude>\n`;
+      acc.nodeCppStr += `\t<ClCompile Include="Node\\${name}.cpp">\n\t\t<Filter>源文件\\行为树节点</Filter>\n\t</ClCompile>\n`;
       return acc;
     },
     { nodeHStr: '', nodeCppStr: '' }
@@ -683,4 +722,5 @@ export default {
   vcxprojContent,
   filtersContent,
   userContent,
+  slnContent,
 }

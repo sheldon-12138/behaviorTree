@@ -129,22 +129,22 @@ function mainMouseDown(e) {
 
     else if (dom_class === "conn-up" || dom_class === "conn-down") {//连接点
         const acLine = gContextDao.getGContextProp("activedLine");
-        // if (acLine && (acLine.begin.entityID == dom_key || acLine.end.entityID == dom_key)) {
-        //     // 进入更改线条的情况
-        //     const newLineBeginId = acLine.end.entityID == dom_key ? acLine.begin.entityID : acLine.end.entityID
+        if (acLine && (acLine.begin.entityID == dom_key || acLine.end.entityID == dom_key)) {
+            // 进入更改线条的情况
+            const newLineBeginId = acLine.end.entityID == dom_key ? acLine.begin.entityID : acLine.end.entityID
 
-        //     // 隐藏线
-        //     gContextController.hideAcLine()
-        //     gContextController.createNewLine(dom_class === "conn-up" ? "conn-down" : "conn-up", { id: newLineBeginId });
+            // 隐藏线
+            gContextController.hideAcLine()
+            gContextController.createNewLine(dom_class === "conn-up" ? "conn-down" : "conn-up", { id: newLineBeginId });
 
-        //     opContext.mouseDownPosition = { x: e.offsetX, y: e.offsetY };
-        //     opContext.controlType = DomType.CIRCLE;
-        // } else {
-        gContextController.cancelHeightLine();//取消高亮线
-        gContextController.createNewLine(dom_class, { id: dom_key });
-        opContext.mouseDownPosition = { x: e.offsetX, y: e.offsetY };
-        opContext.controlType = DomType.CIRCLE;
-        // }
+            opContext.mouseDownPosition = { x: e.offsetX, y: e.offsetY };
+            opContext.controlType = DomType.CIRCLE;
+        } else {
+            gContextController.cancelHeightLine();//取消高亮线
+            gContextController.createNewLine(dom_class, { id: dom_key });
+            opContext.mouseDownPosition = { x: e.offsetX, y: e.offsetY };
+            opContext.controlType = DomType.CIRCLE;
+        }
     }
     else if (dom_class === "collapse") {//折叠
         // console.log('折叠')
@@ -475,21 +475,21 @@ function mouseUp(e) {
         gContextController.deleteNewLine();
         // console.log('res', res)
         if (res) {
-            //     if (acLine) {//修改线并生成了新的线——>原有选中的线删除
-            nodesOPController.removeActivedLine();
-            gContextController.cancelHeightLine();
-        }
+            if (acLine) {//修改线并生成了新的线——>原有选中的线删除
+                nodesOPController.removeActivedLine();
+                gContextController.cancelHeightLine();
+            }
 
-        //     nodesOPController.updateTreeData();
-        //     nodesOPController.updateLayer();
-        //     viewOPController.updateAmount(["nodeNum", "maxLayer", "topNodeNum", "midNodeNum",
-        //         "bottomNodeNum", "doorType", "doorNum", "maxDamageLevel", "criterionNum", "criterionTypeNum",
-        //         "criterionRelevanceNum"]);
-        // } else {
-        //     if (acLine) { //新生的线没实现，选中的线隐藏了——>原有选中的线恢复
-        //         gContextController.showAcLine()
-        //     }
-        // }
+            //     nodesOPController.updateTreeData();
+            //     nodesOPController.updateLayer();
+            //     viewOPController.updateAmount(["nodeNum", "maxLayer", "topNodeNum", "midNodeNum",
+            //         "bottomNodeNum", "doorType", "doorNum", "maxDamageLevel", "criterionNum", "criterionTypeNum",
+            //         "criterionRelevanceNum"]);
+        } else {
+            if (acLine) { //新生的线没实现，选中的线隐藏了——>原有选中的线恢复
+                gContextController.showAcLine()
+            }
+        }
     }
     // }
     // else{

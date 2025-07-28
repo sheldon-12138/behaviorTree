@@ -1332,18 +1332,18 @@ var ip = showObj(os.networkInterfaces());
 
 
 function showObj(obj) {//遍历obj（即网络接口信息），查找符合条件的IPv4地址
-	for(var devName in obj){
-	    var iface = obj[devName];
-	    for(var i=0;i<iface.length;i++){
-	        var alias = iface[i];
-	        if(alias.family === 'IPv4' && alias.address !== '127.0.0.1'){
-				return alias.address;
-			}
-	    }
-	}
+	// for(var devName in obj){
+	//     var iface = obj[devName];
+	//     for(var i=0;i<iface.length;i++){
+	//         var alias = iface[i];
+	//         if(alias.family === 'IPv4' && alias.address !== '127.0.0.1'){
+	// 			return alias.address;
+	// 		}
+	//     }
+	// }
 
-	return '192.168.11.199';
-	// return 'localhost';
+	// return '192.168.11.199';
+	return 'localhost';
 }
 // 清除所有用户的登录状态
 clearAllUserLoginStatus();

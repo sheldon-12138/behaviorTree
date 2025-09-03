@@ -472,21 +472,21 @@ function setActivedEntityByID(downDom, type, id, initialPosition) {
         // entity.dom.querySelector(".border").classList.remove("hide");
 
         initialPosition ? initialPosition[id] = { x: entity.pos.x, y: entity.pos.y } : null;
-        if (entity.collapse) {
-            let queue = [];
-            for (let i = 0, len = entity.downEntity.length; i < len; ++i) {
-                queue.push(entity.downEntity[i]);
-            }
-            while (queue.length > 0) {
-                let e = gContextDao.findEntity(queue.shift());
-                activedMap[e.id] = e;
-                // e.dom.querySelector(".border").classList.remove("hide");
-                initialPosition ? initialPosition[e.id] = { x: e.pos.x, y: e.pos.y } : null;
-                for (let i = 0, len = e.downEntity.length; i < len; ++i) {
-                    queue.push(e.downEntity[i]);
-                }
-            }
-        }
+        // if (entity.collapse) {
+        //     let queue = [];
+        //     for (let i = 0, len = entity.downEntity.length; i < len; ++i) {
+        //         queue.push(entity.downEntity[i]);
+        //     }
+        //     while (queue.length > 0) {
+        //         let e = gContextDao.findEntity(queue.shift());
+        //         activedMap[e.id] = e;
+        //         // e.dom.querySelector(".border").classList.remove("hide");
+        //         initialPosition ? initialPosition[e.id] = { x: e.pos.x, y: e.pos.y } : null;
+        //         for (let i = 0, len = e.downEntity.length; i < len; ++i) {
+        //             queue.push(e.downEntity[i]);
+        //         }
+        //     }
+        // }
         gContextDao.setGContextProp("activedEntityMap", activedMap);
     }
 };
@@ -1062,11 +1062,10 @@ function cancelHeightLine() {
     }
 }
 //随时更新画布大小（以包含当前的最大位置坐标和额外空间）包括放大缩小
-function updateMainSVGSizeUp() {
-    // console.log('更新画布大小')
+function updateMainSVGSizeUp1() {
     let maxPosition = gContextDao.getMaxPosition(); // 获取当前最大位置坐标
     let svgCanvas = gContextDao.getGContextProp("svgCanvas");// 获取 SVG 画布对象
-    let statusData = gContextDao.getGContextProp("statusData");
+    // let statusData = gContextDao.getGContextProp("statusData");
     // let newSize = {
     //     width: svgCanvas.size.width / (svgCanvas.zoom < 1 ? svgCanvas.zoom : 1),
     //     height: svgCanvas.size.height / (svgCanvas.zoom < 1 ? svgCanvas.zoom : 1)
@@ -1087,7 +1086,7 @@ function updateMainSVGSizeUp() {
     const viewPortHeight = g.gContext.viewPort.height
 
     newSize.width = Math.max(viewPortWidth / (svgCanvas.zoom < 1 ? svgCanvas.zoom : 1), newSize.width)// 基于最大位置坐标调整新尺寸
-    newSize.height = Math.max(viewPortHeight / (svgCanvas.zoom < 1 ? svgCanvas.zoom : 1), newSize.height) + (statusData.isShowCriterionPop ? 100 : 0)// 当尺寸大于原来尺寸时再扩大
+    newSize.height = Math.max(viewPortHeight / (svgCanvas.zoom < 1 ? svgCanvas.zoom : 1), newSize.height) // 当尺寸大于原来尺寸时再扩大
     // newSize.height = newSize.height 
     // console.log(newSize.height)
     // console.log('maxX', maxPosition.x, '画布宽', newSize.width)
@@ -1096,6 +1095,40 @@ function updateMainSVGSizeUp() {
     svgCanvas.size = newSize;
     svgCanvas.zoom = svgCanvas.zoom;  // 保持当前缩放比例不变
 };
+//随时更新画布大小（以包含当前的最大位置坐标和额外空间）包括放大缩小
+function updateMainSVGSizeUp() {
+    // console.log('更新画布大小')
+    const PADDING = 200; // 额外边距
+    let maxPosition = gContextDao.getMaxPosition(); // 当前内容最大位置
+    // console.log('maxPosition',maxPosition)
+    let svgCanvas = gContextDao.getGContextProp("svgCanvas"); // SVG 画布
+    let viewPortWidth = g.gContext.viewPort.width;
+    let viewPortHeight = g.gContext.viewPort.height;
+
+    // 当前缩放因子
+    let zoom = svgCanvas.zoom || 1;
+
+    // 基于内容和边距的逻辑尺寸
+    let contentWidth = maxPosition.x + PADDING;
+    let contentHeight = maxPosition.y + PADDING;
+
+    // 画布的实际可见大小需要考虑缩放：
+    //   - 当 zoom < 1（缩小），画布逻辑尺寸需要更大，才能保证 viewport 填满
+    //   - 当 zoom >= 1（放大），内容本身就会被放大，所以只需要满足内容需求
+    let minWidth = viewPortWidth / (zoom < 1 ? zoom : 1);
+    let minHeight = viewPortHeight / (zoom < 1 ? zoom : 1);
+    // console.log('maxPosition.x',maxPosition.x,'contentWidth', contentWidth,'minWidth',minWidth)
+    // 新尺寸取两者最大值
+    let newSize = {
+        width: Math.max(contentWidth, minWidth),
+        height: Math.max(contentHeight, minHeight)
+    };
+    // console.log('画布改变时newSize', newSize.width)
+    // 更新画布
+    svgCanvas.size = newSize;
+    // 保持缩放比例
+    svgCanvas.zoom = zoom;
+}
 //切换折叠by FTid
 function tagCollapseByFtID(ftID) {
     let entity = gContextDao.findEntityByFtID(ftID);
@@ -1130,7 +1163,7 @@ function unfoldNodeById(id) {
     updateFoldNode(entity);
 
     // 自动布局 【展开后不要自动布局】
-    nodesOPController.nodeLayout();
+    // nodesOPController.nodeLayout();
     updateMainSVGSizeUp();
     // nodesOPController.openAutoLayoutMode();
 };

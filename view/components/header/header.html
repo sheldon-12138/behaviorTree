@@ -35,12 +35,12 @@
 </div>
 
 <!-- 打开文件夹 ,'header-item-operation':statusData.isCompute-->
-<div class="header-item"
+<!-- <div class="header-item"
     :class="{'header-item-hover':!statusData.isCompute}">
     <el-tooltip effect="light" content="打开文件夹" placement="top">
         <img src="assets/header/dakai.png" @click="triggerFolderInput" draggable="false">
     </el-tooltip>
-</div>
+</div> -->
 
 <input type="file" ref="fileInput" style="display: none;" @change="handleFileChange" accept=".xml">
 <input type="file" ref="folderInput" style="display: none;" @change="handleFileChange" webkitdirectory>
@@ -56,19 +56,19 @@
 
 <div class="bar" style="margin-left: 13px;"></div>
 <!-- 复制 -->
-<div class="header-item"
+<!-- <div class="header-item"
     :class="{'header-item-hover':statusData.operation_copy_delete,'header-item-operation':!statusData.operation_copy_delete}">
     <el-tooltip effect="light" content="复制" placement="top">
         <img src="assets/header/fuzhi.png" @click="copy()" draggable="false">
     </el-tooltip>
-</div>
+</div> -->
 <!-- 粘贴 -->
-<div class="header-item"
+<!-- <div class="header-item"
     :class="{'header-item-hover':statusData.operation_paste,'header-item-operation':!statusData.operation_paste}">
     <el-tooltip effect="light" content="粘贴" placement="top">
         <img src="assets/header/zhantie.png" @click="paste()" draggable="false">
     </el-tooltip>
-</div>
+</div> -->
 
 <!-- 删除 -->
 <div class="header-item"
@@ -97,7 +97,7 @@
     <!--    <span class="header-item-span">%</span>-->
     <!--    <el-input v-model="scale" type="number"></el-input>-->
     <div style="width: 100px">
-        <el-slider v-model="scale" :min="25" :max="500"></el-slider>
+        <el-slider v-model="scale" :min="25" :max="200"></el-slider>
     </div>
     <div style="width:100%;text-align:center;position: absolute;font-size: 12px;color: #666666;top: 38px;">
         {{ scale + '%' }}

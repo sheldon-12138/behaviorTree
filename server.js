@@ -21,7 +21,8 @@ expressWs(app);
 // 	// console.log(`[访问] ${new Date().toLocaleString()} - 来自 ${clientIp} - 请求路径: ${req.originalUrl}`);
 // 	next();
 // });
-
+// 读取配置文件
+const config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
 
 app.use(bodyParser.json({ limit: '100mb' }));
 app.use(bodyParser.urlencoded({ limit: '100mb', extended: true }));
@@ -148,9 +149,9 @@ app.get('/login/:user/:pwd', function (req, resp) {
 		if (userInfo.enabled === false) {
 			return resp.json({ status: '-4', message: '该用户已被禁用' });
 		}
-		if (userInfo.loggedIn) {
-			return resp.json({ status: '-3', message: '用户已登录，请先退出当前会话' });
-		}
+		// if (userInfo.loggedIn) {
+		// 	return resp.json({ status: '-3', message: '用户已登录，请先退出当前会话' });
+		// }
 
 		if (userInfo.password === pwd) {
 			userInfo.loggedIn = true; // 标记为已登录
@@ -1332,24 +1333,32 @@ var ip = showObj(os.networkInterfaces());
 
 
 function showObj(obj) {//遍历obj（即网络接口信息），查找符合条件的IPv4地址
-	// for(var devName in obj){
-	//     var iface = obj[devName];
-	//     for(var i=0;i<iface.length;i++){
-	//         var alias = iface[i];
-	//         if(alias.family === 'IPv4' && alias.address !== '127.0.0.1'){
-	// 			return alias.address;
-	// 		}
-	//     }
-	// }
+	for(var devName in obj){
+	    var iface = obj[devName];
+	    for(var i=0;i<iface.length;i++){
+	        var alias = iface[i];
+	        if(alias.family === 'IPv4' && alias.address !== '127.0.0.1'){
+				return alias.address;
+			}
+	    }
+	}
 
-	// return '192.168.11.199';
-	return 'localhost';
+	return '192.168.11.199';
+	// return 'localhost';
 }
 // 清除所有用户的登录状态
 clearAllUserLoginStatus();
 
-console.log(`Server running at http://${ip}:9800/`);
-app.listen(9800, ip);
+var PORT = config.server.port || 9800;
+app.listen(PORT, ip, () => {
+	const url = `http://${ip}:${PORT}/`;
+    fs.writeFileSync("server_url.txt", url);
+	 // 写入当前 Node 进程 PID
+	 fs.writeFileSync("server.pid", process.pid.toString().trim(), { encoding: "utf8" });
+	 console.log(`pid:${process.pid.toString().trim()}`)
+    console.log(`Server running at ${url}`);
+});
+// app.listen(9800, ip);
 // const PORT = 9800;
 // const HOST = '0.0.0.0'; // 可被局域网访问
 // app.listen(PORT, HOST, () => {

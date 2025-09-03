@@ -13,12 +13,17 @@ import { g } from "../structure/gContext.js";
 import fileParser from "../parser/fileParser.js";
 
 // 删除树
-function deleteTree(treeId) {
+function deleteTree(treeId, oldLabel) {
     let treeMap = gContextDao.getGContextProp("treeMap");
     // 删除eventEntityMap及dom元素
     __delete(treeMap[treeId].entityMap);
     // 删除treeMap
-    delete this.treeMap[treeId];
+    if (treeMap[treeId]) delete treeMap[treeId];
+
+    // modelList也删除
+    let modelList = gContextDao.getGContextProp("modelList");
+    const index = modelList[4].children.findIndex(item => item.ID === oldLabel);
+    modelList[4].children.splice(index, 1);
 }
 
 // 删除tabs中的树
@@ -209,7 +214,6 @@ function loadSubTree(treeId, subNodeId, subtreeEvents, isAssScreen) {
     // console.log('subNode', subNode)
 
     let subTreeRoot = findSubTreeRoot(treeId)
-    // console.log('subTreeRoot', subTreeRoot)
     if (subTreeRoot) {
         subNode.downEntity.push(subTreeRoot.id);
         subTreeRoot.upEntity.push(subNode.id);
@@ -226,7 +230,12 @@ function loadSubTree(treeId, subNodeId, subtreeEvents, isAssScreen) {
     // 折叠子树节点
     gContextController.foldNodeById(subNode.id)
 
+    // 清空选中节点、复制节点、复制粘贴状态
     gContextDao.setGContextProp("activedEntityMap", {});
+    gContextDao.setGContextProp("copyList", {});
+    gContextDao.setGContextProp("copyLineList", {});
+    viewOPController.updateOperationStatus();
+    // console.log("activedEntityMap",activedEntityMap)
 }
 
 
@@ -236,6 +245,7 @@ function findSubTreeRoot(treeId) {
         const entity = eventEntityMap[key];
         if (entity.treeId === treeId && entity.upEntity.length === 0 && entity.type !== 'Top') {
             // console.log('entity', entity);
+            if (entity.downEntity.length === 0) continue;//跳过也没有子节点的单个节点
             return entity;
         }
     }
@@ -392,13 +402,11 @@ function handleModelChange(ID, port, type) {
 }
 
 function _copy() {
-
     let copyList = {};
     let copyLineList = {};
     let activedMap = gContextDao.getGContextProp("activedEntityMap");
     let statusData = gContextDao.getGContextProp("statusData");
     const treeId = statusData.currentTreeID;
-
     for (let key in activedMap) {
         let entity = Utils.jsonClone(activedMap[key]);
         entity.treeId = treeId
@@ -447,7 +455,6 @@ function copy() {
     if (statusData.isCompute) return;
     _copy();
     viewOPController.updateOperationStatus();
-
 }
 
 // 粘贴
@@ -639,9 +646,9 @@ function __delete(deleteMap) {
             downEntity.upEntity = Utils.removeElement(downEntity.upEntity, entity.id);
         }
         if (entity) {
-            dom.query("#mainSVG").removeChild(entity.dom);
+            if (entity.dom) dom.query("#mainSVG").removeChild(entity.dom);
         }
-        delete (eventEntityMap[key]);
+        if (eventEntityMap[key]) delete (eventEntityMap[key]);
         // console.log(isRemove);
         deleteIdMap[key] = key;
 
@@ -716,13 +723,17 @@ function openAutoLayoutMode() {
 }
 function nodeLayout(currentTreeID) {
     const statusData = gContextDao.getGContextProp("statusData");
-    _nodeLayout(currentTreeID ? currentTreeID : statusData.currentTreeID);
+    const scale = _nodeLayout(currentTreeID ? currentTreeID : statusData.currentTreeID);
+    gContextController.updateMainSVGSizeUp();
+    //新增返回一个缩放比
+    return scale;
     // console.log(g.gContext.eventEntityMap)
     // updateEffectPos();
     // updateHSStandardPos();
 }
 //自动布局
 function _nodeLayout(treeId) {
+    // let svgCanvas = gContextDao.getGContextProp("svgCanvas");// 获取 SVG 画布对象
     // console.log('自动布局了', treeId)
     let roots = new TreeNode(null);
     let traver = gContextDao.traverseNode(treeId);
@@ -743,9 +754,40 @@ function _nodeLayout(treeId) {
         else console.log('不是同一棵树')
     }
 
+    // 过滤掉“孤立根节点”（没有子节点的）不参与自动布局
+    roots.children = roots.children.filter(root => root.children && root.children.length > 0);
+
     let layout = gContextDao.getGContextProp("layout");
     layout.init();
     layout.autoSequence(roots, layout.currentPosY);
+
+    //-----新增居中显示-----
+    // 计算树的宽度
+    let bounds = calcTreeBounds(roots);
+    let treeWidth = bounds.maxX - bounds.minX;
+    let treeHeight = bounds.maxY - bounds.minY;
+    // 目标居中点，取根据最大位置生成的画布的中心
+    const size = findSize(bounds);
+    let targetCenterX = size.width / 2; // svgCanvas.size.width / 2
+    let treeCenterX = bounds.minX + treeWidth / 2;
+    let offsetX = targetCenterX - treeCenterX; // 偏移量 = 目标中心 - 树中心
+    // console.log('offsetX', offsetX)
+    // 平移整棵树
+    if (offsetX > 0) shiftTree(roots, offsetX);
+    //-----新增居中显示-----
+
+    //-----新增计算缩放比-----
+    // 防止树宽高为0导致除0
+    let viewPortWidth = g.gContext.viewPort.width;
+    let viewPortHeight = g.gContext.viewPort.height;
+
+    // console.log('treeWidth', treeWidth, 'viewPortWidth', viewPortWidth);
+    let scaleX = treeWidth > 0 ? (viewPortWidth - 20 * 2) / treeWidth : 1;
+    let scaleY = treeHeight > 0 ? (viewPortHeight - 20 * 2) / treeHeight : 1;
+
+    // 缩放比例：保证整棵树能放下，并且不放大（只缩小）
+    let scale = Math.floor(Math.min(scaleX, scaleY, 1.0) * 100) / 100;
+    //-----新增计算缩放比-----
 
     let queue = [roots];
     let fragment = dom.doc.createDocumentFragment();
@@ -808,7 +850,64 @@ function _nodeLayout(treeId) {
 
     let mainSVG = dom.query("#mainSVG");
     mainSVG.appendChild(fragment);
+
+    return scale;
 };
+
+function findSize(bounds) {
+    // console.log('自动布局时画布的maxPosition', maxPosition)
+    let svgCanvas = gContextDao.getGContextProp("svgCanvas"); // SVG 画布
+    let viewPortWidth = g.gContext.viewPort.width;
+    let viewPortHeight = g.gContext.viewPort.height;
+
+    // 当前缩放因子
+    let zoom = svgCanvas.zoom || 1;
+
+    // 基于内容和边距的逻辑尺寸
+    let contentWidth = (bounds.maxX - bounds.minX) + 400;
+    // console.log('contentWidth',contentWidth)
+    let contentHeight = bounds.maxY + 200;
+
+    let minWidth = viewPortWidth ;
+    // / (zoom < 1 ? zoom : 1);
+    let minHeight = viewPortHeight;
+    //  / (zoom < 1 ? zoom : 1);
+
+    // 新尺寸取两者最大值
+    let newSize = {
+        width: Math.max(contentWidth, minWidth),
+        height: Math.max(contentHeight, minHeight)
+    };
+    return newSize;
+}
+// 计算整棵树的最小/最大 X、Y
+function calcTreeBounds(root, bounds = {
+    minX: Infinity,
+    maxX: -Infinity,
+    minY: Infinity,
+    maxY: -Infinity
+}) {
+    if (root.id && root.pos && root.size) {
+        bounds.minX = Math.min(bounds.minX, root.pos.x);
+        bounds.maxX = Math.max(bounds.maxX, root.pos.x + root.size.width);
+        bounds.minY = Math.min(bounds.minY, root.pos.y);
+        bounds.maxY = Math.max(bounds.maxY, root.pos.y + root.size.height);
+    }
+    for (let child of root.children) {
+        calcTreeBounds(child, bounds);
+    }
+    return bounds;
+}
+
+// 平移整棵树
+function shiftTree(root, offsetX) {
+    if (root.id && root.pos) {
+        root.pos.x += offsetX;
+    }
+    for (let child of root.children) {
+        shiftTree(child, offsetX);
+    }
+}
 
 function returnTree() {
     let roots = new TreeNode(null);
@@ -928,11 +1027,16 @@ function explantationNode() {
 }
 
 // 修改树名——实则修改树根节点的modelType属性
-function editTreeName(nodeId, label) {
+function editTreeName(nodeId, oldLabel, label) {
     let entity = gContextDao.findEntity(nodeId);
     if (entity && entity.type == 'Top') {
         entity.modelType = label
-    }
+    };
+
+    // modelList也修改
+    let modelList = gContextDao.getGContextProp("modelList");
+    const index = modelList[4].children.findIndex(item => item.ID === oldLabel);
+    modelList[4].children[index].ID = label;
 }
 
 export default {

@@ -128,6 +128,41 @@
         <Sleep msec=""/>
         <SetBlackboard value="" output_key=""/>
       </Switch2>
+      <Switch2 case_1="" case_2="" variable="">
+        <AlwaysFailure/>
+        <AlwaysSuccess/>
+        <Script code=""/>
+        <Sleep msec=""/>
+        <SetBlackboard value="" output_key=""/>
+      </Switch2>
+      <Switch2 case_1="" case_2="" variable="">
+        <AlwaysFailure/>
+        <AlwaysSuccess/>
+        <Script code=""/>
+        <Sleep msec=""/>
+        <SetBlackboard value="" output_key=""/>
+      </Switch2>
+      <Switch2 case_1="" case_2="" variable="">
+        <AlwaysFailure/>
+        <AlwaysSuccess/>
+        <Script code=""/>
+        <Sleep msec=""/>
+        <SetBlackboard value="" output_key=""/>
+      </Switch2>
+      <Switch2 case_1="" case_2="" variable="">
+        <AlwaysFailure/>
+        <AlwaysSuccess/>
+        <Script code=""/>
+        <Sleep msec=""/>
+        <SetBlackboard value="" output_key=""/>
+      </Switch2>
+      <Switch2 case_1="" case_2="" variable="">
+        <AlwaysFailure/>
+        <AlwaysSuccess/>
+        <Script code=""/>
+        <Sleep msec=""/>
+        <SetBlackboard value="" output_key=""/>
+      </Switch2>
     </Sequence>
   </BehaviorTree>
   

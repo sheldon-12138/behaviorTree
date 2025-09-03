@@ -295,7 +295,7 @@ function updateOperationStatus() {
     let statusData = gContextDao.getGContextProp("statusData");
     statusData.operation_copy_delete = (!statusData.isCompute) && ((Object.keys(activedMap).length > 0) || !!(activedLine));
     statusData.operation_paste = (!statusData.isCompute) && (Object.keys(copyList).length > 0);
-    statusData.autoLayoutMode = false;
+    // statusData.autoLayoutMode = false;
 }
 
 function updateResult() {

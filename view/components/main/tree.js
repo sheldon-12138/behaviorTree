@@ -87,7 +87,7 @@ export function treeVm() {
                     if (tab) tab.name = trimmedLabel;
 
                     // 修改树中根节点的modelType 即改树名
-                    nodesOPController.editTreeName(this.treeMap[data.treeId].topNodeId, trimmedLabel);
+                    nodesOPController.editTreeName(this.treeMap[data.treeId].topNodeId,data._oldLabel,trimmedLabel);
                 }
             },
             // 删除树
@@ -100,7 +100,7 @@ export function treeVm() {
 
                 // 删除tab中的树
                 const tabIndex = this.tabsArr.findIndex(tab => tab.id === data.treeId);
-                nodesOPController.closeTab(tabIndex);
+                if(tabIndex!=-1)nodesOPController.closeTab(tabIndex);
 
                 // 删除内存中的树
                 nodesOPController.deleteTree(data.treeId);

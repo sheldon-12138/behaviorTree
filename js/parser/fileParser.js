@@ -502,7 +502,7 @@ function loadXml(BehaviorTree) {
     return treeId;
 }
 
-
+// 用深拷贝，不然最后一个会改变port的value
 function findNodePort(modelName) {
     let modelList = gContextDao.getGContextProp("modelList");
     // console.log('modelList', modelList)
@@ -510,7 +510,7 @@ function findNodePort(modelName) {
     for (let i = 0; i < 5; i++) {
         modelList[i].children.forEach(item => {
             if (item.port && Object.keys(item.port).length > 0 && item.ID == modelName) {
-                result = item.port
+                result = deepClone(item.port)
             }
         })
     }

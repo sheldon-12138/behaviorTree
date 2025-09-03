@@ -108,7 +108,6 @@ function uploadUserProject(param) {
 
     return fileRequest.uploadUserProject(content)
         .then((data) => {
-
             let codeObj = generateCode(content);
             // Object.assign(codeObj, data);//codeObj中包含深层嵌套，后端返回的data只有message和treeContent两个简单属性，可以浅拷贝进去
             codeObj = deepMerge(codeObj, data);
@@ -124,7 +123,10 @@ function uploadUserProject(param) {
 function generateCode(content) {
     const className = content.projectName;
     const portTypes = ['input_port', 'output_port', 'inout_port'];
-    const types = ["short", "short int", "int", "long", "long int", "long long int", "unsigned short", "unsigned int", "unsigned long", "unsigned long long", "unsigned char", "signed char", "int8_t", "uint8_t", "int16_t", "uint16_t", "int32_t", "uint32_t", "int64_t", "uint64_t", "wchar_t", "char16_t", "char32_t", "float", "double", "long double", "char", "string", "bool"]
+    const types = ["short", "short int", "int", "long", "long int", "long long int", "unsigned short", 
+    "unsigned int", "unsigned long", "unsigned long long", "unsigned char", "signed char", 
+    "int8_t", "uint8_t", "int16_t", "uint16_t", "int32_t", "uint32_t", "int64_t", "uint64_t", 
+    "wchar_t", "char16_t", "char32_t", "float", "double", "long double", "char", "string", "bool"]
     const seenNames = new Set();
     const blackboardVars = [], nodeNameList = [], nodeStrList = [];
 

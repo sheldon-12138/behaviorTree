@@ -60,7 +60,8 @@ export function attributePopVm() {
                 tableData: [],
                 nodePortData: [],
                 nodePortItem: { portName: 'port_name', value: '{tree_port_name}' },
-                tableItem: { id: 'newId', portName: 'key_name', direction: 'input_port', dataType: '', defaultValue: '', description: '' },
+                // 默认新增的是input_port
+                tableItem: { id: 'newId', portName: 'key_name', direction: 'inout_port', dataType: '', defaultValue: '', description: '' },
                 selectPortIndex: -1,//选中的端口索引
                 selectNodePortIndex: -1,//选中的端口索引
                 tabsArr: ['Port Remapping', 'Pre Conditions', 'Post Conditions', 'Description'],

@@ -75,12 +75,12 @@ export function headerVm() {
                     if (newVal <= 25) {
                         g.gContext.svgCanvas.zoom = 0.25
                         this.scale = 25;
-                    } else if (newVal > 25 && newVal < 500) {
+                    } else if (newVal > 25 && newVal < 200) {
                         g.gContext.svgCanvas.zoom = newVal / 100;
                         this.scale = newVal;
-                    } else if (newVal >= 500) {
-                        g.gContext.svgCanvas.zoom = 5;
-                        this.scale = 500;
+                    } else if (newVal >= 200) {
+                        g.gContext.svgCanvas.zoom = 2;
+                        this.scale = 200;
                     } else if (val == '') {
                         g.gContext.svgCanvas.zoom = 0.25
                         this.scale = 25;
@@ -129,6 +129,7 @@ export function headerVm() {
             stringToGBK(str) {
                 const gbkBytes = Encoding.convert(Encoding.stringToCode(str), {
                     from: 'UTF8',
+                    //  from: 'UNICODE',   // 源是 UTF-16
                     to: 'GBK',
                     type: 'arraybuffer'
                 });
@@ -256,14 +257,17 @@ export function headerVm() {
             },
             //布局
             autoLayout() {
-                this.statusData.autoLayoutMode = !this.statusData.autoLayoutMode;
+                // this.statusData.autoLayoutMode = !this.statusData.autoLayoutMode;
                 this.statusData.canvasChanged = true;
-                if (this.statusData.autoLayoutMode) {
-                    // const currentIndex=this.statusData.currentTreeID
-                    nodesOPController.nodeLayout(this.statusData.currentTreeID);
-                    gContextController.updateMainSVGSizeUp();
-                    nodesOPController.openAutoLayoutMode();
-                }
+                const zoom = nodesOPController.nodeLayout(this.statusData.currentTreeID);
+                if (zoom) this.scale = zoom * 100;
+
+                // gContextController.updateMainSVGSizeUp();
+                // if (this.statusData.autoLayoutMode) {
+                //     // const currentIndex=this.statusData.currentTreeID
+
+                //     // nodesOPController.openAutoLayoutMode();
+                // }
             },
             //缩小
             narrow() {
@@ -276,9 +280,9 @@ export function headerVm() {
             },
             //放大
             enlarge() {
-                if (this.scale + 25 >= 500) {
-                    this.scale = 500;
-                    g.gContext.svgCanvas.zoom = 5;
+                if (this.scale + 25 >= 200) {
+                    this.scale = 200;
+                    g.gContext.svgCanvas.zoom = 2;
                 } else {
                     this.scale = this.scale + 25;
                 }

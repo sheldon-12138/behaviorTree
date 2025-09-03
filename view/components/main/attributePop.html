@@ -124,10 +124,11 @@
                             <td><input :disabled="statusData.attrID == '4'" type="text" v-model="item.portName"
                                     @blur="selectTipTxt"></td>
                             <td>
-                                <select :disabled="statusData.attrID == '4'" v-model="item.direction">
-                                    <option value="input_port">Input</option>
-                                    <option value="output_port">Output</option>
+                                <!-- :disabled="statusData.attrID == '4'" -->
+                                <select disabled v-model="item.direction">
                                     <option value="inout_port">In/Out</option>
+                                    <option value="input_port">Input</option>
+                                    <option value="output_port">Output</option>   
                                 </select>
                             </td>
                             <td><input :disabled="statusData.attrID == '4'" type="text" v-model="item.dataType">

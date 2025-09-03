@@ -182,10 +182,98 @@ ${memberLines}
 
 // DataType.h
 function dataTypeH(data) {
-  //     dataTypeList = ['SVector3D'];//文件名
+  //let dataTypeList = ['CGForce::SVector3d', 'BTIODataVec', 'CGForce::SShotScope','std::vector<CGForce::SAmmoInfo>','std::map<std::string, int32_t>'];//自定义数据类型的数组
   const { className, dataTypeList } = data;
+  // const structStr = dataTypeList.map(name => `struct ${name}\n{\n};`).join('\n\n');
+  // 区分命名空间 且跳过std::map<std::string, int32_t这种已有类型
+  //   const structStr = dataTypeList
+  //   .filter(name => !name.includes("std::"))
+  //   .map(name => {
+  //     if (name.includes("::")) {
+  //         const [ns, structName] = name.split("::");
+  //         return `namespace ${ns}\n{\n    struct ${structName}\n    {\n    };\n}`;
+  //     } else {
+  //         return `struct ${name}\n{\n};`;
+  //     }
+  // }).join('\n\n');
 
-  const structStr = dataTypeList.map(name => `struct ${name}\n{\n};`).join('\n\n');
+  // 分组：命名空间 => [struct...]
+  const nsMap = {};//构建为{CGForce:[SVector3d,SShotScope]}
+  const globalStructs = [];//构建为[BTIODataMap,BTIODataVec]
+
+  // 内置类型集合
+  const builtinTypes  = new Set(["short", "short int", "int", "long", "long int", "long long int", "unsigned short", 
+  "unsigned int", "unsigned long", "unsigned long long", "unsigned char", "signed char", 
+  "int8_t", "uint8_t", "int16_t", "uint16_t", "int32_t", "uint32_t", "int64_t", "uint64_t", 
+  "wchar_t", "char16_t", "char32_t", "float", "double", "long double", "char", "string", "bool"]);
+
+  function processType(type) {
+    type = type.trim();
+
+    // 如果是模板，提取里面的参数递归处理
+    const templateMatch = type.match(/^(.+?)<(.+)>$/);
+    if (templateMatch) {
+      const inner = templateMatch[2];
+      inner.split(",").forEach(t => processType(t));
+      return;
+    }
+
+    // 跳过内置类型
+    if (builtinTypes.has(type)) return;
+
+    // 如果带命名空间
+    if (type.includes("::")) {
+      if (type.startsWith("std::")) {
+        // std::开头的直接跳过
+        return;
+      } else {
+        const parts = type.split("::");
+        const structName = parts.pop();
+        const ns = parts.join("::");
+        if (!nsMap[ns]) nsMap[ns] = new Set();
+        nsMap[ns].add(structName);
+      }
+    } else {
+      // 全局 struct
+      globalStructs.push(type);
+    }
+  }
+
+  dataTypeList.forEach(processType);
+
+
+  // for (const name of dataTypeList) {
+  //   if (name.startsWith("std::")) continue;//跳过std::的已有类型
+  //   if (name.includes("::")) {
+  //     const [ns, structName] = name.split("::");
+  //     if (!nsMap[ns]) nsMap[ns] = [];
+  //     nsMap[ns].push(structName);
+  //   } else {
+  //     globalStructs.push(name);
+  //   }
+  // }
+  let structStr = "";
+
+  // 先生成全局 struct（去重）
+  structStr += [...new Set(globalStructs)]
+    .map(name => `struct ${name}\n{\n};`)
+    .join("\n\n");
+
+  // 如果既有全局又有 namespace，空一行分隔
+  if (Object.keys(nsMap).length > 0 && structStr) structStr += "\n\n";
+
+  // 生成 namespace 内的 struct
+  structStr += Object.entries(nsMap)
+    .map(([ns, structs]) => {
+      const inside = [...structs]
+        .map(s => `    struct ${s}\n    {\n    };`)
+        .join("\n\n");
+
+      return `namespace ${ns}\n{\n${inside}\n}\n`;
+    })
+    .join("\n");
+
+
   const codeStr = `/* @class ${className}
 *
 * @generate data :
@@ -354,7 +442,7 @@ function nodeCppCode(node) {
 function slnContent(data) {
   const { className } = data;
   // Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "${className}", "${className}\\${className}.vcxproj", "{F382D2E7-C1E5-496F-8B9B-3369767EDAF2}"
-  
+
   const codeStr = `Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31410.357
@@ -412,7 +500,7 @@ function nodeHeaderCode(node) {
   const portFuncMap = {
     input_port: 'InputPort',
     output_port: 'OutputPort',
-    inout_port: 'InoutPort'
+    inout_port: 'BidirectionalPort'//InoutPort
   };
 
   for (const type of portTypes) {

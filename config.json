@@ -1,1 +1,5 @@
-{"isPop":true,"isEdit":true,"lineShowWay":false,"analysisOrder":1}
+{
+    "server": {
+      "port": 9800
+    }
+  }

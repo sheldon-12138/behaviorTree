@@ -46,7 +46,7 @@ function buildModel(userModelList, xmlDoc) {
             })
         }
     })
-    xmlDoc.txt('\n')
+    xmlDoc.txt('\n');
 }
 
 function returnXml(treeArr, projectName, userModelList, mainTree) {
@@ -62,7 +62,6 @@ function returnXml(treeArr, projectName, userModelList, mainTree) {
     })
     xmlDoc.com('Description of Node Models (used by Groot)');
     buildModel(userModelList, xmlDoc);
-
     const xmlString = xmlDoc.end({ prettyPrint: true });
     // console.log('xmlString', xmlString);
     return xmlString;
